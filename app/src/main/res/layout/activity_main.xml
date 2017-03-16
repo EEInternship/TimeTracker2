@@ -12,17 +12,22 @@
         android:orientation="vertical">
 
         <Button
+            android:id="@+id/button_Open"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Open"/>
+            android:text="Open" />
+
         <Button
+            android:id="@+id/button_Start_Work"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Start Work"/>
+            android:text="Start Work" />
+
         <Button
+            android:id="@+id/button_Monthly_Overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Montlhy"/>
+            android:text="Montlhy" />
 
     </LinearLayout>
 
