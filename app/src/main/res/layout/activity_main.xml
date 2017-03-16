@@ -41,7 +41,7 @@
                 android:background="@xml/btn_design_green_shadow">
 
                 <Button
-                    android:id="@+id/button_Open"
+                    android:id="@+id/button_open"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:background="@xml/btn_design_green"
@@ -59,7 +59,7 @@
                 android:background="@xml/btn_design_green_shadow">
 
                 <Button
-                    android:id="@+id/button_Start_Work"
+                    android:id="@+id/button_start_work"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:background="@xml/btn_design_green"
@@ -77,7 +77,7 @@
                 android:background="@xml/btn_design_green_shadow">
 
                 <Button
-                    android:id="@+id/button_Monthly_Overview"
+                    android:id="@+id/button_monthly_overview"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="0dp"
