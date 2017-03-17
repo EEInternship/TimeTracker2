@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_start_work"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#323232"
+    tools:context="com.eeinternship.timetracker.StartWorkActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.75">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:src="@drawable/img_logo_w_equal_eyes" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="0.25"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/background_shadow_open"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="10dp"
+                android:background="@xml/btn_design_green_shadow">
+
+                <Button
+                    android:id="@+id/button_select_project"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@xml/btn_design_green"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Select a project"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="7.5dp"
+                android:background="@xml/design_window_white">
+
+                <LinearLayout
+                    android:layout_width="120dp"
+                    android:layout_height="match_parent"
+                    android:background="@xml/btn_design_start_work_shadow">
+
+                    <Button
+                        android:id="@+id/button_start_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:background="@xml/btn_design_start_work"
+                        android:clickable="false"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:text="Start"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15dp" />
+                </LinearLayout>
+            </LinearLayout>
+            <!--What've you been doing?-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginTop="25dp"
+                android:background="@xml/design_window_white"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@xml/design_window_gray_left_right_up">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:gravity="center"
+                        android:text="What have been you doing?"
+                        android:textAllCaps="false"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15dp" />
+
+                </LinearLayout>
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="start"
+                    android:layout_margin="5dp"
+                    android:background="@android:color/transparent"
+                    android:editable="false"
+                    android:gravity="start"
+                    android:hint="- QA testing \n- Asking important questions or not "
+                    android:maxLines="5"
+                    android:textColor="#000000"
+                    android:textColorHint="#c1c1c1"
+                    android:visibility="visible"></EditText>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/background_shadow_next_project"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@xml/btn_design_gray_next_project_shadow">
+
+                <Button
+                    android:id="@+id/btn_next_project"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@xml/btn_design_gray_next_project"
+                    android:clickable="false"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Next project"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/background_shadow_finish_work"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:background="@xml/btn_design_finish_work_shadow"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btn_finish_work"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@xml/btn_design_finish_work"
+                    android:clickable="false"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Finish work"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
