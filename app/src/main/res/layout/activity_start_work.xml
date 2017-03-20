@@ -119,13 +119,14 @@
                         android:textColor="#FFFFFF"
                         android:textSize="15dp" />
                 </LinearLayout>
-
+                
                 <EditText
                     android:id="@+id/edittext_time_work"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:background="@android:color/transparent"
+                    android:enabled="false"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="0 hr 0 min"

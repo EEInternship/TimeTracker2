@@ -128,6 +128,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                 txtWhatRUDoing.setBackground(myDWhat);
 
                                 editTextDesc.setEnabled(true);
+                                editTextTime.setEnabled(true);
 
                             } else {
                                 // button
