@@ -177,10 +177,15 @@ public class StartWorkActivity extends AppCompatActivity {
                                 projectTimeTracker = new CountDownTimer(1000000000, 1000) {
 
                                     public void onTick(long millisUntilFinished) {
-                                        Calendar curentTime = Calendar.getInstance();
-                                        int workTimeHours = curentTime.get(Calendar.HOUR_OF_DAY) - uploadSpreadsheetData.projectStartingTime.getHours();
-                                        int workTimeMinutes = curentTime.get(Calendar.MINUTE) - uploadSpreadsheetData.projectStartingTime.getMinutes();
-                                        editTextTime.setText(workTimeHours+":"+workTimeMinutes);
+                                        Calendar currentTime = Calendar.getInstance();
+                                        int workTimeHours = currentTime.get(Calendar.HOUR_OF_DAY) - uploadSpreadsheetData.projectStartingTime.getHours();
+                                        int workTimeMinutes = currentTime.get(Calendar.MINUTE) - uploadSpreadsheetData.projectStartingTime.getMinutes();
+
+                                        if(workTimeHours>0)
+                                            editTextTime.setText(workTimeHours+" hr "+workTimeMinutes + " min");
+                                        else
+                                            editTextTime.setText(workTimeMinutes + " min");
+
                                     }
                                     public void onFinish() {
 

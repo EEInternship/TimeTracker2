@@ -8,15 +8,17 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import Data.AdapterClass;
+
 /**
  * Created by IsakFe on 20. 03. 2017.
  */
 
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.IViewHolder> {
-    ArrayList<Contact>c=new ArrayList<Contact>();
+    ArrayList<AdapterClass> adapterClassArrayList =new ArrayList<>();
 
-    public MonthlyAdapter(ArrayList<Contact> c) {
-        this.c = c;
+    public MonthlyAdapter(ArrayList<AdapterClass> adapterClasses) {
+        this.adapterClassArrayList = adapterClasses;
     }
 
     @Override
@@ -30,16 +32,16 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.IViewHol
 
     @Override
     public void onBindViewHolder(IViewHolder holder, int position) {
-        Contact con=c.get(position); // get each item
+        AdapterClass adapterClass= adapterClassArrayList.get(position); // get each item
 
-        holder.day.setText(con.getDay());
-        holder.date.setText(con.getDatum());
-        holder.hour.setText(con.getUre());
+        holder.day.setText(adapterClass.getDayOfWeek());
+        holder.date.setText(adapterClass.getDate());
+        holder.hour.setText(adapterClass.getHours());
     }
 
     @Override
     public int getItemCount() {
-        return c.size();
+        return adapterClassArrayList.size();
     }
 
     public static class IViewHolder extends RecyclerView.ViewHolder{
