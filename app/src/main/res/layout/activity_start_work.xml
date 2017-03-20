@@ -119,7 +119,7 @@
                         android:textColor="#FFFFFF"
                         android:textSize="15dp" />
                 </LinearLayout>
-                
+
                 <EditText
                     android:id="@+id/edittext_time_work"
                     android:layout_width="match_parent"
