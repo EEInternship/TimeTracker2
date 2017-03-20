@@ -70,4 +70,20 @@ public  class UserData {
         }
         return day;
     }
+
+    public ArrayList<AdapterClass> setAdapterList(){
+        ArrayList<AdapterClass> adapterClassArrayList = new ArrayList<>();
+        for (DownloadSpreadsheetData row: downloadSpreadsheetDataList) {
+            int dayOfWeek = row.date.get(Calendar.DAY_OF_WEEK);
+            String dayShort = ShortDay(dayOfWeek);
+            String date = String.valueOf(row.date.get(Calendar.DAY_OF_MONTH)) + "." + String.valueOf(row.date.get(Calendar.MONTH)+1) + "." +String.valueOf(row.date.get(Calendar.YEAR));
+            String hours = String.valueOf(row.workingHours);
+            AdapterClass adapterClass = new AdapterClass(dayShort,date,hours);
+            adapterClassArrayList.add(adapterClass);
+
+        }
+        return adapterClassArrayList;
+    }
+
+
 }
