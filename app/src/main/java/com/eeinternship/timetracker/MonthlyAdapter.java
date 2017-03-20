@@ -1,5 +1,6 @@
 package com.eeinternship.timetracker;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,26 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.IViewHol
         holder.day.setText(adapterClass.getDayOfWeek());
         holder.date.setText(adapterClass.getDate());
         holder.hour.setText(adapterClass.getHours());
+
+        if(position%2==0){
+            holder.day.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.date.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.hour.setBackgroundColor(Color.parseColor("#ffffff"));
+        }else{
+            holder.day.setBackgroundColor(Color.parseColor("#f8f6f6"));
+            holder.date.setBackgroundColor(Color.parseColor("#f8f6f6"));
+            holder.hour.setBackgroundColor(Color.parseColor("#f8f6f6"));
+        }
+
+        if(adapterClass.getDayOfWeek().equals("Sun")||adapterClass.getDayOfWeek().equals("Sat")){
+            holder.day.setTextColor(Color.parseColor("#e8320b"));
+            holder.date.setTextColor(Color.parseColor("#e8320b"));
+            holder.hour.setTextColor(Color.parseColor("#e8320b"));
+        }else{
+            holder.day.setTextColor(Color.parseColor("#04b795"));
+            holder.date.setTextColor(Color.parseColor("#04b795"));
+            holder.hour.setTextColor(Color.parseColor("#04b795"));
+        }
     }
 
     @Override
