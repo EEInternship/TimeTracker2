@@ -1,5 +1,6 @@
 package com.eeinternship.timetracker;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.content.Context;
@@ -323,6 +324,8 @@ public class StartWorkActivity extends AppCompatActivity {
         random = new Random();
         mCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+        if(userData.getUserAcount() != null)
+            mCredential.setSelectedAccount(userData.getUserAcount());
 
     }
 
@@ -404,6 +407,8 @@ public class StartWorkActivity extends AppCompatActivity {
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
+                        userData.setUserAcount(mCredential.getSelectedAccount());
+                        applicationTimeTracker.setUserData(userData);
                         writeResultsToApi();
                     }
                 }
