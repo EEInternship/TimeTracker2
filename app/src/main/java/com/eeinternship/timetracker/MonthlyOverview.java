@@ -51,6 +51,7 @@ public class MonthlyOverview extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         adapter=new MonthlyAdapter(list);
         recyclerView.setAdapter(adapter);
+        //  window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar)); - Moj komentar - Prestar OS
 
     }
 
