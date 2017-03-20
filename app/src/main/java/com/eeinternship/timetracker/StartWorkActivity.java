@@ -13,6 +13,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +67,7 @@ public class StartWorkActivity extends AppCompatActivity {
     private UserData userData;
     private UploadSpreadsheetData uploadSpreadsheetData;
 
-
+    private CountDownTimer projectTimeTracker;
 
     private Button btnSelectProject;
     private Button btnStartTime;
@@ -165,8 +166,32 @@ public class StartWorkActivity extends AppCompatActivity {
                                 }
                                 btnStartTime.setBackground(myD);
                                 btnStartTime.setText("Stop");
+                                Calendar calender = Calendar.getInstance();
+                                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                                int cMinute = calender.get(Calendar.MINUTE);
+                                Time time = new Time(cHourOfDay,cMinute,00);
 
 
+
+                                //start timer
+                                projectTimeTracker = new CountDownTimer(1000000000, 1000) {
+
+                                    public void onTick(long millisUntilFinished) {
+                                        Calendar curentTime = Calendar.getInstance();
+                                        int workTimeHours = curentTime.get(Calendar.HOUR_OF_DAY) - uploadSpreadsheetData.projectStartingTime.getHours();
+                                        int workTimeMinutes = curentTime.get(Calendar.MINUTE) - uploadSpreadsheetData.projectStartingTime.getMinutes();
+                                        editTextTime.setText(workTimeHours+":"+workTimeMinutes);
+                                    }
+                                    public void onFinish() {
+
+                                    }
+                                };
+                                projectTimeTracker.start();
+
+
+
+
+                                uploadSpreadsheetData.projectStartingTime = time;
                                 // shadow
                                 Drawable myDs = null;
                                 Resources resS = getResources();
@@ -205,16 +230,19 @@ public class StartWorkActivity extends AppCompatActivity {
                                 btnStartTime.setText("Start");
 
 
+                                //stop Clock
+                                projectTimeTracker.cancel();
+
                                 //INPUT FINISH TIME
-                                Calendar calender = Calendar.getInstance();
-                                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-                                int cMinute = calender.get(Calendar.MINUTE);
-                                uploadSpreadsheetData.finishTime = new Time(cHourOfDay,cMinute,00);
+
                                 if(uploadSpreadsheetData.description == null)
                                     uploadSpreadsheetData.description = editTextDesc.getText().toString();
                                 else
                                     uploadSpreadsheetData.description += ", " + editTextDesc.getText().toString();
-
+                                Calendar calender = Calendar.getInstance();
+                                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                                int cMinute = calender.get(Calendar.MINUTE);
+                                uploadSpreadsheetData.projectFinishTime = new Time(cHourOfDay,cMinute,00);
 
 
                                 userData.addUploadRepository(uploadSpreadsheetData);
@@ -268,7 +296,10 @@ public class StartWorkActivity extends AppCompatActivity {
         btnFinishProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Calendar calender = Calendar.getInstance();
+                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                int cMinute = calender.get(Calendar.MINUTE);
+                uploadSpreadsheetData.finishTime = new Time(cHourOfDay,cMinute,00);
                 try {
                     uploadSpreadsheetData.setWorkingTime();
                 } catch (ParseException e) {
