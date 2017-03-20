@@ -16,12 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -37,6 +33,7 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,7 +43,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import Data.AdapterClass;
 import Data.DownloadSpreadsheetData;
 import Data.UserData;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -73,7 +69,6 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
 
-    ArrayList<AdapterClass> adapterList = new ArrayList<AdapterClass>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -103,6 +98,8 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
         mCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES)).setBackOff(new ExponentialBackOff());
         mCredential=GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
+        if(userData.getUserAcount() != null)
+                mCredential.setSelectedAccount(userData.getUserAcount());
         getResultsFromApi();
     }
     private void getResultsFromApi()
@@ -121,6 +118,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
             //if everything is OK, execute the Read request for the sheet
             new MakeRequestRead(mCredential).execute();
         }
+
     }
 
     //Function that checks if the Play Service is Available
@@ -194,6 +192,8 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
                         mCredential.setSelectedAccountName(accountName);
+                        userData.setUserAcount(mCredential.getSelectedAccount());
+                        applicationTimeTracker.setUserData(userData);
                         Log.i("MonthlyOverviewActivity","Name of selected account: "+mCredential.getSelectedAccountName());
                         getResultsFromApi();
                     }
@@ -251,6 +251,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
         //Function that gets the data from the sheet
         private ArrayList<String>getDataFromSheet() throws IOException, ParseException {
             //Test spreadsheet
+
             String spreadsheetId="1IeH8kq3znoWEA7-BG8iGBC3IQqUzfnxE_dsGliy1hyo";
             String range = namesOfMonths[currentDate.get(Calendar.MONTH)]+"!A3:H"+
                     String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH)+2);
@@ -265,8 +266,28 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
 
                     DownloadSpreadsheetData downloadSpreadsheetData = new DownloadSpreadsheetData();
                     String date = row.get(0).toString();
-                    int workingHours = Integer.parseInt(row.get(5).toString());
-                    int overHours = Integer.parseInt(row.get(6).toString());
+                    int workingHours = -1;
+                    int overHours = -1;
+                    try{
+                        workingHours = Integer.parseInt(row.get(5).toString());
+                    }catch (Exception ex){
+                       /* String timeString = row.get(5).toString();
+                        String[] spilted = timeString.split(":");
+                        Time time = new Time(Integer.getInteger(spilted[0]),Integer.getInteger(spilted[1]),0);
+                        workingHours = time.getHours(); */
+                       workingHours = 0;
+                    }
+                    try{
+                        overHours = Integer.parseInt(row.get(6).toString());
+                    }catch (Exception ex){
+                       /* String timeString = row.get(6).toString();
+                        String[] spilted = timeString.split(":");
+                        Time time = new Time(Integer.getInteger(spilted[0]),Integer.getInteger(spilted[1]),0);
+                        overHours = time.getHours(); */
+                       overHours = 0;
+                    }
+
+
                     String description = row.get(7).toString();
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
@@ -276,7 +297,12 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                     cal.setTime(dates);
                     downloadSpreadsheetData.date = cal;
                     downloadSpreadsheetData.description = description;
-                    downloadSpreadsheetData.workingHours = workingHours+overHours;
+
+                    if(workingHours + overHours >=0)
+                        downloadSpreadsheetData.workingHours = workingHours+overHours;
+                    else
+                        downloadSpreadsheetData.workingHours = 0;
+
                     userData.addDownloadRepository(downloadSpreadsheetData);
 
 
@@ -309,7 +335,8 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                 adapter=new MonthlyAdapter(userData.setAdapterList());
                 recyclerView.setAdapter(adapter);
 
-
+                userData.cleanAdapterList();
+                applicationTimeTracker.setUserData(userData);
                 }
         };
 

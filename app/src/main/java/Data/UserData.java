@@ -1,5 +1,7 @@
 package Data;
 
+import android.accounts.Account;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -10,6 +12,8 @@ public  class UserData {
     ArrayList<DownloadSpreadsheetData> downloadSpreadsheetDataList;
     ArrayList<Project> projectList;
     UploadSpreadsheetData uploadSpreadsheetData;
+
+    private Account userAcount;
 
     public UserData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
@@ -85,5 +89,16 @@ public  class UserData {
         return adapterClassArrayList;
     }
 
+    public void cleanAdapterList(){
+        downloadSpreadsheetDataList = new ArrayList<>();
+    }
+
+    public void setUserAcount(Account account){
+        userAcount = account;
+    }
+
+    public Account getUserAcount(){
+        return userAcount;
+    }
 
 }

@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
-        userData = new UserData();
+        userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = new UploadSpreadsheetData();
 
         // status bar color
