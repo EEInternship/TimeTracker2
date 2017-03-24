@@ -39,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-       // window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar)); - Moj komentar - Prestar OS
+
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.JELLY_BEAN){
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        }
 
         // btnStartWork
         btnStartWork=(Button)findViewById(R.id.button_start_work);

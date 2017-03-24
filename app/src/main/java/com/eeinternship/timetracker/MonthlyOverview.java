@@ -16,12 +16,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -91,7 +87,10 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        //window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.JELLY_BEAN){
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        }
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

@@ -34,18 +34,17 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.client.util.Strings;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
-import java.sql.Time;
-import java.text.ParseException;
 
 import Data.UploadSpreadsheetData;
 import Data.UserData;
@@ -58,7 +57,7 @@ public class StartWorkActivity extends AppCompatActivity {
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 4;
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS };
+    private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS};
     private GoogleAccountCredential mCredential;
     private Random random;
 
@@ -97,7 +96,6 @@ public class StartWorkActivity extends AppCompatActivity {
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
 
-
         btnSelectedProject = (LinearLayout) findViewById(R.id.background_shadow_open);
         txtSelectProject = (LinearLayout) findViewById(R.id.selected_project);
         btnStartTimeShadow = (LinearLayout) findViewById(R.id.shadow_start_time);
@@ -117,7 +115,10 @@ public class StartWorkActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-       // window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar)); - Moj komentar - Prestar OS
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        }
 
         // btnStartWork
         btnSelectProject.setOnClickListener(new View.OnClickListener() {
@@ -169,8 +170,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                 Calendar calender = Calendar.getInstance();
                                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                                 int cMinute = calender.get(Calendar.MINUTE);
-                                Time time = new Time(cHourOfDay,cMinute,00);
-
+                                Time time = new Time(cHourOfDay, cMinute, 00);
 
 
                                 //start timer
@@ -181,19 +181,18 @@ public class StartWorkActivity extends AppCompatActivity {
                                         int workTimeHours = currentTime.get(Calendar.HOUR_OF_DAY) - uploadSpreadsheetData.projectStartingTime.getHours();
                                         int workTimeMinutes = currentTime.get(Calendar.MINUTE) - uploadSpreadsheetData.projectStartingTime.getMinutes();
 
-                                        if(workTimeHours>0)
-                                            editTextTime.setText(workTimeHours+" hr "+workTimeMinutes + " min");
+                                        if (workTimeHours > 0)
+                                            editTextTime.setText(workTimeHours + " hr " + workTimeMinutes + " min");
                                         else
                                             editTextTime.setText(workTimeMinutes + " min");
 
                                     }
+
                                     public void onFinish() {
 
                                     }
                                 };
                                 projectTimeTracker.start();
-
-
 
 
                                 uploadSpreadsheetData.projectStartingTime = time;
@@ -240,14 +239,14 @@ public class StartWorkActivity extends AppCompatActivity {
 
                                 //INPUT FINISH TIME
 
-                                if(uploadSpreadsheetData.description == null)
+                                if (uploadSpreadsheetData.description == null)
                                     uploadSpreadsheetData.description = editTextDesc.getText().toString();
                                 else
                                     uploadSpreadsheetData.description += ", " + editTextDesc.getText().toString();
                                 Calendar calender = Calendar.getInstance();
                                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                                 int cMinute = calender.get(Calendar.MINUTE);
-                                uploadSpreadsheetData.projectFinishTime = new Time(cHourOfDay,cMinute,00);
+                                uploadSpreadsheetData.projectFinishTime = new Time(cHourOfDay, cMinute, 00);
 
 
                                 userData.addUploadRepository(uploadSpreadsheetData);
@@ -297,14 +296,13 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
 
-
         btnFinishProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar calender = Calendar.getInstance();
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
-                uploadSpreadsheetData.finishTime = new Time(cHourOfDay,cMinute,00);
+                uploadSpreadsheetData.finishTime = new Time(cHourOfDay, cMinute, 00);
                 try {
                     uploadSpreadsheetData.setWorkingTime();
                 } catch (ParseException e) {
@@ -455,8 +453,8 @@ public class StartWorkActivity extends AppCompatActivity {
 
             UploadSpreadsheetData uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
-            String range = namesOfMonth(uploadSpreadsheetData.date.get(Calendar.MONTH)+1)+"!B"+String.valueOf(uploadSpreadsheetData.date.get(Calendar.DAY_OF_MONTH)+2)+":H"+
-                    String.valueOf(uploadSpreadsheetData.date.get(Calendar.DAY_OF_MONTH)+2);
+            String range = namesOfMonth(uploadSpreadsheetData.date.get(Calendar.MONTH) + 1) + "!B" + String.valueOf(uploadSpreadsheetData.date.get(Calendar.DAY_OF_MONTH) + 2) + ":H" +
+                    String.valueOf(uploadSpreadsheetData.date.get(Calendar.DAY_OF_MONTH) + 2);
 
             //for the values that you want to input, create a list of object lists
             List<List<Object>> values = new ArrayList<>();
@@ -466,8 +464,8 @@ public class StartWorkActivity extends AppCompatActivity {
             List<Object> spreadsheetData = new ArrayList<>();
             //Generate random int number for testing purposes
             spreadsheetData.add(cutTime(uploadSpreadsheetData.startingTime));
-            spreadsheetData.add( "/");
-            spreadsheetData.add( "/");
+            spreadsheetData.add("/");
+            spreadsheetData.add("/");
             spreadsheetData.add(cutTime(uploadSpreadsheetData.finishTime));
             spreadsheetData.add(cutTime(uploadSpreadsheetData.workingTime));
             spreadsheetData.add(cutTime(uploadSpreadsheetData.overHoursTime));
@@ -526,9 +524,9 @@ public class StartWorkActivity extends AppCompatActivity {
     }
 
 
-    private String namesOfMonth(int monthNumber){
+    private String namesOfMonth(int monthNumber) {
         String month = "";
-        switch (monthNumber){
+        switch (monthNumber) {
             case 1:
                 month = "Januar";
                 break;
@@ -569,15 +567,15 @@ public class StartWorkActivity extends AppCompatActivity {
         return month;
     }
 
-    private String cutTime(Time time){
+    private String cutTime(Time time) {
         String hours, minutes;
 
-        if(time.getHours()<10)
-            hours = "0"+String.valueOf(time.getHours());
+        if (time.getHours() < 10)
+            hours = "0" + String.valueOf(time.getHours());
         else
             hours = String.valueOf(time.getHours());
-        if(time.getMinutes()<10)
-            minutes = "0"+String.valueOf(time.getMinutes());
+        if (time.getMinutes() < 10)
+            minutes = "0" + String.valueOf(time.getMinutes());
         else
             minutes = String.valueOf(time.getMinutes());
 
