@@ -577,10 +577,7 @@ public class StartWorkActivity extends AppCompatActivity {
     private String cutTime(Time time){
         String hours, minutes;
 
-        if(time.getHours()<10)
-            hours = "0"+String.valueOf(time.getHours());
-        else
-            hours = String.valueOf(time.getHours());
+        hours = String.valueOf(time.getHours());
         if(time.getMinutes()<10)
             minutes = "0"+String.valueOf(time.getMinutes());
         else

@@ -267,28 +267,34 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                     DownloadSpreadsheetData downloadSpreadsheetData = new DownloadSpreadsheetData();
                     String date = row.get(0).toString();
                     int workingHours = -1;
+                    int workingMinutes = -1;
+                    int overMinutes = -1;
                     int overHours = -1;
                     try{
                         workingHours = Integer.parseInt(row.get(5).toString());
                     }catch (Exception ex){
-                       /* String timeString = row.get(5).toString();
+                        String timeString = row.get(5).toString();
                         String[] spilted = timeString.split(":");
-                        Time time = new Time(Integer.getInteger(spilted[0]),Integer.getInteger(spilted[1]),0);
-                        workingHours = time.getHours(); */
-                       workingHours = 0;
+
+                        Time time = new Time(Integer.parseInt(spilted[0]),Integer.parseInt(spilted[1]),0);
+                        workingHours = time.getHours();
+                        workingMinutes = time.getMinutes();
                     }
                     try{
                         overHours = Integer.parseInt(row.get(6).toString());
                     }catch (Exception ex){
-                       /* String timeString = row.get(6).toString();
+                        String timeString = row.get(6).toString();
                         String[] spilted = timeString.split(":");
-                        Time time = new Time(Integer.getInteger(spilted[0]),Integer.getInteger(spilted[1]),0);
-                        overHours = time.getHours(); */
-                       overHours = 0;
+                        Time time = new Time(Integer.parseInt(spilted[0]),Integer.parseInt(spilted[1]),0);
+                        overHours = time.getHours();
+                        overMinutes = time.getMinutes();
                     }
+                    String description = "";
+                    try{
+                        description = row.get(7).toString();
+                    }catch (Exception ex){
 
-
-                    String description = row.get(7).toString();
+                    }
 
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
                     Date dates = simpleDateFormat.parse(date);// all done
@@ -302,6 +308,11 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                         downloadSpreadsheetData.workingHours = workingHours+overHours;
                     else
                         downloadSpreadsheetData.workingHours = 0;
+
+                    if(workingMinutes + overMinutes >=0)
+                        downloadSpreadsheetData.workingMinutes = workingMinutes + workingHours;
+                    else
+                        downloadSpreadsheetData.workingMinutes = 0;
 
                     userData.addDownloadRepository(downloadSpreadsheetData);
 

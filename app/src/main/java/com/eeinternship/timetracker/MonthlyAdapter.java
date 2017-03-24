@@ -36,7 +36,23 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.IViewHol
 
         holder.day.setText(adapterClass.getDayOfWeek());
         holder.date.setText(adapterClass.getDate());
-        holder.hour.setText(adapterClass.getHours());
+
+        if(Integer.parseInt(adapterClass.getHours()) <= 0 && Integer.parseInt(adapterClass.getMinutes()) <= 0)
+            holder.hour.setText("/");
+        else{
+            if(Integer.parseInt(adapterClass.getMinutes()) <= 0)
+                holder.hour.setText(adapterClass.getHours()+":00");
+            else if(Integer.parseInt(adapterClass.getHours()) <= 0)
+                holder.hour.setText(adapterClass.getMinutes()+"min");
+            else{
+                if( Integer.parseInt(adapterClass.getMinutes())<10)
+                    holder.hour.setText(adapterClass.getHours() +":0" + adapterClass.getMinutes());
+                else
+                    holder.hour.setText(adapterClass.getHours() +":" + adapterClass.getMinutes());
+            }
+
+        }
+
     }
 
     @Override

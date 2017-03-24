@@ -9,6 +9,7 @@ import java.util.Calendar;
 public class DownloadSpreadsheetData {
     public String description;
     public int workingHours;
+    public int workingMinutes;
     public Calendar date;
 
     public DownloadSpreadsheetData(){
