@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private UploadSpreadsheetData uploadSpreadsheetData;
 
     private Button btnStartWork;
-    private Button btnMonthlyOverview;
+    private Button btnProfile;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -39,7 +39,10 @@ public class MainActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-       // window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar)); - Moj komentar - Prestar OS
+
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.JELLY_BEAN){
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        }
 
         // btnStartWork
         btnStartWork=(Button)findViewById(R.id.button_start_work);
@@ -62,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnMonthlyOverview = (Button) findViewById(R.id.button_monthly_overview);
-        btnMonthlyOverview.setOnClickListener(new View.OnClickListener() {
+        btnProfile = (Button) findViewById(R.id.button_profile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent monthlyOverviewActivity = new Intent(getApplication(),MonthlyOverview.class);
@@ -72,4 +75,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 }
