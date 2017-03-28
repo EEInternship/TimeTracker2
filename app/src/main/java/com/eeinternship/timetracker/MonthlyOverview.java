@@ -18,6 +18,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ExpandableListView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -33,7 +34,6 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +41,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 
 import Data.DownloadSpreadsheetData;
@@ -57,7 +58,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
 
     private static final String PREF_ACCOUNT_NAME = "accountName";
 
-    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+    private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
@@ -69,6 +70,13 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
 
+    ///new
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+    HashMap<String, List<String>> listDataChild;
+    ///new
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,39 +84,58 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_monthly_overview);
 
-        applicationTimeTracker = (ApplicationTimeTracker)getApplication();
+        applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
-        namesOfMonths = new String[]{"Januar", "Februar", "Marec", "April","Maj","Junij","Julij","Avgust","September","Oktober","November","December"};
-        currentDate= Calendar.getInstance();
+        namesOfMonths = new String[]{"Januar", "Februar", "Marec", "April", "Maj", "Junij", "Julij", "Avgust", "September", "Oktober", "November", "December"};
+        currentDate = Calendar.getInstance();
+
+
+        ///// new
+
+        // get the listview
+        expListView = (ExpandableListView) findViewById(R.id.lvExp);
+
+        // preparing list data
+        prepareListData();
+
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+
+        /////// new
 
 
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        //window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        }
 
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        layoutManager=new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
+        //recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);
+      //  recyclerView.setLayoutManager(layoutManager);
+       // recyclerView.setHasFixedSize(true);
 
         //  window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar)); - Moj komentar - Prestar OS
         mCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES)).setBackOff(new ExponentialBackOff());
-        mCredential=GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES))
+        mCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
-        if(userData.getUserAcount() != null)
-                mCredential.setSelectedAccount(userData.getUserAcount());
+        if (userData.getUserAcount() != null)
+            mCredential.setSelectedAccount(userData.getUserAcount());
         getResultsFromApi();
     }
-    private void getResultsFromApi()
-    {
-        if(!isGooglePlayServicesAvailable()) {
+
+    private void getResultsFromApi() {
+        if (!isGooglePlayServicesAvailable()) {
             //checks if Google Play Services are available,
             //if they are not available, acquire them
             acquireGooglePlayServices();
-        } else if(mCredential.getSelectedAccountName()==null){
+        } else if (mCredential.getSelectedAccountName() == null) {
             //checks the current selected account which will perform the action
             //if no account is found it opens up the account picker
             chooseAccount();
@@ -122,14 +149,14 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
     }
 
     //Function that checks if the Play Service is Available
-    private boolean isGooglePlayServicesAvailable(){
+    private boolean isGooglePlayServicesAvailable() {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int connectionStatusCode = googleApiAvailability.isGooglePlayServicesAvailable(this);
         return connectionStatusCode == ConnectionResult.SUCCESS;
     }
 
     //Function that acquires the Play Services if they are not available
-    private void acquireGooglePlayServices(){
+    private void acquireGooglePlayServices() {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         int connectionStatusCode = googleApiAvailability.isGooglePlayServicesAvailable(this);
         if (googleApiAvailability.isUserResolvableError(connectionStatusCode)) {
@@ -138,7 +165,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
     }
 
     //Called when the acquireGooglePlayServices runs into problems
-    void showGooglePlayServiceAvailabilityErrorDialog(int connectionStatusCode){
+    void showGooglePlayServiceAvailabilityErrorDialog(int connectionStatusCode) {
         GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
         Dialog dialog = googleApiAvailability.getErrorDialog(
                 MonthlyOverview.this,
@@ -149,13 +176,11 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
     }
 
     //Function that triggers the Account picker.
-    private void chooseAccount(){
-        if(EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)){
-            startActivityForResult(mCredential.newChooseAccountIntent(),REQUEST_ACCOUNT_PICKER);
-        }
-        else
-        {
-            EasyPermissions.requestPermissions(this,"This app needs to access your Google account (via Contacts).",
+    private void chooseAccount() {
+        if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
+            startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+        } else {
+            EasyPermissions.requestPermissions(this, "This app needs to access your Google account (via Contacts).",
                     REQUEST_PERMISSION_GET_ACCOUNTS,
                     android.Manifest.permission.GET_ACCOUNTS);
         }
@@ -194,7 +219,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                         mCredential.setSelectedAccountName(accountName);
                         userData.setUserAcount(mCredential.getSelectedAccount());
                         applicationTimeTracker.setUserData(userData);
-                        Log.i("MonthlyOverviewActivity","Name of selected account: "+mCredential.getSelectedAccountName());
+                        Log.i("MonthlyOverviewActivity", "Name of selected account: " + mCredential.getSelectedAccountName());
                         getResultsFromApi();
                     }
                 }
@@ -224,7 +249,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
     }
 
     //Async function that makes the reading run in the background
-    private class MakeRequestRead extends AsyncTask<Void,Void,ArrayList<String>> {
+    private class MakeRequestRead extends AsyncTask<Void, Void, ArrayList<String>> {
         private com.google.api.services.sheets.v4.Sheets mService = null;
         private Exception mLastError = null;
 
@@ -249,12 +274,12 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
         }
 
         //Function that gets the data from the sheet
-        private ArrayList<String>getDataFromSheet() throws IOException, ParseException {
+        private ArrayList<String> getDataFromSheet() throws IOException, ParseException {
             //Test spreadsheet
 
-            String spreadsheetId="1IeH8kq3znoWEA7-BG8iGBC3IQqUzfnxE_dsGliy1hyo";
-            String range = namesOfMonths[currentDate.get(Calendar.MONTH)]+"!A3:H"+
-                    String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH)+2);
+            String spreadsheetId = "1IeH8kq3znoWEA7-BG8iGBC3IQqUzfnxE_dsGliy1hyo";
+            String range = namesOfMonths[currentDate.get(Calendar.MONTH)] + "!A3:H" +
+                    String.valueOf(currentDate.get(Calendar.DAY_OF_MONTH) + 2);
             ArrayList<String> results = new ArrayList<String>();
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
@@ -270,24 +295,24 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                     int workingMinutes = -1;
                     int overMinutes = -1;
                     int overHours = -1;
-                    try{
+                    try {
                         workingHours = Integer.parseInt(row.get(5).toString());
-                    }catch (Exception ex){
-                        String timeString = row.get(5).toString();
-                        String[] spilted = timeString.split(":");
 
-                        Time time = new Time(Integer.parseInt(spilted[0]),Integer.parseInt(spilted[1]),0);
-                        workingHours = time.getHours();
-                        workingMinutes = time.getMinutes();
-                    }
-                    try{
-                        overHours = Integer.parseInt(row.get(6).toString());
-                    }catch (Exception ex){
-                        String timeString = row.get(6).toString();
+                    } catch (Exception ex) {
+                       /* String timeString = row.get(5).toString();
                         String[] spilted = timeString.split(":");
-                        Time time = new Time(Integer.parseInt(spilted[0]),Integer.parseInt(spilted[1]),0);
-                        overHours = time.getHours();
-                        overMinutes = time.getMinutes();
+                        Time time = new Time(Integer.getInteger(spilted[0]),Integer.getInteger(spilted[1]),0);
+                        workingHours = time.getHours(); */
+                        workingHours = 0;
+                    }
+                    try {
+                        overHours = Integer.parseInt(row.get(6).toString());
+                    } catch (Exception ex) {
+                       /* String timeString = row.get(6).toString();
+                        String[] spilted = timeString.split(":");
+                        Time time = new Time(Integer.getInteger(spilted[0]),Integer.getInteger(spilted[1]),0);
+                        overHours = time.getHours(); */
+                        overHours = 0;
                     }
                     String description = "";
                     try{
@@ -304,8 +329,8 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                     downloadSpreadsheetData.date = cal;
                     downloadSpreadsheetData.description = description;
 
-                    if(workingHours + overHours >=0)
-                        downloadSpreadsheetData.workingHours = workingHours+overHours;
+                    if (workingHours + overHours >= 0)
+                        downloadSpreadsheetData.workingHours = workingHours + overHours;
                     else
                         downloadSpreadsheetData.workingHours = 0;
 
@@ -317,7 +342,6 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                     userData.addDownloadRepository(downloadSpreadsheetData);
 
 
-
                     String temp = "";
                     for (int i = 0; i < row.size(); i++) {
                         temp += row.get(i) + " ";
@@ -327,7 +351,6 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
             }
 
 
-
             return results;
         }
 
@@ -335,6 +358,7 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
         protected void onPreExecute() {
             //
         }
+
         //Called when the data is downloaded from the sheet
         @Override
         protected void onPostExecute(ArrayList<String> strings) {
@@ -342,15 +366,16 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
 //                textViewMonthlyOverview.setText("No results returned.");
             } else {
                 strings.add(0, "Data retrieved using the Google Sheets API:");
-                recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-                adapter=new MonthlyAdapter(userData.setAdapterList());
-                recyclerView.setAdapter(adapter);
+                // recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+                //adapter = new MonthlyAdapter(userData.setAdapterList());
+               // recyclerView.setAdapter(adapter);
 
-                userData.cleanAdapterList();
-                applicationTimeTracker.setUserData(userData);
-                }
-        };
+               // userData.cleanAdapterList();
+                //applicationTimeTracker.setUserData(userData);
+            }
+        }
 
+        ;
 
 
         @Override
@@ -371,6 +396,45 @@ public class MonthlyOverview extends AppCompatActivity implements EasyPermission
                 //textViewMonthlyOverview.setText("Request cancelled.");
             }
         }
+    }
+
+    private void prepareListData() {
+        listDataHeader = new ArrayList<String>();
+        listDataChild = new HashMap<String, List<String>>();
+
+        // Adding child data
+        listDataHeader.add("Top 250");
+        listDataHeader.add("Now Showing");
+        listDataHeader.add("Coming Soon..");
+
+        // Adding child data
+        List<String> top250 = new ArrayList<String>();
+        top250.add("The Shawshank Redemption");
+        top250.add("The Godfather");
+        top250.add("The Godfather: Part II");
+        top250.add("Pulp Fiction");
+        top250.add("The Good, the Bad and the Ugly");
+        top250.add("The Dark Knight");
+        top250.add("12 Angry Men");
+
+        List<String> nowShowing = new ArrayList<String>();
+        nowShowing.add("The Conjuring");
+        nowShowing.add("Despicable Me 2");
+        nowShowing.add("Turbo");
+        nowShowing.add("Grown Ups 2");
+        nowShowing.add("Red 2");
+        nowShowing.add("The Wolverine");
+
+        List<String> comingSoon = new ArrayList<String>();
+        comingSoon.add("2 Guns");
+        comingSoon.add("The Smurfs 2");
+        comingSoon.add("The Spectacular Now");
+        comingSoon.add("The Canyons");
+        comingSoon.add("Europa Report");
+
+        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
+        listDataChild.put(listDataHeader.get(1), nowShowing);
+        listDataChild.put(listDataHeader.get(2), comingSoon);
     }
 
 }
