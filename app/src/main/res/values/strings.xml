@@ -1,24 +1,12 @@
 <resources>
     <string name="app_name">TimeTracker</string>
     <string-array name="day_name">
-        <item>"MON"</item>
-        <item>"TUE"</item>
-        <item>"WEN"</item>
-        <item>"THU"</item>
-        <item>"FRI"</item>
+        <item>"BUG REPORTER"</item>
     </string-array>
     <string-array name="date_name">
         <item>"30.1.2015"</item>
-        <item>"30.1.2015"</item>
-        <item>"30.1.2001"</item>
-        <item>"30.1.2041"</item>
-        <item>"30.1.2041"</item>
     </string-array>
     <string-array name="hour_name">
-        <item>8</item>
-        <item>8</item>
-        <item>8</item>
-        <item>8</item>
-        <item>8</item>
+        <item>18:02</item>
     </string-array>
 </resources>

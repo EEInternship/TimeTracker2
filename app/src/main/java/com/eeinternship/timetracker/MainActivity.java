@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private UploadSpreadsheetData uploadSpreadsheetData;
 
     private Button btnStartWork;
-    private Button btnMonthlyOverview;
+    private Button btnProfile;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnMonthlyOverview = (Button) findViewById(R.id.button_monthly_overview);
-        btnMonthlyOverview.setOnClickListener(new View.OnClickListener() {
+        btnProfile = (Button) findViewById(R.id.button_profile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent monthlyOverviewActivity = new Intent(getApplication(),MonthlyOverview.class);
@@ -75,4 +75,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+
 }

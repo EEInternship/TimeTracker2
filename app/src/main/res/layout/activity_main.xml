@@ -46,7 +46,7 @@
                     android:layout_height="45dp"
                     android:background="@xml/btn_design_green"
                     android:fontFamily="sans-serif-smallcaps"
-                    android:text="Open"
+                    android:text="Open Door"
                     android:textAllCaps="false"
                     android:textSize="15dp" />
             </LinearLayout>
@@ -77,13 +77,13 @@
                 android:background="@xml/btn_design_green_shadow">
 
                 <Button
-                    android:id="@+id/button_monthly_overview"
+                    android:id="@+id/button_profile"
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
                     android:layout_marginTop="0dp"
                     android:background="@xml/btn_design_green"
                     android:fontFamily="sans-serif-smallcaps"
-                    android:text="Montlhy overview"
+                    android:text="Profile"
                     android:textAllCaps="false"
                     android:textSize="15dp" />
             </LinearLayout>

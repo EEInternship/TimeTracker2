@@ -1,14 +1,10 @@
 package com.eeinternship.timetracker;
 
-import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -18,9 +14,8 @@ import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -34,21 +29,19 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.ValueRange;
 
 import java.io.IOException;
 import java.sql.Time;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
 import Data.UploadSpreadsheetData;
 import Data.UserData;
+import Data.testClass;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class StartWorkActivity extends AppCompatActivity {
@@ -86,6 +79,15 @@ public class StartWorkActivity extends AppCompatActivity {
     boolean clickedStartStop = false;
     boolean clickedSelectProject = false;
 
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
+    RecyclerView.LayoutManager layoutManager;
+
+    String[] name, hour;
+
+    ArrayList<testClass> list = new ArrayList<testClass>();
+
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,234 +98,21 @@ public class StartWorkActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
-
-        btnSelectedProject = (LinearLayout) findViewById(R.id.background_shadow_open);
-        txtSelectProject = (LinearLayout) findViewById(R.id.selected_project);
-        btnStartTimeShadow = (LinearLayout) findViewById(R.id.shadow_start_time);
-        txtWhatRUDoing = (LinearLayout) findViewById(R.id.what_have_been_you_doin);
-        btnNextProjectShadow = (LinearLayout) findViewById(R.id.background_shadow_next_project);
-
-        btnStartTime = (Button) findViewById(R.id.button_start_time);
-        btnSelectProject = (Button) findViewById(R.id.button_select_project);
-        btnNextProject = (Button) findViewById(R.id.button_next_project);
-        btnFinishProject = (Button) findViewById(R.id.btn_finish_work);
-
-
-        editTextTime = (EditText) findViewById(R.id.edittext_time_work);
-        editTextDesc = (EditText) findViewById(R.id.desc_what_have_been_you_doing);
-
-        // status bar color
-        Window window = this.getWindow();
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        name = getResources().getStringArray(R.array.day_name);
+        hour = getResources().getStringArray(R.array.hour_name);
+        int count = 0;
+        for (String Name : name) {
+            testClass classT = new testClass(hour[count], Name);
+            count++;
+            list.add(classT);
         }
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view_start_work);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        adapter = new StartWorkAdapter(list);
+        recyclerView.setAdapter(adapter);
 
-        // btnStartWork
-        btnSelectProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                btnSelectedProject.setVisibility(View.GONE);
-                txtSelectProject.setVisibility(View.VISIBLE);
-
-                // button
-                Drawable myD = null;
-                Resources res = getResources();
-                try {
-                    myD = Drawable.createFromXml(res, res.getXml(R.xml.btn_design_start_time_green));
-                } catch (Exception e) {
-                    // if something goes wrong.
-                }
-                btnStartTime.setBackground(myD);
-
-                // shadow
-                Drawable myDs = null;
-                Resources resS = getResources();
-                try {
-                    myDs = Drawable.createFromXml(resS, resS.getXml(R.xml.btn_design_start_work_shadow_green));
-                } catch (Exception e) {
-                    // if something goes wrong.
-                }
-                btnStartTimeShadow.setBackground(myDs);
-
-                // edittext color
-                editTextTime.setTextColor(Color.parseColor("#04b795"));
-
-                clickedSelectProject = true;
-
-                if (clickedSelectProject == true) {
-                    btnStartTime.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            if (clickedStartStop == false) {
-                                // button
-                                Drawable myD = null;
-                                Resources res = getResources();
-                                try {
-                                    myD = Drawable.createFromXml(res, res.getXml(R.xml.btn_design_start_time_orange));
-                                } catch (Exception e) {
-                                    // if something goes wrong.
-                                }
-                                btnStartTime.setBackground(myD);
-                                btnStartTime.setText("Stop");
-                                Calendar calender = Calendar.getInstance();
-                                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-                                int cMinute = calender.get(Calendar.MINUTE);
-                                Time time = new Time(cHourOfDay, cMinute, 00);
-
-
-                                //start timer
-                                projectTimeTracker = new CountDownTimer(1000000000, 1000) {
-
-                                    public void onTick(long millisUntilFinished) {
-                                        Calendar currentTime = Calendar.getInstance();
-                                        int workTimeHours = currentTime.get(Calendar.HOUR_OF_DAY) - uploadSpreadsheetData.projectStartingTime.getHours();
-                                        int workTimeMinutes = currentTime.get(Calendar.MINUTE) - uploadSpreadsheetData.projectStartingTime.getMinutes();
-
-                                        if (workTimeHours > 0)
-                                            editTextTime.setText(workTimeHours + " hr " + workTimeMinutes + " min");
-                                        else
-                                            editTextTime.setText(workTimeMinutes + " min");
-
-                                    }
-
-                                    public void onFinish() {
-
-                                    }
-                                };
-                                projectTimeTracker.start();
-
-
-                                uploadSpreadsheetData.projectStartingTime = time;
-                                // shadow
-                                Drawable myDs = null;
-                                Resources resS = getResources();
-                                try {
-                                    myDs = Drawable.createFromXml(resS, resS.getXml(R.xml.btn_design_start_work_shadow_orange));
-                                } catch (Exception e) {
-                                    // if something goes wrong.
-                                }
-                                btnStartTimeShadow.setBackground(myDs);
-                                editTextTime.setTextColor(Color.parseColor("#ef4907"));
-                                clickedStartStop = true;
-
-                                // green text for WHAT HAVE YOU BEEN DOING
-                                Drawable myDWhat = null;
-                                Resources resW = getResources();
-                                try {
-                                    myDWhat = Drawable.createFromXml(resW, resW.getXml(R.xml.design_window_green_left_right_up));
-                                } catch (Exception e) {
-                                    // if something goes wrong.
-                                }
-                                txtWhatRUDoing.setBackground(myDWhat);
-
-                                editTextDesc.setEnabled(true);
-                                editTextTime.setEnabled(true);
-
-                            } else {
-                                // button
-                                Drawable myD = null;
-                                Resources res = getResources();
-                                try {
-                                    myD = Drawable.createFromXml(res, res.getXml(R.xml.btn_design_start_time_green));
-                                } catch (Exception e) {
-                                    // if something goes wrong.
-                                }
-                                btnStartTime.setBackground(myD);
-                                btnStartTime.setText("Start");
-
-
-                                //stop Clock
-                                projectTimeTracker.cancel();
-
-                                //INPUT FINISH TIME
-
-                                if (uploadSpreadsheetData.description == null)
-                                    uploadSpreadsheetData.description = editTextDesc.getText().toString();
-                                else
-                                    uploadSpreadsheetData.description += ", " + editTextDesc.getText().toString();
-                                Calendar calender = Calendar.getInstance();
-                                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-                                int cMinute = calender.get(Calendar.MINUTE);
-                                uploadSpreadsheetData.projectFinishTime = new Time(cHourOfDay, cMinute, 00);
-
-
-                                userData.addUploadRepository(uploadSpreadsheetData);
-                                applicationTimeTracker.setUserData(userData);
-
-
-                                // shadow
-                                Drawable myDs = null;
-                                Resources resS = getResources();
-                                try {
-                                    myDs = Drawable.createFromXml(resS, resS.getXml(R.xml.btn_design_start_work_shadow_green));
-                                } catch (Exception e) {
-                                    // if something goes wrong.
-                                }
-                                btnStartTimeShadow.setBackground(myDs);
-                                editTextTime.setTextColor(Color.parseColor("#04b795"));
-                                clickedStartStop = false;
-
-                                String descFromEditText = "";
-                                descFromEditText = editTextDesc.getText().toString();
-                                if (clickedStartStop == false && !descFromEditText.matches("")) {
-                                    //shadow
-                                    Drawable myNxt = null;
-                                    Resources resNxt = getResources();
-                                    try {
-                                        myNxt = Drawable.createFromXml(resNxt, resNxt.getXml(R.xml.btn_design_next_project_shadow_orange));
-                                    } catch (Exception e) {
-                                        // if something goes wrong.
-                                    }
-                                    btnNextProjectShadow.setBackground(myNxt);
-
-                                    // button
-                                    Drawable myNxtBtn = null;
-                                    Resources resNxtBtn = getResources();
-                                    try {
-                                        myNxtBtn = Drawable.createFromXml(resNxtBtn, resNxtBtn.getXml(R.xml.btn_design_next_project_orange));
-                                    } catch (Exception e) {
-                                        // if something goes wrong.
-                                    }
-                                    btnNextProject.setBackground(myNxtBtn);
-                                }
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-
-        btnFinishProject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calender = Calendar.getInstance();
-                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-                int cMinute = calender.get(Calendar.MINUTE);
-                uploadSpreadsheetData.finishTime = new Time(cHourOfDay, cMinute, 00);
-                try {
-                    uploadSpreadsheetData.setWorkingTime();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                userData.addUploadRepository(uploadSpreadsheetData);
-                applicationTimeTracker.setUserData(userData);
-                writeResultsToApi();
-            }
-        });
-
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-
-        random = new Random();
-        mCredential = GoogleAccountCredential.usingOAuth2(getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
-        if(userData.getUserAcount() != null)
-            mCredential.setSelectedAccount(userData.getUserAcount());
 
     }
 
