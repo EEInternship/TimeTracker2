@@ -37,7 +37,24 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.IViewHol
 
         holder.day.setText(adapterClass.getDayOfWeek());
         holder.date.setText(adapterClass.getDate());
-        holder.hour.setText(adapterClass.getHours());
+
+
+        if(Integer.parseInt(adapterClass.getHours()) <= 0 && Integer.parseInt(adapterClass.getMinutes()) <= 0)
+            holder.hour.setText("/");
+        else{
+            if(Integer.parseInt(adapterClass.getMinutes()) <= 0)
+                holder.hour.setText(adapterClass.getHours()+":00");
+            else if(Integer.parseInt(adapterClass.getHours()) <= 0)
+                holder.hour.setText(adapterClass.getMinutes()+"min");
+            else{
+                if( Integer.parseInt(adapterClass.getMinutes())<10)
+                    holder.hour.setText(adapterClass.getHours() +":0" + adapterClass.getMinutes());
+                else
+                    holder.hour.setText(adapterClass.getHours() +":" + adapterClass.getMinutes());
+            }
+
+        }
+
 
         if(position%2==0){
             holder.day.setBackgroundColor(Color.parseColor("#ffffff"));
@@ -58,6 +75,7 @@ public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.IViewHol
             holder.date.setTextColor(Color.parseColor("#04b795"));
             holder.hour.setTextColor(Color.parseColor("#04b795"));
         }
+
     }
 
     @Override

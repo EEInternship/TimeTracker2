@@ -8,14 +8,16 @@ public class AdapterClass {
     private String dayOfWeek;
     private String date;
     private String hours;
+    private String minutes;
 
     public AdapterClass(){
 
     }
-    public AdapterClass(String day, String todayDate, String hoursOfDay){
+    public AdapterClass(String day, String todayDate, String hoursOfDay, String minutesOfDay){
         dayOfWeek = day;
         date = todayDate;
         hours = hoursOfDay;
+        minutes = minutesOfDay;
     }
 
     public String getDayOfWeek(){
@@ -26,5 +28,8 @@ public class AdapterClass {
     }
     public String getHours(){
         return hours;
+    }
+    public String getMinutes(){
+        return minutes;
     }
 }

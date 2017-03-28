@@ -82,7 +82,8 @@ public  class UserData {
             String dayShort = ShortDay(dayOfWeek);
             String date = String.valueOf(row.date.get(Calendar.DAY_OF_MONTH)) + "." + String.valueOf(row.date.get(Calendar.MONTH)+1) + "." +String.valueOf(row.date.get(Calendar.YEAR));
             String hours = String.valueOf(row.workingHours);
-            AdapterClass adapterClass = new AdapterClass(dayShort,date,hours);
+            String minutes = String.valueOf(row.workingMinutes);
+            AdapterClass adapterClass = new AdapterClass(dayShort,date,hours,minutes);
             adapterClassArrayList.add(adapterClass);
 
         }
