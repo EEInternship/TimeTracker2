@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">TimeTracker</string>
+    <string-array name="day_name">
+        <item>"BUG REPORTER"</item>
+        <item>"BUG REPORTER"</item>
+    </string-array>
+    <string-array name="date_name">
+        <item>"30.1.2015"</item>
+        <item>"30.1.2015"</item>
+    </string-array>
+    <string-array name="hour_name">
+        <item>18:02</item>
+        <item>18:02</item>
+    </string-array>
 </resources>
