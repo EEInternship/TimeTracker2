@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#323232"
+    tools:context="com.eeinternship.timetracker.MainActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.60">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:src="@drawable/img_logo_equal_eyes" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="0.4"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/background_shadow_open"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="10dp"
+                android:background="@xml/btn_design_green_shadow">
+
+                <Button
+                    android:id="@+id/button_open"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@xml/btn_design_green"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Open Door"
+                    android:textAllCaps="false"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/background_start_work"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="10dp"
+                android:background="@xml/btn_design_green_shadow">
+
+                <Button
+                    android:id="@+id/button_start_work"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:background="@xml/btn_design_green"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Start Work"
+                    android:textAllCaps="false"
+                    android:textSize="15dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/background_monthly_overview"
+                android:layout_width="match_parent"
+                android:layout_height="47dp"
+                android:layout_marginTop="10dp"
+                android:background="@xml/btn_design_green_shadow">
+
+                <Button
+                    android:id="@+id/button_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:layout_marginTop="0dp"
+                    android:background="@xml/btn_design_green"
+                    android:fontFamily="sans-serif-smallcaps"
+                    android:text="Profile"
+                    android:textAllCaps="false"
+                    android:textSize="15dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

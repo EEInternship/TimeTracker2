@@ -1,4 +1,4 @@
-package com.eeinternship.timetracker;
+package eeinternship.com.timetracker;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.eeinternship.timetracker", appContext.getPackageName());
+        assertEquals("eeinternship.com.timetracker", appContext.getPackageName());
     }
 }

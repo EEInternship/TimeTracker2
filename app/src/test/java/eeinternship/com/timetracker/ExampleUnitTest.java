@@ -1,4 +1,4 @@
-package com.eeinternship.timetracker;
+package eeinternship.com.timetracker;
 
 import org.junit.Test;
 
