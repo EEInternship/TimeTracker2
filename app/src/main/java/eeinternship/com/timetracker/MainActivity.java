@@ -65,5 +65,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(startWorkActivity);
             }
         });
+
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent profileActivity=new Intent(getApplication(),ProfileActivity.class);
+                startActivity(profileActivity);
+            }
+        });
     }
 }

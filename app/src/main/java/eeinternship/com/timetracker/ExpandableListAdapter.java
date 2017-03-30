@@ -1,4 +1,4 @@
-package com.eeinternship.timetracker;
+package eeinternship.com.timetracker;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -10,6 +10,10 @@ import android.widget.TextView;
 
 import java.util.HashMap;
 import java.util.List;
+
+/**
+ * Created by IsakFe on 30. 03. 2017.
+ */
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
@@ -49,7 +53,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
+                .findViewById(R.id.list_item_name_project);
 
         txtListChild.setText(childText);
         return convertView;
@@ -87,7 +91,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.lblListHeader);
+                .findViewById(R.id.day_date_label);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
