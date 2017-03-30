@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -24,7 +23,7 @@ public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    //RecyclerView.LayoutManager layoutManager;
     FloatingActionButton buttonNewTicket;
 
     private ApplicationTimeTracker applicationTimeTracker;
@@ -58,7 +57,10 @@ public class StartWorkActivity extends AppCompatActivity {
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
-        layoutManager = new LinearLayoutManager(this);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         setAdapter();
@@ -85,11 +87,6 @@ public class StartWorkActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
-
-
-        ItemTouchHelper.Callback callback = new SwipeTouchHelper((StartWorkAdapter) adapter);
-        ItemTouchHelper helper = new ItemTouchHelper(callback);
-        helper.attachToRecyclerView(recyclerView);
     }
 
     private void setAdapter() {

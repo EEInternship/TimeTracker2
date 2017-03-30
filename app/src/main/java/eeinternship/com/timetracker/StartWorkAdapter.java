@@ -27,12 +27,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         return iViewHolder;
     }
-
-    public void remove(int position) {
-        adapter.remove(position);
-        notifyItemRemoved(position);
-    }
-
+    
     @Override
     public void onBindViewHolder(IViewHolder holder, int position) {
         Ticket TC = adapter.get(position);
