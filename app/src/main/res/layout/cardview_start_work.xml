@@ -38,7 +38,8 @@
                     android:id="@+id/project_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:padding="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="10dp"
                     android:text="PROJECT NAME"
                     android:textColor="#9b9b9b"
                     android:textSize="15dp" />
