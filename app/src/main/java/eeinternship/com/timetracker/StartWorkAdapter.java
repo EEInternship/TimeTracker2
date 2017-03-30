@@ -27,7 +27,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         return iViewHolder;
     }
-    
+
     @Override
     public void onBindViewHolder(IViewHolder holder, int position) {
         Ticket TC = adapter.get(position);
