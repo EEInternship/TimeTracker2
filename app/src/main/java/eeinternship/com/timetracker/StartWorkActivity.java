@@ -3,21 +3,36 @@ package eeinternship.com.timetracker;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import Data.Project;
 import Data.TestClass;
+import Data.UserData;
 
 public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
     RecyclerView.LayoutManager layoutManager;
+    FloatingActionButton buttonNewTicket;
+
+    private ApplicationTimeTracker applicationTimeTracker;
+    private UserData userData;
+    private ArrayList<Project> projectArrayList;
+    private PopupMenu popupMenu;
 
     String[] name, hour;
 
@@ -29,12 +44,18 @@ public class StartWorkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
 
+        applicationTimeTracker = (ApplicationTimeTracker) getApplication();
+        userData = applicationTimeTracker.getUserData();
+        projectArrayList = userData.getProjectList();
+
+
+        buttonNewTicket = (FloatingActionButton) findViewById(R.id.btn_add_ticket);
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
         }
 
@@ -52,5 +73,30 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         adapter = new StartWorkAdapter(arrayList);
         recyclerView.setAdapter(adapter);
+
+
+
+
+        buttonNewTicket.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                 popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
+
+                for(Project row : projectArrayList){
+                    popupMenu.getMenu().add(row.projectName);
+                }
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        Toast.makeText(StartWorkActivity.this, "You Clicked : " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
+
+
     }
 }
