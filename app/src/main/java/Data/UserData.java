@@ -13,23 +13,25 @@ public  class UserData {
     ArrayList<DownloadSpreadsheetData> downloadSpreadsheetDataList;
     ArrayList<Project> projectList;
     UploadSpreadsheetData uploadSpreadsheetData;
+    ArrayList<Ticket> ticketList;
 
     private Account userAcount;
 
     public UserData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
         downloadSpreadsheetDataList = new ArrayList<DownloadSpreadsheetData>();
+        ticketList = new ArrayList<>();
         projectList = new ArrayList<>();
 
     }
 
     public void scenariData(){
         Project project1 = new Project();
-        project1.projectName="Time Tracker";
+        project1.projectName="TIME TRACKER";
         Project project2 = new Project();
-        project2.projectName="Bug Reporter";
+        project2.projectName="BUG REPORTER";
         Project project3 = new Project();
-        project3.projectName="Test Project";
+        project3.projectName="TEST PROJECT";
 
         projectList.add(project1);
         projectList.add(project2);
@@ -96,6 +98,13 @@ public  class UserData {
     public ArrayList<Project> getProjectList()
     {
         return projectList;
+    }
+
+    public ArrayList<Ticket> getTicketList(){
+        return ticketList;
+    }
+    public void setTicketList(ArrayList<Ticket> ticketArrayList){
+        ticketList = ticketArrayList;
     }
 
 

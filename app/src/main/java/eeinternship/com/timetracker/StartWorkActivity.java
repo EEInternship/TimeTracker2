@@ -12,14 +12,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import Data.Project;
-import Data.TestClass;
+import Data.Ticket;
 import Data.UserData;
 
 public class StartWorkActivity extends AppCompatActivity {
@@ -36,7 +34,7 @@ public class StartWorkActivity extends AppCompatActivity {
 
     String[] name, hour;
 
-    ArrayList<TestClass> arrayList = new ArrayList<TestClass>();
+    ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -47,7 +45,7 @@ public class StartWorkActivity extends AppCompatActivity {
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
         projectArrayList = userData.getProjectList();
-
+        ticketList = userData.getTicketList();
 
         buttonNewTicket = (FloatingActionButton) findViewById(R.id.btn_add_ticket);
         // status bar color
@@ -59,20 +57,13 @@ public class StartWorkActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
         }
 
-        name = getResources().getStringArray(R.array.day_name);
-        hour = getResources().getStringArray(R.array.hour_name);
-        int count = 0;
-        for (String Name : name) {
-            TestClass classT = new TestClass(hour[count], Name);
-            count++;
-            arrayList.add(classT);
-        }
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        adapter = new StartWorkAdapter(arrayList);
-        recyclerView.setAdapter(adapter);
+        setAdapter();
+
+
 
 
 
@@ -88,7 +79,11 @@ public class StartWorkActivity extends AppCompatActivity {
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        Toast.makeText(StartWorkActivity.this, "You Clicked : " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        ticketList.add(new Ticket("00:00",menuItem.getTitle().toString()));
+                        setAdapter();
+                        userData.setTicketList(ticketList);
+                        applicationTimeTracker.setUserData(userData);
+
                         return true;
                     }
                 });
@@ -98,5 +93,10 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
 
+    }
+    private void setAdapter(){
+
+        adapter = new StartWorkAdapter(ticketList);
+        recyclerView.setAdapter(adapter);
     }
 }
