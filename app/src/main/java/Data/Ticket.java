@@ -6,24 +6,28 @@ import java.util.ArrayList;
  * Created by IsakFe on 29. 03. 2017.
  */
 
-public class TestClass {
-    private String hour;
+public class Ticket {
+    private String time;
     private String project;
 
-    public TestClass(ArrayList<TestClass> arrayList) {
+    public Ticket(ArrayList<Ticket> arrayList) {
     }
 
-    public TestClass(String hour, String project) {
-        this.hour = hour;
+    public Ticket(){
+
+    }
+
+    public Ticket(String hour, String project) {
+        this.time = hour;
         this.project = project;
     }
 
-    public String getHour() {
-        return hour;
+    public String getTime() {
+        return time;
     }
 
-    public void setHour(String hour) {
-        this.hour = hour;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public String getProject() {

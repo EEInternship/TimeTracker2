@@ -8,16 +8,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import Data.TestClass;
+import Data.Ticket;
 
 /**
  * Created by IsakFe on 29. 03. 2017.
  */
 
 public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IViewHolder> {
-    ArrayList<TestClass> adapter = new ArrayList<>();
+    ArrayList<Ticket> adapter = new ArrayList<>();
 
-    public StartWorkAdapter(ArrayList<TestClass> adapterC) {
+    public StartWorkAdapter(ArrayList<Ticket> adapterC) {
         this.adapter = adapterC;
     }
 
@@ -31,8 +31,8 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
     @Override
     public void onBindViewHolder(IViewHolder holder, int position) {
-        TestClass TC = adapter.get(position);
-        holder.timeWork.setText(TC.getHour());
+        Ticket TC = adapter.get(position);
+        holder.timeWork.setText(TC.getTime());
         holder.projectName.setText(TC.getProject());
     }
 
