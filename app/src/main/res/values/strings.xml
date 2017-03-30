@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TimeTracker</string>
     <string-array name="day_name">
-        <item>"BUG REPORTER"</item>
+        <item>"bug reporter"</item>
         <item>"BUG REPORTER"</item>
     </string-array>
     <string-array name="date_name">
