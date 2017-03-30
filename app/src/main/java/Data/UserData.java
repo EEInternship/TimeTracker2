@@ -19,16 +19,17 @@ public  class UserData {
     public UserData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
         downloadSpreadsheetDataList = new ArrayList<DownloadSpreadsheetData>();
-        scenariData();
+        projectList = new ArrayList<>();
+
     }
 
     public void scenariData(){
         Project project1 = new Project();
-        project1.projectName="Project 1";
+        project1.projectName="Time Tracker";
         Project project2 = new Project();
-        project2.projectName="Project 2";
+        project2.projectName="Bug Reporter";
         Project project3 = new Project();
-        project3.projectName="Project 3";
+        project3.projectName="Test Project";
 
         projectList.add(project1);
         projectList.add(project2);
@@ -91,6 +92,11 @@ public  class UserData {
         return day;
     }
 
+
+    public ArrayList<Project> getProjectList()
+    {
+        return projectList;
+    }
 
 
 

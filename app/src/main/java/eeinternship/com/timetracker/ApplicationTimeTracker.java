@@ -17,6 +17,7 @@ public class ApplicationTimeTracker extends Application{
         if (userData == null){
             userData = new UserData();
         }
+        userData.scenariData();
     }
 
 
