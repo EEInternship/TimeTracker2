@@ -8,11 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -63,23 +63,18 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         setAdapter();
 
-
-
-
-
-
         buttonNewTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
+                popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
 
-                for(Project row : projectArrayList){
+                for (Project row : projectArrayList) {
                     popupMenu.getMenu().add(row.projectName);
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        ticketList.add(new Ticket("00:00",menuItem.getTitle().toString()));
+                        ticketList.add(new Ticket("00:00", menuItem.getTitle().toString()));
                         setAdapter();
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
@@ -92,11 +87,14 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
 
-
+        ItemTouchHelper.Callback callback = new SwipeTouchHelper((StartWorkAdapter) adapter);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
     }
-    private void setAdapter(){
 
+    private void setAdapter() {
         adapter = new StartWorkAdapter(ticketList);
         recyclerView.setAdapter(adapter);
     }
 }
+
