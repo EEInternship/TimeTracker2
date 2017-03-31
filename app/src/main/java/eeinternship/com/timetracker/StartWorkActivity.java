@@ -12,6 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
+
 
 import java.util.ArrayList;
 
@@ -46,7 +48,12 @@ public class StartWorkActivity extends AppCompatActivity {
         projectArrayList = userData.getProjectList();
         ticketList = userData.getTicketList();
 
+
+
+
+
         buttonNewTicket = (FloatingActionButton) findViewById(R.id.btn_add_ticket);
+
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
