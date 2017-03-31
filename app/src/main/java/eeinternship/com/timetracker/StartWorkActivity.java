@@ -71,7 +71,6 @@ public class StartWorkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
-                popupMenu.getMenuInflater().inflate();
 
                 for (Project row : projectArrayList) {
                     popupMenu.getMenu().add(row.projectName);
