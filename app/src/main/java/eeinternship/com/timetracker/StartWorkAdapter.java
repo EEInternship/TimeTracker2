@@ -21,7 +21,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
         this.adapter = adapterC;
     }
 
-    @Override
     public StartWorkAdapter.IViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_start_work, parent, false);
         IViewHolder iViewHolder = new IViewHolder(v);
