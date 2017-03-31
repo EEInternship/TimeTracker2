@@ -25,7 +25,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
-    //RecyclerView.LayoutManager layoutManager;
     FloatingActionButton buttonNewTicket;
 
     private ApplicationTimeTracker applicationTimeTracker;
@@ -47,7 +46,6 @@ public class StartWorkActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         projectArrayList = userData.getProjectList();
         ticketList = userData.getTicketList();
-
 
         buttonNewTicket = (FloatingActionButton) findViewById(R.id.btn_add_ticket);
 
@@ -73,6 +71,7 @@ public class StartWorkActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
+                popupMenu.getMenuInflater().inflate();
 
                 for (Project row : projectArrayList) {
                     popupMenu.getMenu().add(row.projectName);
@@ -92,7 +91,7 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
 
-        SwipeableRecyclerViewTouchListener swipeTouchListener=new SwipeableRecyclerViewTouchListener(recyclerView,
+        SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
@@ -107,7 +106,6 @@ public class StartWorkActivity extends AppCompatActivity {
                     @Override
                     public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
-//                                    Toast.makeText(MainActivity.this, mItems.get(position) + " swiped left", Toast.LENGTH_SHORT).show();
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                         }
