@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+
 import java.util.ArrayList;
 
 import Data.Project;
@@ -24,7 +25,7 @@ public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
-    RecyclerView.LayoutManager layoutManager;
+    //RecyclerView.LayoutManager layoutManager;
     FloatingActionButton buttonNewTicket;
 
     private ApplicationTimeTracker applicationTimeTracker;
@@ -63,32 +64,26 @@ public class StartWorkActivity extends AppCompatActivity {
         }
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
-        layoutManager = new LinearLayoutManager(this);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         setAdapter();
 
-
-
-
-
-
-
-
-
-
         buttonNewTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
+                popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
 
-                for(Project row : projectArrayList){
+                for (Project row : projectArrayList) {
                     popupMenu.getMenu().add(row.projectName);
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem menuItem) {
-                        ticketList.add(new Ticket("00:00",menuItem.getTitle().toString()));
+                        ticketList.add(new Ticket("00:00", menuItem.getTitle().toString()));
                         setAdapter();
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
@@ -99,13 +94,11 @@ public class StartWorkActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
-
-
-
     }
-    private void setAdapter(){
 
+    private void setAdapter() {
         adapter = new StartWorkAdapter(ticketList);
         recyclerView.setAdapter(adapter);
     }
 }
+
