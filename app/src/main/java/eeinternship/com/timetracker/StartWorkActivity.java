@@ -12,8 +12,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 
+import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
 import java.util.ArrayList;
 
@@ -47,9 +47,6 @@ public class StartWorkActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         projectArrayList = userData.getProjectList();
         ticketList = userData.getTicketList();
-
-
-
 
 
         buttonNewTicket = (FloatingActionButton) findViewById(R.id.btn_add_ticket);
@@ -94,6 +91,38 @@ public class StartWorkActivity extends AppCompatActivity {
                 popupMenu.show();
             }
         });
+
+        SwipeableRecyclerViewTouchListener swipeTouchListener=new SwipeableRecyclerViewTouchListener(recyclerView,
+                new SwipeableRecyclerViewTouchListener.SwipeListener() {
+                    @Override
+                    public boolean canSwipeLeft(int position) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean canSwipeRight(int position) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+//                                    Toast.makeText(MainActivity.this, mItems.get(position) + " swiped left", Toast.LENGTH_SHORT).show();
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+
+                    }
+                });
+
+
+        recyclerView.addOnItemTouchListener(swipeTouchListener);
+
     }
 
     private void setAdapter() {
