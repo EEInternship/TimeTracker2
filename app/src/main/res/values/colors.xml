@@ -9,4 +9,7 @@
     <color name="colorGreenBtn">#04b795</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorBackgroundActivity">#f9f9f9</color>
+
+    <color name="dimBackground">#80000000</color>
+    <color name="undimBackground">#00FFFFFF</color>
 </resources>

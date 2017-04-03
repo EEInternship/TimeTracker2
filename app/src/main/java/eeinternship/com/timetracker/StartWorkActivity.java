@@ -13,6 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
@@ -36,6 +37,9 @@ public class StartWorkActivity extends AppCompatActivity {
     private ArrayList<Project> projectArrayList;
     private PopupMenu popupMenu;
 
+    // dim
+    FrameLayout frameLayoutDim;
+
     // animation
     Animation fabOpen, fabClose, fabRotate, fabRotateClose, txtOpen, txtClose;
     boolean isOpen = false;
@@ -50,6 +54,8 @@ public class StartWorkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
 
+        frameLayoutDim=(FrameLayout)findViewById(R.id.frame_layout_dim);
+
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
         projectArrayList = userData.getProjectList();
@@ -60,14 +66,14 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonFinishWork = (FloatingActionButton) findViewById(R.id.btn_finish_work);
         buttonFirstProject = (FloatingActionButton) findViewById(R.id.btn_first_project);
         buttonSecondProject = (FloatingActionButton) findViewById(R.id.btn_second_project);
-        buttonThirdProject=(FloatingActionButton)findViewById(R.id.btn_third_project);
+        buttonThirdProject = (FloatingActionButton) findViewById(R.id.btn_third_project);
 
 
         labelSelectProject = (TextView) findViewById(R.id.label_select_project);
         labelFinishWork = (TextView) findViewById(R.id.label_finish_work);
         labelBtnFirstProject = (TextView) findViewById(R.id.name_project_one);
-        labelBtnSecondProject=(TextView)findViewById(R.id.name_project_two);
-        labelBtnThirdProject=(TextView)findViewById(R.id.name_project_three);
+        labelBtnSecondProject = (TextView) findViewById(R.id.name_project_two);
+        labelBtnThirdProject = (TextView) findViewById(R.id.name_project_three);
 
         fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_btn_open);
         fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_btn_close);
@@ -100,60 +106,20 @@ public class StartWorkActivity extends AppCompatActivity {
                 popupMenu.show();*/
 
                 if (isOpen) {
-                   /* buttonFirstProject.startAnimation(fabClose);
-                    labelBtnFirstProject.startAnimation(fabClose);
-                    buttonFirstProject.setClickable(true);
-*/
-                    buttonOptions.startAnimation(fabRotateClose);
-
-                    buttonSelectProject.startAnimation(fabClose);
-                    buttonSelectProject.setClickable(false);
-                    labelSelectProject.startAnimation(txtClose);
-
-                    buttonFinishWork.startAnimation(fabClose);
-                    buttonFinishWork.setClickable(false);
-                    labelFinishWork.startAnimation(txtClose);
-
-                    buttonFirstProject.startAnimation(fabClose);
-                    buttonFirstProject.setClickable(false);
-                    labelBtnFirstProject.startAnimation(txtClose);
-
-                    buttonSecondProject.startAnimation(fabClose);
-                    buttonSecondProject.setClickable(false);
-                    labelBtnSecondProject.startAnimation(txtClose);
-
-                    buttonThirdProject.startAnimation(fabClose);
-                    buttonThirdProject.setClickable(false);
-                    labelBtnThirdProject.startAnimation(txtClose);
-
+                    closeMenu();
                     isOpen = false;
                 } else {
-                    /*buttonFirstProject.startAnimation(fabOpen);
-                    labelBtnFirstProject.startAnimation(txtOpen);
-                    buttonFirstProject.setClickable(false);
-*/
-                    buttonOptions.startAnimation(fabRotate);
-
-                    buttonSelectProject.startAnimation(fabOpen);
-                    buttonSelectProject.setClickable(true);
-                    labelSelectProject.startAnimation(txtOpen);
-
-                    buttonFinishWork.startAnimation(fabOpen);
-                    buttonFinishWork.setClickable(true);
-                    labelFinishWork.startAnimation(txtOpen);
-
-                    buttonFirstProject.startAnimation(fabOpen);
-                    buttonFirstProject.setClickable(true);
-                    labelBtnFirstProject.startAnimation(txtOpen);
-
-                    buttonSecondProject.startAnimation(fabOpen);
-                    buttonSecondProject.setClickable(true);
-                    labelBtnSecondProject.startAnimation(txtOpen);
-
-                    buttonThirdProject.startAnimation(fabOpen);
-                    buttonThirdProject.setClickable(true);
-                    labelBtnThirdProject.startAnimation(txtOpen);
-
+                    openMenu();
+                    buttonFirstProject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ticketList.add(new Ticket("00:00", labelBtnFirstProject.getText().toString()));
+                            setAdapter();
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                        }
+                    });
+                    v.getBackground();
                     isOpen = true;
                 }
 
@@ -202,8 +168,6 @@ public class StartWorkActivity extends AppCompatActivity {
                     public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                     }
                 });
-
-
         recyclerView.addOnItemTouchListener(swipeTouchListener);
 
     }
@@ -211,6 +175,56 @@ public class StartWorkActivity extends AppCompatActivity {
     private void setAdapter() {
         adapter = new StartWorkAdapter(ticketList);
         recyclerView.setAdapter(adapter);
+    }
+
+    private void closeMenu() {
+        frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
+        buttonOptions.startAnimation(fabRotateClose);
+
+        buttonSelectProject.startAnimation(fabClose);
+        buttonSelectProject.setClickable(false);
+        labelSelectProject.startAnimation(txtClose);
+
+        buttonFinishWork.startAnimation(fabClose);
+        buttonFinishWork.setClickable(false);
+        labelFinishWork.startAnimation(txtClose);
+
+        buttonFirstProject.startAnimation(fabClose);
+        buttonFirstProject.setClickable(false);
+        labelBtnFirstProject.startAnimation(txtClose);
+
+        buttonSecondProject.startAnimation(fabClose);
+        buttonSecondProject.setClickable(false);
+        labelBtnSecondProject.startAnimation(txtClose);
+
+        buttonThirdProject.startAnimation(fabClose);
+        buttonThirdProject.setClickable(false);
+        labelBtnThirdProject.startAnimation(txtClose);
+    }
+
+    private void openMenu() {
+        frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
+        buttonOptions.startAnimation(fabRotate);
+
+        buttonSelectProject.startAnimation(fabOpen);
+        buttonSelectProject.setClickable(true);
+        labelSelectProject.startAnimation(txtOpen);
+
+        buttonFinishWork.startAnimation(fabOpen);
+        buttonFinishWork.setClickable(true);
+        labelFinishWork.startAnimation(txtOpen);
+
+        buttonFirstProject.startAnimation(fabOpen);
+        buttonFirstProject.setClickable(true);
+        labelBtnFirstProject.startAnimation(txtOpen);
+
+        buttonSecondProject.startAnimation(fabOpen);
+        buttonSecondProject.setClickable(true);
+        labelBtnSecondProject.startAnimation(txtOpen);
+
+        buttonThirdProject.startAnimation(fabOpen);
+        buttonThirdProject.setClickable(true);
+        labelBtnThirdProject.startAnimation(txtOpen);
     }
 }
 
