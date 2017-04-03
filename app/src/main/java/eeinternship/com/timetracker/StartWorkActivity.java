@@ -88,10 +88,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem menuItem) {
 
-                        ticketList.add(new Ticket("00:00",menuItem.getTitle().toString()));
-
                         ticketList.add(new Ticket("00:00", menuItem.getTitle().toString()));
-                        setAdapter();
 
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);

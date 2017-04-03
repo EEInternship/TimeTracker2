@@ -75,7 +75,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     holder.imageButton.setVisibility(View.GONE);
                     long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
                     Time workTime = new Time(differenceLong);
-                    holder.timeWork.setText(workTime.getHours()-1 + ":"+workTime.getMinutes());
                     if(workTime.getMinutes()<10)
                         holder.timeWork.setText(workTime.getHours()-1+":0"+workTime.getMinutes());
                     else
