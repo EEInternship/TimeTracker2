@@ -21,9 +21,6 @@ import Data.Ticket;
 public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IViewHolder> {
     ArrayList<Ticket> adapter = new ArrayList<>();
 
-
-
-
     public StartWorkAdapter(ArrayList<Ticket> adapterC) {
         this.adapter = adapterC;
     }
