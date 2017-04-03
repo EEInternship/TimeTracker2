@@ -39,7 +39,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
     public void onBindViewHolder(final IViewHolder holder, final int position) {
         Ticket TC = adapter.get(position);
         holder.projectName.setText(TC.getProject());
-        holder.timeWork.setText(TC.getTime());
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000,100) {
             @Override
