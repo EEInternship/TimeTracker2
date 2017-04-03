@@ -70,13 +70,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
         buttonNewTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,10 +82,9 @@ public class StartWorkActivity extends AppCompatActivity {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem menuItem) {
                         ticketList.add(new Ticket("00:00",menuItem.getTitle().toString()));
-                        setAdapter();
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
-
+                        adapter.notifyDataSetChanged();
                         return true;
                     }
                 });
