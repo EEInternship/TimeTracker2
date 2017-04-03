@@ -35,41 +35,67 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
     @Override
     public void onBindViewHolder(final IViewHolder holder, int position) {
         Ticket TC = adapter.get(position);
-        holder.timeWork.setText(TC.getTime());
         holder.projectName.setText(TC.getProject());
 
+        final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000,100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                Calendar current = Calendar.getInstance();
+                Time diff = new Time ( current.get(Calendar.HOUR_OF_DAY), current.get(Calendar.MINUTE), current.get(Calendar.SECOND));
+                long difference = diff.getTime() - holder.startTime.getTime();
+                Time differenceTime = new Time(difference);
+                int workTimeHours = differenceTime.getHours()-1;
+                int workTimeMinutes = differenceTime.getMinutes();
+                setTextView(workTimeHours,workTimeMinutes,holder.timeWork,holder.showTimer);
+            }
+
+            @Override
+            public void onFinish() {
+
+            }
+        };
         holder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!holder.working){
-                    holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
-                    holder.working = true;
-                    Calendar calendar = Calendar.getInstance();
+                final Calendar calendar = Calendar.getInstance();
+
+                if(holder.startWork){
                     holder.startTime = new Time(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
-                    CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 1000) {
-
-                        public void onTick(long millisUntilFinished) {
-                            Calendar currentTime = Calendar.getInstance();
-                            int workTimeHours = currentTime.get(Calendar.HOUR_OF_DAY) - holder.startTime.getHours();
-                            int workTimeMinutes = currentTime.get(Calendar.MINUTE) - holder.startTime.getMinutes();
-                            if(workTimeMinutes<10)
-                                holder.timeWork.setText(workTimeHours + ":0" + workTimeMinutes);
-                            else
-                                holder.timeWork.setText(workTimeHours + ":" + workTimeMinutes);
-                        }
-
-                        public void onFinish() {}
-                    };
+                    holder.startWork = false;
+                    holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
                     projectTimeTracker.start();
+
+                }else{
+                    holder.showTimer = false;
+                    projectTimeTracker.cancel();
+                    holder.finishTime = new Time(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
+                    holder.imageButton.setVisibility(View.GONE);
+                    long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
+                    Time workTime = new Time(differenceLong);
+                    if(workTime.getMinutes()<10)
+                        holder.timeWork.setText(workTime.getHours()-1+":0"+workTime.getMinutes());
+                    else
+                        holder.timeWork.setText(workTime.getHours()-1+":"+workTime.getMinutes());
+
                 }
-                else{
-                    holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
-                    holder.working = false;
-                }
+
                 notifyDataSetChanged();
+
             }
+
+
         });
 
+    }
+
+    public void setTextView(int hours, int minutes, TextView textView,boolean doWork){
+        if(!doWork )
+            return;
+
+        if(minutes<10)
+            textView.setText(hours+":0"+minutes);
+        else
+            textView.setText(hours + ":"+minutes);
     }
 
 
@@ -85,13 +111,15 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
         ImageButton imageButton;
         Time startTime;
         Time finishTime;
-        boolean working;
+        boolean startWork = true;
+        boolean showTimer = true;
         public IViewHolder(View itemView) {
             super(itemView);
             projectName = (TextView) itemView.findViewById(R.id.project_name);
             timeWork = (TextView) itemView.findViewById(R.id.hour_min);
             imageButton = (ImageButton) itemView.findViewById(R.id.btn_start_work);
-            working = false;
+            if(startWork)
+                imageButton.setBackgroundResource(R.drawable.img_start_btn);
 
         }
     }

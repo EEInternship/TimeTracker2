@@ -177,14 +177,13 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         setAdapter();
-
+      
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
                         return true;
                     }
-
                     @Override
                     public boolean canSwipeRight(int position) {
                         return false;
@@ -201,7 +200,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
                     @Override
                     public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-
                     }
                 });
 
