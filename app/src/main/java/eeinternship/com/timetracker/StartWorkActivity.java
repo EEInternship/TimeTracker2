@@ -54,7 +54,7 @@ public class StartWorkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
 
-        frameLayoutDim=(FrameLayout)findViewById(R.id.frame_layout_dim);
+        frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
@@ -67,7 +67,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonFirstProject = (FloatingActionButton) findViewById(R.id.btn_first_project);
         buttonSecondProject = (FloatingActionButton) findViewById(R.id.btn_second_project);
         buttonThirdProject = (FloatingActionButton) findViewById(R.id.btn_third_project);
-
 
         labelSelectProject = (TextView) findViewById(R.id.label_select_project);
         labelFinishWork = (TextView) findViewById(R.id.label_finish_work);
