@@ -116,9 +116,10 @@ public class StartWorkActivity extends AppCompatActivity {
                             setAdapter();
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
+                            closeMenu();
+                            isOpen=false;
                         }
                     });
-                    v.getBackground();
                     isOpen = true;
                 }
 
