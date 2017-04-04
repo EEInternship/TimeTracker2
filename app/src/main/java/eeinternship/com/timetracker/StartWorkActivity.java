@@ -133,7 +133,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("00:00", labelBtnFirstProject.getText().toString()));
+                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
 
@@ -144,7 +144,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString()));
+                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
@@ -295,5 +295,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
     }
+
 }
 

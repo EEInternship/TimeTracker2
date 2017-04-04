@@ -38,8 +38,24 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
     @Override
     public void onBindViewHolder(final IViewHolder holder, final int position) {
         final Ticket TC = adapter.get(position);
+
+        holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
         holder.timeWork.setText(TC.getTime());
+        if(holder.startWork != Ticket.State.Done){
+            if(holder.startWork == Ticket.State.Start){
+                holder.showTimer = true;
+                holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
+            }
+            else if(holder.startWork == Ticket.State.Stop)
+                holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
+            else if(holder.startWork == Ticket.State.Restart)
+                holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
+
+
+            holder.imageButton.setVisibility(View.VISIBLE);
+        }
+
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000,100) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -62,19 +78,22 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             public void onClick(View v) {
                 final Calendar calendar = Calendar.getInstance();
 
-                if(holder.startWork == State.Start){
+                if(holder.startWork == Ticket.State.Start){
                     holder.startTime = new Time(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
-                    holder.startWork = State.Stop;
+                    holder.startWork = Ticket.State.Stop;
+                    TC.setState(holder.startWork);
+                    adapter.set(position,TC);
                     holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
                     projectTimeTracker.start();
 
-                }else if(holder.startWork == State.Stop){
+                }else if(holder.startWork == Ticket.State.Stop){
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
                     holder.finishTime = new Time(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
                     long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
                     Time workTime = new Time(differenceLong);
-
+                    TC.setState(holder.startWork);
+                    adapter.set(position,TC);
                     if(workTime.getMinutes()<10)
                         holder.timeWork.setText(workTime.getHours()-1+":0"+workTime.getMinutes());
                     else
@@ -87,12 +106,14 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     adapter.set(position,TC);
 
                     holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
-                    holder.startWork = State.Restart;
-                }else if(holder.startWork == State.Restart){
+                    holder.startWork = Ticket.State.Restart;
+                }else if(holder.startWork == Ticket.State.Restart){
                     holder.imageButton.setVisibility(View.GONE);
-                    adapter.add(new Ticket("0:00",TC.getProject()));
+                    adapter.add(new Ticket("0:00",TC.getProject(), Ticket.State.Start));
                     notifyItemChanged(adapter.size()-1);
-                    holder.startWork = State.Done;
+                    holder.startWork = Ticket.State.Done;
+                    TC.setState(holder.startWork);
+                    adapter.set(position,TC);
                 }
 
 
@@ -128,20 +149,18 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
         ImageButton imageButton;
         Time startTime;
         Time finishTime;
-        State startWork = State.Start;
+        Ticket.State startWork = Ticket.State.Start;
         boolean showTimer = true;
         public IViewHolder(View itemView) {
             super(itemView);
             projectName = (TextView) itemView.findViewById(R.id.project_name);
             timeWork = (TextView) itemView.findViewById(R.id.hour_min);
             imageButton = (ImageButton) itemView.findViewById(R.id.btn_start_work);
-            if(startWork == State.Start)
+            if(startWork == Ticket.State.Start)
                 imageButton.setBackgroundResource(R.drawable.img_start_btn);
 
         }
     }
 
-    public enum State{
-        Start,Stop,Restart, Done
-    }
+
 }
