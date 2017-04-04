@@ -1,9 +1,11 @@
 package eeinternship.com.timetracker;
 
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
@@ -15,10 +17,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
@@ -48,13 +53,19 @@ public class StartWorkActivity extends AppCompatActivity {
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
+
+    /// test
+    boolean[] checkedProject = new boolean[3];
+    final String[] projectList = {"Time Tracker", "Bug Reporter", "Project Name Test"};
+    final List<String> selectedProjects = Arrays.asList(projectList);
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
 
-        frameLayoutDim=(FrameLayout)findViewById(R.id.frame_layout_dim);
+        frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
@@ -67,7 +78,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonFirstProject = (FloatingActionButton) findViewById(R.id.btn_first_project);
         buttonSecondProject = (FloatingActionButton) findViewById(R.id.btn_second_project);
         buttonThirdProject = (FloatingActionButton) findViewById(R.id.btn_third_project);
-
 
         labelSelectProject = (TextView) findViewById(R.id.label_select_project);
         labelFinishWork = (TextView) findViewById(R.id.label_finish_work);
@@ -117,12 +127,54 @@ public class StartWorkActivity extends AppCompatActivity {
                             setAdapter();
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
+                            closeMenu();
+                            isOpen = false;
                         }
                     });
-                    v.getBackground();
                     isOpen = true;
                 }
+            }
+        });
+        //// test za meni
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        alertDialog.setTitle("PROJECTS: ");
+        alertDialog.setMultiChoiceItems(projectList, checkedProject, new DialogInterface.OnMultiChoiceClickListener() {
 
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                // Update the current focused item's checked status
+                checkedProject[i] = b;
+
+                // Get the current focused item
+                String currentItem = selectedProjects.get(i);
+
+                // Notify the current action
+                Toast.makeText(getApplicationContext(),
+                        currentItem + " " + b, Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO Auto-generated method stub
+                Toast.makeText(getApplicationContext(),
+                        "You Have Cancel the Dialog box", Toast.LENGTH_LONG)
+                        .show();
+            }
+        });
+        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+
+        buttonSelectProject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.show();
             }
         });
 
@@ -169,6 +221,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     }
                 });
         recyclerView.addOnItemTouchListener(swipeTouchListener);
+
 
     }
 
