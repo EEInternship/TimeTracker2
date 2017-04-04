@@ -227,6 +227,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         for (int position : reverseSortedPositions) {
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
                         }
                         adapter.notifyDataSetChanged();
                     }
