@@ -72,9 +72,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
     }
 
-
-
-
     @Override
     public int getItemCount() {
         return adapter.size();
