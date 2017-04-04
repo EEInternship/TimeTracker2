@@ -217,6 +217,8 @@ public class StartWorkActivity extends AppCompatActivity {
                         for (int position : reverseSortedPositions) {
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
+                            buttonOptions.show();
+                            buttonOptions.setClickable(true);
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -227,6 +229,19 @@ public class StartWorkActivity extends AppCompatActivity {
                     }
                 });
         recyclerView.addOnItemTouchListener(swipeTouchListener);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0){
+                    buttonOptions.hide();
+                    buttonOptions.setClickable(false);
+                }else if(dy<0){
+                    buttonOptions.show();
+                    buttonOptions.setClickable(true);
+                }
+            }
+        });
 
 
     }
