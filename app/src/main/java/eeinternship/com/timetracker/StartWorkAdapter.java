@@ -82,32 +82,26 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                 if(holder.startWork == Ticket.State.Start){
                     holder.startTime = new Time(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
                     holder.startWork = Ticket.State.Stop;
-                    TC.setState(holder.startWork);
-                    adapter.set(position,TC);
                     holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
                     projectTimeTracker.start();
-
+                    TC.setState(holder.startWork);
+                    adapter.set(position,TC);
                 }else if(holder.startWork == Ticket.State.Stop){
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
                     holder.finishTime = new Time(calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),calendar.get(Calendar.SECOND));
                     long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
                     Time workTime = new Time(differenceLong);
-                    TC.setState(holder.startWork);
-                    adapter.set(position,TC);
                     if(workTime.getMinutes()<10)
                         holder.timeWork.setText(workTime.getHours()-1+":0"+workTime.getMinutes());
                     else
                         holder.timeWork.setText(workTime.getHours()-1+":"+workTime.getMinutes());
-
-
                     String timeWork = holder.timeWork.getText().toString();
-
-                    TC.setTime(timeWork);
-                    adapter.set(position,TC);
-
                     holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
                     holder.startWork = Ticket.State.Restart;
+                    TC.setTime(timeWork);
+                    TC.setState(holder.startWork);
+                    adapter.set(position,TC);
                 }else if(holder.startWork == Ticket.State.Restart){
                     holder.imageButton.setVisibility(View.GONE);
                     adapter.add(new Ticket("0:00",TC.getProject(), Ticket.State.Start));
@@ -116,9 +110,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     TC.setState(holder.startWork);
                     adapter.set(position,TC);
                 }
-
-
-
             }
 
 
