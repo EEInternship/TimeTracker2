@@ -21,6 +21,9 @@ import Data.Ticket;
 public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IViewHolder> {
     ArrayList<Ticket> adapter = new ArrayList<>();
 
+
+
+
     public StartWorkAdapter(ArrayList<Ticket> adapterC) {
         this.adapter = adapterC;
     }
@@ -33,7 +36,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
     }
 
     @Override
-    public void onBindViewHolder(final IViewHolder holder, int position) {
+    public void onBindViewHolder(final IViewHolder holder, final int position) {
         Ticket TC = adapter.get(position);
         holder.projectName.setText(TC.getProject());
 
@@ -79,12 +82,13 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
                 }
 
-                notifyDataSetChanged();
+
 
             }
 
 
         });
+
 
     }
 

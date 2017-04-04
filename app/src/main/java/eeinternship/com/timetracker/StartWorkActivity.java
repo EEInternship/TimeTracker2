@@ -94,6 +94,16 @@ public class StartWorkActivity extends AppCompatActivity {
         txtOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.text_open);
         txtClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.text_close);
 
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        setAdapter();
+
+
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,11 +134,23 @@ public class StartWorkActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             ticketList.add(new Ticket("00:00", labelBtnFirstProject.getText().toString()));
-                            setAdapter();
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
+
+                            adapter.notifyDataSetChanged();
+                            closeMenu();
+                        }
+                    });
+                    buttonSecondProject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString()));
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            adapter.notifyDataSetChanged();
                             closeMenu();
                             isOpen = false;
+
                         }
                     });
                     isOpen = true;
@@ -187,14 +209,7 @@ public class StartWorkActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
         }
 
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-        setAdapter();
       
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
