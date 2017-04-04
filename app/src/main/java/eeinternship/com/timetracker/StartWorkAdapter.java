@@ -41,18 +41,19 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
-        holder.timeWork.setText(TC.getTime());
+
         if(holder.startWork != Ticket.State.Done){
             if(holder.startWork == Ticket.State.Start){
                 holder.showTimer = true;
                 holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
+                TC.setTime("0:00");
             }
             else if(holder.startWork == Ticket.State.Stop)
                 holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
             else if(holder.startWork == Ticket.State.Restart)
                 holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
 
-
+            holder.timeWork.setText(TC.getTime());
             holder.imageButton.setVisibility(View.VISIBLE);
         }
 
