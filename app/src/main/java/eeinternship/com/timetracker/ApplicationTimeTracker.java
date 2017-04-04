@@ -11,7 +11,8 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import Data.UserData;
-import Data.TestProject;
+import RESTtest.TestProject;
+import RESTtest.TestWorkDay;
 
 
 public class ApplicationTimeTracker extends Application{
@@ -25,8 +26,6 @@ public class ApplicationTimeTracker extends Application{
         }
         userData.scenariData();
     }
-
-
 
     public UserData getUserData(){
         return userData;
@@ -53,6 +52,32 @@ public class ApplicationTimeTracker extends Application{
                                     Log.e("Error","Object is null!");
                                 } else {
                                     Log.e("Error",i+" "+project.getProject_name());
+                                }
+                            }
+                        } else {
+                            Log.e("Error","Result is empty!");
+                        }
+                    }
+                });
+    }
+
+    public void getWorkDays(Context context){
+        Log.i("Running:", "Fetching work days for user.");
+        Ion.with(context)
+                .load("GET","https://nameless-oasis-70424.herokuapp.com/getworkdays/pernat.ales@gmail.com/?format=json")
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        if(result != null){
+                            Log.i("Info: Result size:",String.valueOf(result.size()));
+                            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                            for(int i=0;i<result.size();i++) {
+                                TestWorkDay workday = gson.fromJson(result.get(i), TestWorkDay.class);
+                                if (workday == null) {
+                                    Log.e("Error","Object is null!");
+                                } else {
+                                    Log.e("Error",i+" "+workday.toString());
                                 }
                             }
                         } else {

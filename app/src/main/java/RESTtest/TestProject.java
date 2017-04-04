@@ -1,4 +1,4 @@
-package Data;
+package RESTtest;
 
 /**
  * Created by Ales on 4. 04. 2017.
