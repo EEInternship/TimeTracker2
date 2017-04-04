@@ -3,12 +3,13 @@
     package="eeinternship.com.timetracker">
 
     <application
+        android:name=".ApplicationTimeTracker"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/timetracker_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,6 +17,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".StartWorkActivity"></activity>
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>
