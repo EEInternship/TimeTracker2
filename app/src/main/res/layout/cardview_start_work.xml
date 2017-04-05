@@ -97,8 +97,7 @@
                     android:id="@+id/btn_start_work"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/img_start_btn" />
+                    android:layout_gravity="center" />
             </LinearLayout>
             <!--display time-->
             <LinearLayout
@@ -112,7 +111,6 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="00:00"
                     android:textColor="#000000"
                     android:textSize="22dp" />
             </LinearLayout>
