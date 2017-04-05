@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -64,6 +65,9 @@ public class StartWorkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("TIME TRACKER");
 
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
@@ -228,6 +232,8 @@ public class StartWorkActivity extends AppCompatActivity {
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                            buttonOptions.show();
+                            buttonOptions.setClickable(true);
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -237,6 +243,19 @@ public class StartWorkActivity extends AppCompatActivity {
                     }
                 });
         recyclerView.addOnItemTouchListener(swipeTouchListener);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0){
+                    buttonOptions.hide();
+                    buttonOptions.setClickable(false);
+                }else if(dy<0){
+                    buttonOptions.show();
+                    buttonOptions.setClickable(true);
+                }
+            }
+        });
 
 
     }

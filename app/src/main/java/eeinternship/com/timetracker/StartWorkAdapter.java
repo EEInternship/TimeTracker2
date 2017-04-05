@@ -128,9 +128,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             textView.setText(hours + ":"+minutes);
     }
 
-
-
-
     @Override
     public int getItemCount() {
         return adapter.size();
