@@ -54,7 +54,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
-
     /// test
     boolean[] checkedProject = new boolean[3];
     final String[] projectList = {"Time Tracker", "Bug Reporter", "Project Name Test"};
@@ -107,7 +106,6 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         setAdapter();
 
-
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,7 +138,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-
                             adapter.notifyDataSetChanged();
                             closeMenu();
                         }
