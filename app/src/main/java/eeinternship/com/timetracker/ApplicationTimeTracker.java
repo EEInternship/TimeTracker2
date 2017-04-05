@@ -100,6 +100,53 @@ public class ApplicationTimeTracker extends Application{
         }
     }
 
+    public void addWorkDay(final Context context) {
+        Log.i("Running:", "Sending work day data.");
+        if (isNetworkAvailable()) {
+            Ion.with(context)
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workdays/")
+                    .setMultipartParameter("user.email", "test@test.com")
+                    .setMultipartParameter("date", "2017-04-05")
+                    .setMultipartParameter("starting_time", "7:30")
+                    .setMultipartParameter("finish_time", "16:09")
+                    .asString()
+                    .setCallback(new FutureCallback<String>() {
+                        @Override
+                        public void onCompleted(Exception e, String result) {
+                            if(result != null) {
+                                Log.i("Info: ",result);
+                            } else {
+                                Log.e("Error: ",result);
+                            }
+                        }
+                    });
+        }
+    }
+
+    public void addWorkingOn(final Context context) {
+        Log.i("Running:", "Sending work on data.");
+        if (isNetworkAvailable()) {
+            Ion.with(context)
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
+                    .setMultipartParameter("user.email", "test@test.com")
+                    .setMultipartParameter("project.project_name","TimeTracker-active")
+                    .setMultipartParameter("date", "2017-04-05")
+                    .setMultipartParameter("starting_time", "7:30")
+                    .setMultipartParameter("finish_time", "16:09")
+                    .setMultipartParameter("description", "Testing REST API from phone")
+                    .asString()
+                    .setCallback(new FutureCallback<String>() {
+                        @Override
+                        public void onCompleted(Exception e, String result) {
+                            if(result != null) {
+                                Log.i("Info: ",result);
+                            } else {
+                                Log.e("Error: ",result);
+                            }
+                        }
+                    });
+        }
+    }
     private boolean isNetworkAvailable()
     {
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
