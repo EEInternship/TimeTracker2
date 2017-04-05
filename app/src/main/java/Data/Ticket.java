@@ -10,6 +10,7 @@ public class Ticket {
     private String time;
     private String project;
     private State state;
+    private Selected selected;
 
     public Ticket(ArrayList<Ticket> arrayList) {
     }
@@ -18,10 +19,11 @@ public class Ticket {
 
     }
 
-    public Ticket(String hour, String project,State _state) {
+    public Ticket(String hour, String project,State _state,Selected _selected) {
         this.time = hour;
         this.project = project;
         state = _state;
+        selected = _selected;
     }
 
     public String getTime() {
@@ -43,10 +45,20 @@ public class Ticket {
         return project;
     }
 
+
+    public Selected getSelected(){return selected;}
+    public void setSelected(Selected _selected){selected=_selected;}
+
     public void setProject(String project) {
         this.project = project;
     }
     public enum State{
         Start,Stop,Restart,Done
     }
+
+    public enum Selected{
+        First,Second,Third,Other
+    }
+
+
 }
