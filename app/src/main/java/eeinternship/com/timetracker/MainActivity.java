@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
+        applicationTimeTracker.getActiveProjects(getApplicationContext());
+        applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext());
+        applicationTimeTracker.addWorkDay(getApplicationContext());
+        applicationTimeTracker.addWorkingOn(getApplicationContext());
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 

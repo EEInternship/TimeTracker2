@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,6 +13,7 @@
         android:id="@+id/recyclerview_start_work"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <FrameLayout
         android:id="@+id/frame_layout_dim"
         android:layout_width="match_parent"
@@ -182,7 +183,7 @@
             android:elevation="0.0dp"
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
-            app:backgroundTint="#3ecaff"
+            app:backgroundTint="#3f51b5"
             app:pressedTranslationZ="12dp" />
     </LinearLayout>
     <!--project three-->
@@ -221,7 +222,7 @@
             android:elevation="0dp"
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
-            app:backgroundTint="#3ecaff"
+            app:backgroundTint="#9c27b0"
             app:pressedTranslationZ="12dp" />
     </LinearLayout>
-</FrameLayout>
+</android.support.design.widget.CoordinatorLayout>
