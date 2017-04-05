@@ -109,23 +109,7 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
 
-                for (Project row : projectArrayList) {
-                    popupMenu.getMenu().add(row.projectName);
-                }
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        ticketList.add(new Ticket("00:00", menuItem.getTitle().toString()));
-                        setAdapter();
-                        userData.setTicketList(ticketList);
-                        applicationTimeTracker.setUserData(userData);
-
-                        return true;
-                    }
-                });
-                popupMenu.show();*/
 
                 if (isOpen) {
                     closeMenu();
@@ -135,7 +119,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start));
+                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
@@ -145,7 +129,19 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start));
+                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second));
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            adapter.notifyDataSetChanged();
+                            closeMenu();
+                            isOpen = false;
+
+                        }
+                    });
+                    buttonThirdProject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();

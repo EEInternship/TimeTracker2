@@ -1,5 +1,6 @@
 package eeinternship.com.timetracker;
 
+import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -41,9 +42,17 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
 
-       /* if(TC.getProject().equals("PROJECT ONE")){
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#000000"));
-        }*/
+       if(TC.getSelected() == Ticket.Selected.First){
+           holder.colorOfProject.setBackgroundColor(Color.parseColor("#3ecaff"));
+       }else if(TC.getSelected() == Ticket.Selected.Second){
+           holder.colorOfProject.setBackgroundColor(Color.parseColor("#3f51b5"));
+       }else if(TC.getSelected() == Ticket.Selected.Third){
+           holder.colorOfProject.setBackgroundColor(Color.parseColor("#9c27b0"));
+       }else{
+           holder.colorOfProject.setBackgroundColor(Color.parseColor("#000000"));
+       }
+
+
 
         if (holder.startWork != Ticket.State.Done) {
             if (holder.startWork == Ticket.State.Start) {
@@ -106,7 +115,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setVisibility(View.GONE);
-                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start));
+                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start,TC.getSelected()));
                     notifyItemChanged(adapter.size() - 1);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
