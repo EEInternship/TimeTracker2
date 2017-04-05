@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class Ticket {
     private String time;
     private String project;
+    private State state;
 
     public Ticket(ArrayList<Ticket> arrayList) {
     }
@@ -17,9 +18,10 @@ public class Ticket {
 
     }
 
-    public Ticket(String hour, String project) {
+    public Ticket(String hour, String project,State _state) {
         this.time = hour;
         this.project = project;
+        state = _state;
     }
 
     public String getTime() {
@@ -30,11 +32,21 @@ public class Ticket {
         this.time = time;
     }
 
+    public void setState(State _state){
+        state=_state;
+    }
+    public State getState(){
+        return state;
+    }
+
     public String getProject() {
         return project;
     }
 
     public void setProject(String project) {
         this.project = project;
+    }
+    public enum State{
+        Start,Stop,Restart,Done
     }
 }
