@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,6 +44,7 @@ public class StartWorkActivity extends AppCompatActivity {
     private ArrayList<Project> projectArrayList;
     private PopupMenu popupMenu;
 
+
     // dim
     FrameLayout frameLayoutDim;
 
@@ -65,6 +67,8 @@ public class StartWorkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIME TRACKER");
 
@@ -109,23 +113,7 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*popupMenu = new PopupMenu(StartWorkActivity.this, buttonNewTicket);
 
-                for (Project row : projectArrayList) {
-                    popupMenu.getMenu().add(row.projectName);
-                }
-
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    public boolean onMenuItemClick(MenuItem menuItem) {
-                        ticketList.add(new Ticket("00:00", menuItem.getTitle().toString()));
-                        setAdapter();
-                        userData.setTicketList(ticketList);
-                        applicationTimeTracker.setUserData(userData);
-
-                        return true;
-                    }
-                });
-                popupMenu.show();*/
 
                 if (isOpen) {
                     closeMenu();
@@ -135,7 +123,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start));
+                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
@@ -145,7 +133,19 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start));
+                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second));
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            adapter.notifyDataSetChanged();
+                            closeMenu();
+                            isOpen = false;
+
+                        }
+                    });
+                    buttonThirdProject.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
@@ -161,23 +161,17 @@ public class StartWorkActivity extends AppCompatActivity {
         //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("PROJECTS: ");
-        alertDialog.setMultiChoiceItems(projectList, checkedProject, new DialogInterface.OnMultiChoiceClickListener() {
+        alertDialog.setSingleChoiceItems(projectList, 2,
+                new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                // Update the current focused item's checked status
-                checkedProject[i] = b;
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // TODO Auto-generated method stub
+                        String selected = projectList[arg1].toString();
 
-                // Get the current focused item
-                String currentItem = selectedProjects.get(i);
-
-                // Notify the current action
-                Toast.makeText(getApplicationContext(),
-                        currentItem + " " + b, Toast.LENGTH_SHORT).show();
-
-            }
-
-        });
+                        Toast.makeText(getApplicationContext(), selected.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
@@ -203,21 +197,24 @@ public class StartWorkActivity extends AppCompatActivity {
 
         // status bar color
         Window window = this.getWindow();
+    /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
+        }else{
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorGreenBtn));
         }
 
 
-      
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
                         return true;
                     }
+
                     @Override
                     public boolean canSwipeRight(int position) {
                         return false;
@@ -244,17 +241,15 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0){
+                if (dy > 0) {
                     buttonOptions.hide();
                     buttonOptions.setClickable(false);
-                }else if(dy<0){
+                } else if (dy < 0) {
                     buttonOptions.show();
                     buttonOptions.setClickable(true);
                 }
             }
         });
-
-
     }
 
     private void setAdapter() {
@@ -312,5 +307,15 @@ public class StartWorkActivity extends AppCompatActivity {
         labelBtnThirdProject.startAnimation(txtOpen);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
 
