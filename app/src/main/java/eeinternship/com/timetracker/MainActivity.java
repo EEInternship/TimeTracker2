@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
+
+
         //THE PART THAT WORKS WITH THE REST SERVICE
         //chooseAccount();
 
