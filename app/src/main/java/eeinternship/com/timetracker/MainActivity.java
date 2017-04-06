@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnOpen,btnStartWork,btnProfile;
 
+    String accountName;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,16 +39,10 @@ public class MainActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
-        /*
 
-        THE PART THAT WORKS WITH THE REST SERVICE
 
-        chooseAccount();
-        applicationTimeTracker.getActiveProjects(getApplicationContext());
-        applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext());
-        applicationTimeTracker.addWorkDay(getApplicationContext());
-        applicationTimeTracker.addWorkingOn(getApplicationContext());
-        */
+        //THE PART THAT WORKS WITH THE REST SERVICE
+        //chooseAccount();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -100,8 +96,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 999&& resultCode == RESULT_OK) {
-            String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.i("Choosen accountName:", accountName);
+            applicationTimeTracker.getActiveProjects(getApplicationContext());
+            applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),accountName);
+            applicationTimeTracker.addWorkDay(getApplicationContext(),accountName);
+            applicationTimeTracker.addWorkingOn(getApplicationContext(),accountName);
         }
     }
 }
