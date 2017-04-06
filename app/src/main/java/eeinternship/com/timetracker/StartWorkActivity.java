@@ -115,8 +115,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 if (isOpen) {
                     closeMenu();
                     isOpen = false;
@@ -140,7 +138,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
                             closeMenu();
-                            isOpen = false;
 
                         }
                     });
@@ -152,11 +149,8 @@ public class StartWorkActivity extends AppCompatActivity {
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
                             closeMenu();
-                            isOpen = false;
-
                         }
                     });
-                    isOpen = true;
                 }
             }
         });
@@ -267,6 +261,8 @@ public class StartWorkActivity extends AppCompatActivity {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
         buttonOptions.startAnimation(fabRotateClose);
 
+        isOpen = false;
+
         buttonSelectProject.startAnimation(fabClose);
         buttonSelectProject.setClickable(false);
         labelSelectProject.startAnimation(txtClose);
@@ -291,6 +287,8 @@ public class StartWorkActivity extends AppCompatActivity {
     private void openMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
         buttonOptions.startAnimation(fabRotate);
+
+        isOpen = true;
 
         buttonSelectProject.startAnimation(fabOpen);
         buttonSelectProject.setClickable(true);
