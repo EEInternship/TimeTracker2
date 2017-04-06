@@ -23,12 +23,15 @@ import android.widget.Toast;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
+import Data.UploadSpreadsheetData;
 import Data.UserData;
 
 public class StartWorkActivity extends AppCompatActivity {
@@ -50,12 +53,9 @@ public class StartWorkActivity extends AppCompatActivity {
     Animation fabOpen, fabClose, fabRotate, fabRotateClose, txtOpen, txtClose;
     boolean isOpen = false;
 
-    String[] name, hour;
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
-    /// test
-    boolean[] checkedProject = new boolean[3];
 
 
 
@@ -174,7 +174,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        // TODO Auto-generated method stub
                         String selectedProject = projectList[arg1].toString();
                         ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other));
                         userData.setTicketList(ticketList);
@@ -192,11 +191,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
             }
         });
-        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-            }
-        });
 
         buttonSelectProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -207,7 +201,22 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
 
+        buttonFinishWork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UploadSpreadsheetData data = userData.getUploadSpreadsheetData();
+                Calendar calender = Calendar.getInstance();
+                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                int cMinute = calender.get(Calendar.MINUTE);
+                data.finishTime = new Time(cHourOfDay,cMinute,00);
+                userData.setTicketList(new ArrayList<Ticket>());
+                userData.addUploadRepository(data);
+                applicationTimeTracker.setUserData(userData);
+                finish();
 
+                //TODO Send data to Database
+            }
+        });
 
 
 
