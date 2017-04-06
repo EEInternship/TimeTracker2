@@ -14,7 +14,7 @@ public  class UserData {
     UploadSpreadsheetData uploadSpreadsheetData;
     ArrayList<Ticket> ticketList;
 
-    private Account userAcount;
+    private String userAcount;
 
     public UserData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
@@ -91,12 +91,16 @@ public  class UserData {
 
 
 
-    public void setUserAcount(Account account){
+    public void setUserAcount(String account){
         userAcount = account;
     }
 
-    public Account getUserAcount(){
-        return userAcount;
+    public boolean getUserAcount(){
+        if(userAcount == null)
+            return false;
+        else
+            return true;
+
     }
 
 }
