@@ -38,12 +38,12 @@ public class ProfileActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        } else {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorGreenBtn));
+
         }
-        
+
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
 

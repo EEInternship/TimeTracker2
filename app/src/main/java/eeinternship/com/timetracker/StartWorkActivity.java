@@ -1,6 +1,8 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -23,12 +25,15 @@ import android.widget.Toast;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
+import Data.UploadSpreadsheetData;
 import Data.UserData;
 
 public class StartWorkActivity extends AppCompatActivity {
@@ -41,8 +46,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
-    private ArrayList<Project> projectArrayList;
-    private PopupMenu popupMenu;
 
 
     // dim
@@ -52,14 +55,12 @@ public class StartWorkActivity extends AppCompatActivity {
     Animation fabOpen, fabClose, fabRotate, fabRotateClose, txtOpen, txtClose;
     boolean isOpen = false;
 
-    String[] name, hour;
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
-    /// test
-    boolean[] checkedProject = new boolean[3];
-    final String[] projectList = {"Time Tracker", "Bug Reporter", "Project Name Test"};
-    final List<String> selectedProjects = Arrays.asList(projectList);
+
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,7 +77,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
-        projectArrayList = userData.getProjectList();
         ticketList = userData.getTicketList();
 
         buttonOptions = (FloatingActionButton) findViewById(R.id.btn_options);
@@ -113,8 +113,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 if (isOpen) {
                     closeMenu();
                     isOpen = false;
@@ -138,7 +136,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
                             closeMenu();
-                            isOpen = false;
 
                         }
                     });
@@ -150,14 +147,21 @@ public class StartWorkActivity extends AppCompatActivity {
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
                             closeMenu();
-                            isOpen = false;
-
                         }
                     });
-                    isOpen = true;
                 }
             }
         });
+        final String[] projectList = new String[userData.getProjectList().size()];
+        int projectListLength = 0;
+        for (Project data: userData.getProjectList()) {
+            projectList[projectListLength] = data.projectName;
+            projectListLength++;
+        }
+
+
+
+
         //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("PROJECTS: ");
@@ -166,25 +170,21 @@ public class StartWorkActivity extends AppCompatActivity {
 
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        // TODO Auto-generated method stub
-                        String selected = projectList[arg1].toString();
+                        String selectedProject = projectList[arg1].toString();
+                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other));
+                        userData.setTicketList(ticketList);
+                        applicationTimeTracker.setUserData(userData);
+                        adapter.notifyDataSetChanged();
+                        closeMenu();
 
-                        Toast.makeText(getApplicationContext(), selected.toString(), Toast.LENGTH_LONG).show();
+                        arg0.cancel();
                     }
                 });
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(),
-                        "You Have Cancel the Dialog box", Toast.LENGTH_LONG)
-                        .show();
-            }
-        });
-        alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+
             }
         });
 
@@ -195,16 +195,42 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
 
+
+        // action bar color
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
+
+
+
+        buttonFinishWork.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UploadSpreadsheetData data = userData.getUploadSpreadsheetData();
+                Calendar calender = Calendar.getInstance();
+                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                int cMinute = calender.get(Calendar.MINUTE);
+                data.finishTime = new Time(cHourOfDay,cMinute,00);
+                userData.setTicketList(new ArrayList<Ticket>());
+                userData.addUploadRepository(data);
+                applicationTimeTracker.setUserData(userData);
+                finish();
+
+                //TODO Send data to Database
+            }
+        });
+
+
+
+
         // status bar color
         Window window = this.getWindow();
     /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }else{
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorGreenBtn));
+
         }
 
 
@@ -275,6 +301,8 @@ public class StartWorkActivity extends AppCompatActivity {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
         buttonOptions.startAnimation(fabRotateClose);
 
+        isOpen = false;
+
         buttonSelectProject.startAnimation(fabClose);
         buttonSelectProject.setClickable(false);
         labelSelectProject.startAnimation(txtClose);
@@ -299,6 +327,8 @@ public class StartWorkActivity extends AppCompatActivity {
     private void openMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
         buttonOptions.startAnimation(fabRotate);
+
+        isOpen = true;
 
         buttonSelectProject.startAnimation(fabOpen);
         buttonSelectProject.setClickable(true);
