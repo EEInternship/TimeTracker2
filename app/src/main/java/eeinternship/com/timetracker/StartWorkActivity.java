@@ -1,6 +1,8 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -111,8 +113,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 if (isOpen) {
                     closeMenu();
                     isOpen = false;
@@ -136,7 +136,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
                             closeMenu();
-                            isOpen = false;
 
                         }
                     });
@@ -148,11 +147,8 @@ public class StartWorkActivity extends AppCompatActivity {
                             applicationTimeTracker.setUserData(userData);
                             adapter.notifyDataSetChanged();
                             closeMenu();
-                            isOpen = false;
-
                         }
                     });
-                    isOpen = true;
                 }
             }
         });
@@ -200,6 +196,10 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
 
+        // action bar color
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
+
+
 
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,14 +220,17 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
 
+
         // status bar color
         Window window = this.getWindow();
     /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
+
         }
 
 
@@ -298,6 +301,8 @@ public class StartWorkActivity extends AppCompatActivity {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
         buttonOptions.startAnimation(fabRotateClose);
 
+        isOpen = false;
+
         buttonSelectProject.startAnimation(fabClose);
         buttonSelectProject.setClickable(false);
         labelSelectProject.startAnimation(txtClose);
@@ -322,6 +327,8 @@ public class StartWorkActivity extends AppCompatActivity {
     private void openMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
         buttonOptions.startAnimation(fabRotate);
+
+        isOpen = true;
 
         buttonSelectProject.startAnimation(fabOpen);
         buttonSelectProject.setClickable(true);
