@@ -10,9 +10,4 @@
         android:id="@+id/expandle_listview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ExpandableListView>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Isak"/>
-
 </RelativeLayout>
