@@ -1,6 +1,8 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -195,6 +197,9 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
 
+        // action bar color
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
+
         // status bar color
         Window window = this.getWindow();
     /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -202,9 +207,10 @@ public class StartWorkActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }else{
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorGreenBtn));
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+
+        } else {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
         }
 
 
