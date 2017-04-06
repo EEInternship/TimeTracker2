@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
@@ -26,18 +27,23 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("MONTHLY OVERVIEW");
 
         // status bar color
         Window window = this.getWindow();
+    /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
+        } else {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorGreenBtn));
         }
-
+        
         // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
 
@@ -69,5 +75,17 @@ public class ProfileActivity extends AppCompatActivity {
         top250.add("12 Angry Men");
 
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
