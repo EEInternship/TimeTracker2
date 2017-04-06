@@ -251,7 +251,21 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonOptions.show();
                     buttonOptions.setClickable(true);
                 }
+                /*if(dy>0 || dy<0 && buttonOptions.isShown())
+                {
+                    buttonOptions.hide();
+                    buttonOptions.setClickable(false);
+                }*/
             }
+
+            /*@Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(newState==RecyclerView.SCROLL_STATE_IDLE)
+                {
+                    buttonOptions.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }*/
         });
 
 
