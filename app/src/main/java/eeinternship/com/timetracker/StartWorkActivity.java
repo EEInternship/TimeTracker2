@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,6 +44,7 @@ public class StartWorkActivity extends AppCompatActivity {
     private ArrayList<Project> projectArrayList;
     private PopupMenu popupMenu;
 
+
     // dim
     FrameLayout frameLayoutDim;
 
@@ -65,6 +67,8 @@ public class StartWorkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_work);
 
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIME TRACKER");
 
@@ -157,23 +161,17 @@ public class StartWorkActivity extends AppCompatActivity {
         //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("PROJECTS: ");
-        alertDialog.setMultiChoiceItems(projectList, checkedProject, new DialogInterface.OnMultiChoiceClickListener() {
+        alertDialog.setSingleChoiceItems(projectList, 2,
+                new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                // Update the current focused item's checked status
-                checkedProject[i] = b;
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        // TODO Auto-generated method stub
+                        String selected = projectList[arg1].toString();
 
-                // Get the current focused item
-                String currentItem = selectedProjects.get(i);
-
-                // Notify the current action
-                Toast.makeText(getApplicationContext(),
-                        currentItem + " " + b, Toast.LENGTH_SHORT).show();
-
-            }
-
-        });
+                        Toast.makeText(getApplicationContext(), selected.toString(), Toast.LENGTH_LONG).show();
+                    }
+                });
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
@@ -199,21 +197,24 @@ public class StartWorkActivity extends AppCompatActivity {
 
         // status bar color
         Window window = this.getWindow();
+    /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
+        }else{
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorGreenBtn));
         }
 
 
-      
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
                         return true;
                     }
+
                     @Override
                     public boolean canSwipeRight(int position) {
                         return false;
@@ -240,17 +241,29 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0){
+                if (dy > 0) {
                     buttonOptions.hide();
                     buttonOptions.setClickable(false);
-                }else if(dy<0){
+                } else if (dy < 0) {
                     buttonOptions.show();
                     buttonOptions.setClickable(true);
                 }
+                /*if(dy>0 || dy<0 && buttonOptions.isShown())
+                {
+                    buttonOptions.hide();
+                    buttonOptions.setClickable(false);
+                }*/
             }
+
+            /*@Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if(newState==RecyclerView.SCROLL_STATE_IDLE)
+                {
+                    buttonOptions.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }*/
         });
-
-
     }
 
     private void setAdapter() {
@@ -308,5 +321,15 @@ public class StartWorkActivity extends AppCompatActivity {
         labelBtnThirdProject.startAnimation(txtOpen);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }
 

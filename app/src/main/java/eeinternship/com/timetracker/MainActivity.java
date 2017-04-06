@@ -1,11 +1,13 @@
 package eeinternship.com.timetracker;
 
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnOpen,btnStartWork,btnProfile;
 
+    String accountName;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
-        applicationTimeTracker.getActiveProjects(getApplicationContext());
-        applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext());
-        applicationTimeTracker.addWorkDay(getApplicationContext());
-        applicationTimeTracker.addWorkingOn(getApplicationContext());
+
+
+        //THE PART THAT WORKS WITH THE REST SERVICE
+        //chooseAccount();
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -80,5 +84,24 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(profileActivity);
             }
         });
+    }
+
+    public void chooseAccount(){
+        Intent intent = AccountManager.newChooseAccountIntent(null, null, new String[]{"com.google"},
+                false, null, null, null, null);
+        startActivityForResult(intent, 999);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 999&& resultCode == RESULT_OK) {
+            accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+            Log.i("Choosen accountName:", accountName);
+            applicationTimeTracker.getActiveProjects(getApplicationContext());
+            applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),accountName);
+            applicationTimeTracker.addWorkDay(getApplicationContext(),accountName);
+            applicationTimeTracker.addWorkingOn(getApplicationContext(),accountName);
+        }
     }
 }

@@ -65,16 +65,15 @@ public class ApplicationTimeTracker extends Application{
                     });
         } else {
             Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
-
         }
 
     }
 
-    public void getWorkDaysAndWorkingOn(Context context){
+    public void getWorkDaysAndWorkingOn(Context context, String email){
         Log.i("Running:", "Fetching work days for user.");
         if(isNetworkAvailable()){
             Ion.with(context)
-                    .load("GET","https://nameless-oasis-70424.herokuapp.com/getworkingon/test@test.com/?format=json")
+                    .load("GET","https://nameless-oasis-70424.herokuapp.com/getworkingon/"+email+"/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -100,13 +99,13 @@ public class ApplicationTimeTracker extends Application{
         }
     }
 
-    public void addWorkDay(final Context context) {
+    public void addWorkDay(final Context context,String email) {
         Log.i("Running:", "Sending work day data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     .load("POST", "https://nameless-oasis-70424.herokuapp.com/workdays/")
-                    .setMultipartParameter("user.email", "test@test.com")
-                    .setMultipartParameter("date", "2017-04-05")
+                    .setMultipartParameter("user.email", email)
+                    .setMultipartParameter("date", "2017-04-06")
                     .setMultipartParameter("starting_time", "7:30")
                     .setMultipartParameter("finish_time", "16:09")
                     .asString()
@@ -120,17 +119,19 @@ public class ApplicationTimeTracker extends Application{
                             }
                         }
                     });
+        } else {
+            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
         }
     }
 
-    public void addWorkingOn(final Context context) {
+    public void addWorkingOn(final Context context, String email) {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
-                    .setMultipartParameter("user.email", "test@test.com")
+                    .setMultipartParameter("user.email", email)
                     .setMultipartParameter("project.project_name","TimeTracker-active")
-                    .setMultipartParameter("date", "2017-04-05")
+                    .setMultipartParameter("date", "2017-04-06")
                     .setMultipartParameter("starting_time", "7:30")
                     .setMultipartParameter("finish_time", "16:09")
                     .setMultipartParameter("description", "Testing REST API from phone")
@@ -145,13 +146,16 @@ public class ApplicationTimeTracker extends Application{
                             }
                         }
                     });
+        } else {
+            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
         }
     }
-    private boolean isNetworkAvailable()
-    {
+
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
+
 }
