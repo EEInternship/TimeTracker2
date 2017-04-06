@@ -14,8 +14,6 @@ public class UploadSpreadsheetData {
     public Time finishTime;
     public Time workingTime;
     public Time overtime;
-    public Time projectStartingTime;
-    public Time projectFinishTime;
     public String description;
     public Calendar date;
 
