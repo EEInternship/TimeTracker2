@@ -10,7 +10,6 @@ import java.util.Calendar;
  * Created by Klemen on 13. 03. 2017.
  */
 public  class UserData {
-    ArrayList<DownloadSpreadsheetData> downloadSpreadsheetDataList;
     ArrayList<Project> projectList;
     UploadSpreadsheetData uploadSpreadsheetData;
     ArrayList<Ticket> ticketList;
@@ -19,7 +18,6 @@ public  class UserData {
 
     public UserData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
-        downloadSpreadsheetDataList = new ArrayList<DownloadSpreadsheetData>();
         ticketList = new ArrayList<>();
         projectList = new ArrayList<>();
 
@@ -38,10 +36,6 @@ public  class UserData {
         projectList.add(project3);
     }
 
-
-    public void addDownloadRepository(DownloadSpreadsheetData downloadSpreadsheetData){
-        this.downloadSpreadsheetDataList.add(downloadSpreadsheetData);
-    }
     public void addUploadRepository(UploadSpreadsheetData data){
         this.uploadSpreadsheetData = data;
     }
@@ -53,19 +47,7 @@ public  class UserData {
     public void addProject(Project project){
         projectList.add(project);
     }
-    public ArrayList<String> DownloadSpreadsheetToString(){
-        ArrayList<String> dataListStrings = new ArrayList<>();
-        for (DownloadSpreadsheetData row: downloadSpreadsheetDataList){
-            int dayOfWeek = row.date.get(Calendar.DAY_OF_WEEK);
-            String dayShort = ShortDay(dayOfWeek);
-            String date = String.valueOf(row.date.get(Calendar.DAY_OF_MONTH)) + "." + String.valueOf(row.date.get(Calendar.MONTH)+1) + "." +String.valueOf(row.date.get(Calendar.YEAR));
-            String hours = String.valueOf(row.workingHours);
-            String stringRow = dayShort + " " + date + " " + hours;
-            dataListStrings.add(stringRow);
-        }
-        return dataListStrings;
 
-    }
     private String ShortDay(int dayOfWeek){
         String day = "";
         switch (dayOfWeek){
