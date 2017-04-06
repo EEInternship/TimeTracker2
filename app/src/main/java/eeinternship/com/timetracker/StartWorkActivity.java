@@ -41,8 +41,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
-    private ArrayList<Project> projectArrayList;
-    private PopupMenu popupMenu;
 
 
     // dim
@@ -58,8 +56,9 @@ public class StartWorkActivity extends AppCompatActivity {
 
     /// test
     boolean[] checkedProject = new boolean[3];
-    final String[] projectList = {"Time Tracker", "Bug Reporter", "Project Name Test"};
-    final List<String> selectedProjects = Arrays.asList(projectList);
+
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -76,7 +75,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
-        projectArrayList = userData.getProjectList();
         ticketList = userData.getTicketList();
 
         buttonOptions = (FloatingActionButton) findViewById(R.id.btn_options);
@@ -158,6 +156,16 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });
+        final String[] projectList = new String[userData.getProjectList().size()];
+        int projectListLength = 0;
+        for (Project data: userData.getProjectList()) {
+            projectList[projectListLength] = data.projectName;
+            projectListLength++;
+        }
+
+
+
+
         //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setTitle("PROJECTS: ");
@@ -167,19 +175,21 @@ public class StartWorkActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         // TODO Auto-generated method stub
-                        String selected = projectList[arg1].toString();
+                        String selectedProject = projectList[arg1].toString();
+                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other));
+                        userData.setTicketList(ticketList);
+                        applicationTimeTracker.setUserData(userData);
+                        adapter.notifyDataSetChanged();
+                        closeMenu();
 
-                        Toast.makeText(getApplicationContext(), selected.toString(), Toast.LENGTH_LONG).show();
+                        arg0.cancel();
                     }
                 });
         alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
-                Toast.makeText(getApplicationContext(),
-                        "You Have Cancel the Dialog box", Toast.LENGTH_LONG)
-                        .show();
+
             }
         });
         alertDialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -194,6 +204,12 @@ public class StartWorkActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+
+
+
+
+
+
 
         // status bar color
         Window window = this.getWindow();
