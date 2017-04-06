@@ -213,7 +213,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 userData.addUploadRepository(data);
                 applicationTimeTracker.setUserData(userData);
                 finish();
-
+                //ToDo Clear UploadRepository
                 //TODO Send data to Database
             }
         });
@@ -254,6 +254,9 @@ public class StartWorkActivity extends AppCompatActivity {
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
                             buttonOptions.show();
                             buttonOptions.setClickable(true);
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            //TODO send to Database
                         }
                         adapter.notifyDataSetChanged();
                     }
