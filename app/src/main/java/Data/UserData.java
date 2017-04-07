@@ -48,33 +48,6 @@ public  class UserData {
         projectList.add(project);
     }
 
-    private String ShortDay(int dayOfWeek){
-        String day = "";
-        switch (dayOfWeek){
-            case 1:
-                day = "Sun";
-                break;
-            case 2:
-                day = "Mon";
-                break;
-            case 3:
-                day = "Tue";
-                break;
-            case 4:
-                day ="Wed";
-                break;
-            case 5:
-                day="Thu";
-                break;
-            case 6:
-                day="Fri";
-                break;
-            case 7:
-                day="Sat";
-                break;
-        }
-        return day;
-    }
 
 
     public ArrayList<Project> getProjectList()
@@ -95,12 +68,13 @@ public  class UserData {
         userAcount = account;
     }
 
-    public boolean getUserAcount(){
+    public boolean userAccountIsSet(){
         if(userAcount == null)
             return false;
         else
             return true;
 
     }
+    public String getUserAcount(){return userAcount;}
 
 }
