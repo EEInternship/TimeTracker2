@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
             userData.setUserAcount(accountName);
             applicationTimeTracker.setUserData(userData);
         }
+        ///
 
 
         ActionBar actionBar = getSupportActionBar();
