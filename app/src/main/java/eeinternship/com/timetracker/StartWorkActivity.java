@@ -11,7 +11,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,15 +20,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
@@ -57,9 +53,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
-
-
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -154,18 +147,14 @@ public class StartWorkActivity extends AppCompatActivity {
         });
         final String[] projectList = new String[userData.getProjectList().size()];
         int projectListLength = 0;
-        for (Project data: userData.getProjectList()) {
+        for (Project data : userData.getProjectList()) {
             projectList[projectListLength] = data.projectName;
             projectListLength++;
         }
 
-
-
-
         //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("PROJECTS: ");
-        alertDialog.setSingleChoiceItems(projectList, 2,
+        alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
 
                     @Override
@@ -200,7 +189,6 @@ public class StartWorkActivity extends AppCompatActivity {
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
 
 
-
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,7 +196,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 Calendar calender = Calendar.getInstance();
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
-                data.finishTime = new Time(cHourOfDay,cMinute,00);
+                data.finishTime = new Time(cHourOfDay, cMinute, 00);
                 userData.setTicketList(new ArrayList<Ticket>());
                 userData.addUploadRepository(data);
                 applicationTimeTracker.setUserData(userData);
@@ -219,19 +207,16 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
 
-
-
         // status bar color
         Window window = this.getWindow();
-    /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        } else {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-
         }
+
 
 
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
