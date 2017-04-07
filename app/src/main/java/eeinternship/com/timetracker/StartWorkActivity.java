@@ -12,8 +12,11 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.SimpleOnItemTouchListener;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -42,7 +45,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
-
 
     // dim
     FrameLayout frameLayoutDim;
@@ -152,7 +154,6 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-        //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
@@ -184,10 +185,8 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
 
-
         // action bar color
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
-
 
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +215,6 @@ public class StartWorkActivity extends AppCompatActivity {
         } else {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
         }
-
 
 
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
@@ -262,11 +260,6 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonOptions.show();
                     buttonOptions.setClickable(true);
                 }
-                /*if(dy>0 || dy<0 && buttonOptions.isShown())
-                {
-                    buttonOptions.hide();
-                    buttonOptions.setClickable(false);
-                }*/
             }
 
             /*@Override
@@ -310,6 +303,8 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.startAnimation(fabClose);
         buttonThirdProject.setClickable(false);
         labelBtnThirdProject.startAnimation(txtClose);
+
+        setViewAndChildrenEnabled(recyclerView, true);
     }
 
     private void openMenu() {
@@ -337,6 +332,8 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.startAnimation(fabOpen);
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
+
+        setViewAndChildrenDisabled(recyclerView, false);
     }
 
     @Override
@@ -347,6 +344,28 @@ public class StartWorkActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private static void setViewAndChildrenEnabled(View view, boolean enabled) {
+        view.setEnabled(enabled);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                setViewAndChildrenDisabled(child, enabled);
+            }
+        }
+    }
+
+    private static void setViewAndChildrenDisabled(View view, boolean disabled) {
+        view.setEnabled(disabled);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                setViewAndChildrenEnabled(child, disabled);
+            }
         }
     }
 }

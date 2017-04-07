@@ -43,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
         if(!userData.userAccountIsSet()){
             chooseAccount();
         }
-        ///
-
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();

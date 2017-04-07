@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,7 +23,6 @@ import Data.Ticket;
 
 public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IViewHolder> {
     ArrayList<Ticket> adapter = new ArrayList<>();
-    LinearLayout linearLayout;
 
     public StartWorkAdapter(ArrayList<Ticket> adapterC) {
         this.adapter = adapterC;
@@ -160,7 +160,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             if (startWork == Ticket.State.Start)
                 imageButton.setBackgroundResource(R.drawable.img_start_btn);
             colorOfProject = (LinearLayout) itemView.findViewById(R.id.color_of_project);
-
         }
     }
 
