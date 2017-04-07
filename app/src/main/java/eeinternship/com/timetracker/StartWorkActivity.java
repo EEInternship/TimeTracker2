@@ -1,18 +1,25 @@
 package eeinternship.com.timetracker;
-
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.SimpleOnItemTouchListener;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,8 +28,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
@@ -34,7 +43,6 @@ import Data.Project;
 import Data.Ticket;
 import Data.UploadSpreadsheetData;
 import Data.UserData;
-
 public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -55,7 +63,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -216,7 +223,6 @@ public class StartWorkActivity extends AppCompatActivity {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
         }
 
-
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
@@ -261,16 +267,8 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonOptions.setClickable(true);
                 }
             }
-
-            /*@Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if(newState==RecyclerView.SCROLL_STATE_IDLE)
-                {
-                    buttonOptions.show();
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-            }*/
         });
+
     }
 
     private void setAdapter() {

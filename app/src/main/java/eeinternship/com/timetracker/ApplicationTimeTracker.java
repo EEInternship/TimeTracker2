@@ -29,7 +29,7 @@ import RESTtest.TestData;
 import RESTtest.TestProject;
 
 
-public class ApplicationTimeTracker extends Application{
+public class ApplicationTimeTracker extends Application {
     private static final String DATA_MAP = "TimeTracker";
     private static final String FILE_NAME = "UserData.json";
     private UserData userData;
@@ -38,7 +38,7 @@ public class ApplicationTimeTracker extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        if (userData == null){
+        if (userData == null) {
             userData = new UserData();
             if (readFromGson()) {
                 userData.setUserAcount(backupData.getUserAcount());
@@ -51,7 +51,7 @@ public class ApplicationTimeTracker extends Application{
         userData.scenariData();
     }
 
-    public UserData getUserData(){
+    public UserData getUserData() {
         return userData;
     }
 
@@ -63,68 +63,69 @@ public class ApplicationTimeTracker extends Application{
         saveInGson();
     }
 
-    public void getActiveProjects(Context context){
+    public void getActiveProjects(Context context) {
         Log.i("Running:", "Fetching active project list");
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET","https://nameless-oasis-70424.herokuapp.com/getactiveprojects/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getactiveprojects/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
                         public void onCompleted(Exception e, JsonArray result) {
-                            if(result != null){
-                                Log.i("Info: Result size:",String.valueOf(result.size()));
+                            if (result != null) {
+                                Log.i("Info: Result size:", String.valueOf(result.size()));
                                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                                for(int i=0;i<result.size();i++) {
+                                for (int i = 0; i < result.size(); i++) {
                                     TestProject project = gson.fromJson(result.get(i), TestProject.class);
                                     if (project == null) {
-                                        Log.e("Error","Object is null!");
+                                        Log.e("Error", "Object is null!");
                                     } else {
-                                        Log.i("Info:",i+" "+project.getProject_name());
+                                        Log.i("Info:", i + " " + project.getProject_name());
                                     }
                                 }
                             } else {
-                                Log.e("Error","Result is empty!");
+                                Log.e("Error", "Result is empty!");
                             }
                         }
                     });
         } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
 
     }
 
-    public void getWorkDaysAndWorkingOn(Context context, String email){
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
         Log.i("Running:", "Fetching work days for user.");
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET","https://nameless-oasis-70424.herokuapp.com/getworkingon/"+email+"/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkingon/" + email + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
                         public void onCompleted(Exception e, JsonArray result) {
-                            if(result != null){
-                                Log.i("Info: Result size:",String.valueOf(result.size()));
+                            if (result != null) {
+                                Log.i("Info: Result size:", String.valueOf(result.size()));
                                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                                for(int i=0;i<result.size();i++) {
+                                for (int i = 0; i < result.size(); i++) {
                                     TestData workday = gson.fromJson(result.get(i), TestData.class);
                                     if (workday == null) {
-                                        Log.e("Error","Object is null!");
+                                        Log.e("Error", "Object is null!");
                                     } else {
-                                        Log.i("Info",i+" "+workday.toString());
+                                        Log.i("Info", i + " " + workday.toString());
                                     }
                                 }
                             } else {
-                                Log.e("Error","Result is empty!");
+                                Log.e("Error", "Result is empty!");
                             }
                         }
                     });
         } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();;
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            ;
         }
     }
 
-    public void addWorkDay(final Context context,String email) {
+    public void addWorkDay(final Context context, String email) {
         Log.i("Running:", "Sending work day data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
@@ -137,15 +138,15 @@ public class ApplicationTimeTracker extends Application{
                     .setCallback(new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
-                            if(result != null) {
-                                Log.i("Info: ",result);
+                            if (result != null) {
+                                Log.i("Info: ", result);
                             } else {
-                                Log.e("Error: ",result);
+                                Log.e("Error: ", result);
                             }
                         }
                     });
         } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -155,7 +156,7 @@ public class ApplicationTimeTracker extends Application{
             Ion.with(context)
                     .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name","TimeTracker-active")
+                    .setMultipartParameter("project.project_name", "TimeTracker-active")
                     .setMultipartParameter("date", "2017-04-06")
                     .setMultipartParameter("starting_time", "7:30")
                     .setMultipartParameter("finish_time", "16:09")
@@ -164,21 +165,21 @@ public class ApplicationTimeTracker extends Application{
                     .setCallback(new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
-                            if(result != null) {
-                                Log.i("Info: ",result);
+                            if (result != null) {
+                                Log.i("Info: ", result);
                             } else {
-                                Log.e("Error: ",result);
+                                Log.e("Error: ", result);
                             }
                         }
                     });
         } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
@@ -191,6 +192,7 @@ public class ApplicationTimeTracker extends Application{
         }
         return false;
     }
+
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) ||
@@ -199,9 +201,11 @@ public class ApplicationTimeTracker extends Application{
         }
         return false;
     }
+
     public boolean saveInGson() {
         return saveInGson(backupData, FILE_NAME);
     }
+
     public boolean readFromGson() {
         BackupData tmp = readFromGson(FILE_NAME);
         if (tmp != null) backupData = tmp;
@@ -236,6 +240,7 @@ public class ApplicationTimeTracker extends Application{
         }
         return false;
     }
+
     private BackupData readFromGson(String name) {
         if (isExternalStorageReadable()) {
             try {
