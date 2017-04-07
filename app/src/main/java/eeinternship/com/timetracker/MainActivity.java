@@ -40,11 +40,10 @@ public class MainActivity extends AppCompatActivity {
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
 
-        if(!userData.getUserAcount()){
+        if(!userData.userAccountIsSet()){
             chooseAccount();
-            userData.setUserAcount(accountName);
-            applicationTimeTracker.setUserData(userData);
         }
+        ///
 
 
         ActionBar actionBar = getSupportActionBar();
@@ -101,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == 999&& resultCode == RESULT_OK) {
             accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.i("Choosen accountName:", accountName);
+            userData.setUserAcount(accountName);
+            applicationTimeTracker.setUserData(userData);
+            applicationTimeTracker.saveInGson();
             //applicationTimeTracker.getActiveProjects(getApplicationContext());
             //applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),accountName);
             //applicationTimeTracker.addWorkDay(getApplicationContext(),accountName);
