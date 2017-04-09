@@ -59,6 +59,4 @@ public class Ticket {
     public enum Selected{
         First,Second,Third,Other
     }
-
-
 }

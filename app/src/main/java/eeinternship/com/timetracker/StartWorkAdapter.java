@@ -14,6 +14,8 @@ import android.widget.TextView;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 import Data.Ticket;
 
@@ -51,7 +53,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
         } else {
             holder.colorOfProject.setBackgroundColor(Color.parseColor("#775ba3"));
         }
-
 
         if (holder.startWork != Ticket.State.Done) {
             if (holder.startWork == Ticket.State.Start) {
@@ -125,7 +126,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         });
 
-
     }
 
     public void setTextView(int hours, int minutes, TextView textView, boolean doWork) {
@@ -162,6 +162,4 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             colorOfProject = (LinearLayout) itemView.findViewById(R.id.color_of_project);
         }
     }
-
-
 }

@@ -1,4 +1,5 @@
 package eeinternship.com.timetracker;
+
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,6 +44,7 @@ import Data.Project;
 import Data.Ticket;
 import Data.UploadSpreadsheetData;
 import Data.UserData;
+
 public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -177,13 +179,6 @@ public class StartWorkActivity extends AppCompatActivity {
                         arg0.cancel();
                     }
                 });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
 
         buttonSelectProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,16 +222,20 @@ public class StartWorkActivity extends AppCompatActivity {
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean canSwipeRight(int position) {
                         return false;
                     }
 
                     @Override
+                    public boolean canSwipeRight(int position) {
+                        return true;
+                    }
+
+                    @Override
                     public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                    }
+
+                    @Override
+                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
@@ -248,10 +247,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             //TODO send to Database
                         }
                         adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                     }
                 });
         recyclerView.addOnItemTouchListener(swipeTouchListener);
@@ -268,7 +263,6 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
 
     private void setAdapter() {
@@ -366,5 +360,6 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         }
     }
+
 }
 
