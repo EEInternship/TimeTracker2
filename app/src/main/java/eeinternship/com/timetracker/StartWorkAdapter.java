@@ -111,8 +111,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
-                    // sliko zamenji
-                    holder.imageButton.setVisibility(View.INVISIBLE);
+                    holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
                     adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected()));
                     notifyItemChanged(adapter.size() - 1);
                     holder.startWork = Ticket.State.Done;

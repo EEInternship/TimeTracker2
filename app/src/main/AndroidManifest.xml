@@ -27,7 +27,8 @@
         <activity
             android:name=".ProfileActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".SettingsActivity" />
+        <activity android:name=".NotificationActivity"></activity>
     </application>
 
 </manifest>

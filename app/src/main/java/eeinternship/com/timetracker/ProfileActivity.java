@@ -44,12 +44,6 @@ public class ProfileActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
-        } else {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }
-
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
         addData();
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
@@ -81,12 +75,15 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.notification_btn:
+                Intent notificaition = new Intent(this, NotificationActivity.class);
+                startActivity(notificaition);
             case android.R.id.home:
                 finish();
                 return true;
             case R.id.settings_btn:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                Intent project = new Intent(this, SettingsActivity.class);
+                startActivity(project);
             default:
                 return super.onOptionsItemSelected(item);
         }
