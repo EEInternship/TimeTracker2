@@ -114,7 +114,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkingon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkingon/" + email + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -153,7 +153,7 @@ public class ApplicationTimeTracker extends Application {
 
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workdays/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/")
                     .setMultipartParameter("user.email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", startingTime)
@@ -184,7 +184,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workingon/")
                     .setMultipartParameter("user.email", email)
                     .setMultipartParameter("project.project_name", ticket.getProject())
                     .setMultipartParameter("date",dateString)

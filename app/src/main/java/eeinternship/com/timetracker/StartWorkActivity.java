@@ -198,16 +198,41 @@ public class StartWorkActivity extends AppCompatActivity {
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
                 data.finishTime = new Time(cHourOfDay, cMinute, 00);
-                userData.setTicketList(new ArrayList<Ticket>());
-                userData.addUploadRepository(data);
-                applicationTimeTracker.setUserData(userData);
-                finish();
+
+                boolean allDone = true;
+                int position = 0;
+                for(Ticket ticket : userData.getTicketList()){
+                    if(ticket.getDate() != null && ticket.getStartingTime() != null){
+                        if(ticket.getFinishTime() == null){
+                            Calendar calendar = Calendar.getInstance();
+                            ticket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                        }
+                        applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),ticket);
+                    }else{
+                        Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
+                        allDone = false;
+                    }
+                    position++;
+                }
+                if(allDone){
+                    userData.setTicketList(new ArrayList<Ticket>());
+                    userData.addUploadRepository(data);
+                    applicationTimeTracker.setUserData(userData);
+                    finish();
 
 
 
-                applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
-                userData.addUploadRepository(new UploadSpreadsheetData());
-                applicationTimeTracker.setUserData(userData);
+                    applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
+                    userData.addUploadRepository(new UploadSpreadsheetData());
+                    applicationTimeTracker.setUserData(userData);
+                }
+                else
+                    closeMenu();
+
+
                 //ToDo Send all tickets
             }
         });
