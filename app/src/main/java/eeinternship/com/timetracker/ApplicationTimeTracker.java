@@ -22,8 +22,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import Data.BackupData;
+import Data.Project;
+import Data.Ticket;
+import Data.UploadSpreadsheetData;
 import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
@@ -48,7 +56,10 @@ public class ApplicationTimeTracker extends Application {
         }
 
 
-        userData.scenariData();
+
+        userData.addProjectList(getActiveProjects(getApplicationContext()));
+
+       // userData.scenariData();
     }
 
     public UserData getUserData() {
@@ -63,8 +74,9 @@ public class ApplicationTimeTracker extends Application {
         saveInGson();
     }
 
-    public void getActiveProjects(Context context) {
+    public ArrayList<Project> getActiveProjects(Context context) {
         Log.i("Running:", "Fetching active project list");
+        final ArrayList<Project> projects = new ArrayList<>();
         if (isNetworkAvailable()) {
             Ion.with(context)
                     .load("GET", "https://nameless-oasis-70424.herokuapp.com/getactiveprojects/?format=json")
@@ -81,6 +93,9 @@ public class ApplicationTimeTracker extends Application {
                                         Log.e("Error", "Object is null!");
                                     } else {
                                         Log.i("Info:", i + " " + project.getProject_name());
+                                        Project proj = new Project();
+                                        proj.projectName = project.getProject_name();
+                                        projects.add(proj);
                                     }
                                 }
                             } else {
@@ -92,13 +107,14 @@ public class ApplicationTimeTracker extends Application {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
 
+        return projects;
     }
 
     public void getWorkDaysAndWorkingOn(Context context, String email) {
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkingon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkingon/" + email + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -125,15 +141,23 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void addWorkDay(final Context context, String email) {
+    public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
         Log.i("Running:", "Sending work day data.");
+        Date date =  uploadSpreadsheetData.date.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
+        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
+
+
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workdays/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("date", "2017-04-06")
-                    .setMultipartParameter("starting_time", "7:30")
-                    .setMultipartParameter("finish_time", "16:09")
+                    .setMultipartParameter("date", dateString)
+                    .setMultipartParameter("starting_time", startingTime)
+                    .setMultipartParameter("finish_time", finishTime)
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
@@ -150,17 +174,23 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void addWorkingOn(final Context context, String email) {
+    public void addWorkingOn(final Context context, String email, Ticket ticket) {
+        Date date =  ticket.getDate().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(ticket.getStartingTime());
+        String finishTime = timeFormat.format(ticket.getFinishTime());
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workingon/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name", "TimeTracker-active")
-                    .setMultipartParameter("date", "2017-04-06")
-                    .setMultipartParameter("starting_time", "7:30")
-                    .setMultipartParameter("finish_time", "16:09")
-                    .setMultipartParameter("description", "Testing REST API from phone")
+                    .setMultipartParameter("project.project_name", ticket.getProject())
+                    .setMultipartParameter("date",dateString)
+                    .setMultipartParameter("starting_time", startingTime)
+                    .setMultipartParameter("finish_time", finishTime)
+                    .setMultipartParameter("description", ticket.getDescription())
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override

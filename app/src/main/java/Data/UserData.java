@@ -49,7 +49,7 @@ public  class UserData {
     }
 
 
-
+    public void addProjectList(ArrayList<Project> list) {projectList = list;}
     public ArrayList<Project> getProjectList()
     {
         return projectList;
