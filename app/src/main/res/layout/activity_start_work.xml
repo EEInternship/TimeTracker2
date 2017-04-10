@@ -11,6 +11,7 @@
     android:weightSum="1"
     tools:context="eeinternship.com.timetracker.StartWorkActivity">
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_start_work"
         android:layout_width="match_parent"
@@ -147,7 +148,7 @@
             android:elevation="6dp"
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
-            app:backgroundTint="#f6a623"
+            app:backgroundTint="#4285f4"
             app:pressedTranslationZ="12dp" />
     </LinearLayout>
     <!--project two-->
@@ -186,7 +187,7 @@
             android:elevation="6dp"
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
-            app:backgroundTint="#f59c0b"
+            app:backgroundTint="#f18864"
             app:pressedTranslationZ="12dp" />
     </LinearLayout>
     <!--project three-->
@@ -225,7 +226,7 @@
             android:elevation="6dp"
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
-            app:backgroundTint="#9c27b0"
+            app:backgroundTint="#adcd4b"
             app:pressedTranslationZ="12dp" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

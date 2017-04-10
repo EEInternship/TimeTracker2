@@ -1,11 +1,15 @@
 package eeinternship.com.timetracker;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
@@ -21,6 +25,8 @@ public class ProfileActivity extends AppCompatActivity {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
+    private Menu mymenu;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,25 +40,17 @@ public class ProfileActivity extends AppCompatActivity {
 
         // status bar color
         Window window = this.getWindow();
-    /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        } else {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-
         }
 
-        // get the listview
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
-
-        // preparing list data
         addData();
-
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-
-        // setting list adapter
         expListView.setAdapter(listAdapter);
     }
 
@@ -84,8 +82,20 @@ public class ProfileActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.settings_btn:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+
 }

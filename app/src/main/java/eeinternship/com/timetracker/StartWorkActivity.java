@@ -1,24 +1,35 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.SimpleOnItemTouchListener;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,9 +38,7 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
@@ -47,7 +56,6 @@ public class StartWorkActivity extends AppCompatActivity {
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
 
-
     // dim
     FrameLayout frameLayoutDim;
 
@@ -57,10 +65,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
-
-
-
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -154,18 +158,13 @@ public class StartWorkActivity extends AppCompatActivity {
         });
         final String[] projectList = new String[userData.getProjectList().size()];
         int projectListLength = 0;
-        for (Project data: userData.getProjectList()) {
+        for (Project data : userData.getProjectList()) {
             projectList[projectListLength] = data.projectName;
             projectListLength++;
         }
 
-
-
-
-        //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-        alertDialog.setTitle("PROJECTS: ");
-        alertDialog.setSingleChoiceItems(projectList, 2,
+        alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
 
                     @Override
@@ -180,13 +179,6 @@ public class StartWorkActivity extends AppCompatActivity {
                         arg0.cancel();
                     }
                 });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
 
         buttonSelectProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,11 +187,8 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
 
-
         // action bar color
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
-
-
 
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,7 +197,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 Calendar calender = Calendar.getInstance();
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
-                data.finishTime = new Time(cHourOfDay,cMinute,00);
+                data.finishTime = new Time(cHourOfDay, cMinute, 00);
                 userData.setTicketList(new ArrayList<Ticket>());
                 userData.addUploadRepository(data);
                 applicationTimeTracker.setUserData(userData);
@@ -219,35 +208,34 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
 
-
-
         // status bar color
         Window window = this.getWindow();
-    /*    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);*/
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
+        } else {
             window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-
         }
-
 
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean canSwipeRight(int position) {
                         return false;
                     }
 
                     @Override
+                    public boolean canSwipeRight(int position) {
+                        return true;
+                    }
+
+                    @Override
                     public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                    }
+
+                    @Override
+                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
@@ -259,10 +247,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             //TODO send to Database
                         }
                         adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                     }
                 });
         recyclerView.addOnItemTouchListener(swipeTouchListener);
@@ -277,21 +261,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonOptions.show();
                     buttonOptions.setClickable(true);
                 }
-                /*if(dy>0 || dy<0 && buttonOptions.isShown())
-                {
-                    buttonOptions.hide();
-                    buttonOptions.setClickable(false);
-                }*/
             }
-
-            /*@Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if(newState==RecyclerView.SCROLL_STATE_IDLE)
-                {
-                    buttonOptions.show();
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-            }*/
         });
     }
 
@@ -325,6 +295,8 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.startAnimation(fabClose);
         buttonThirdProject.setClickable(false);
         labelBtnThirdProject.startAnimation(txtClose);
+
+        setViewAndChildrenEnabled(recyclerView, true);
     }
 
     private void openMenu() {
@@ -352,6 +324,8 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.startAnimation(fabOpen);
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
+
+        setViewAndChildrenDisabled(recyclerView, false);
     }
 
     @Override
@@ -364,5 +338,28 @@ public class StartWorkActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private static void setViewAndChildrenEnabled(View view, boolean enabled) {
+        view.setEnabled(enabled);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                setViewAndChildrenDisabled(child, enabled);
+            }
+        }
+    }
+
+    private static void setViewAndChildrenDisabled(View view, boolean disabled) {
+        view.setEnabled(disabled);
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                setViewAndChildrenEnabled(child, disabled);
+            }
+        }
+    }
+
 }
 

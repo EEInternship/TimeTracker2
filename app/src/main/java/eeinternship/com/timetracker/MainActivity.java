@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
             chooseAccount();
         }
 
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
