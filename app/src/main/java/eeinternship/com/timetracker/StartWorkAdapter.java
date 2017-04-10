@@ -97,6 +97,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     projectTimeTracker.start();
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
+
                 } else if (holder.startWork == Ticket.State.Stop) {
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
@@ -162,4 +163,5 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             colorOfProject = (LinearLayout) itemView.findViewById(R.id.color_of_project);
         }
     }
+
 }
