@@ -11,11 +11,17 @@
     android:weightSum="1"
     tools:context="eeinternship.com.timetracker.StartWorkActivity">
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview_start_work"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/test">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview_start_work"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="15dp"/>
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/frame_layout_dim"

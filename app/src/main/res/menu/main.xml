@@ -3,8 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <item
+        android:id="@+id/nekaj"
+        android:icon="@drawable/ic_notifications"
+        android:orderInCategory="100"
+        android:title="Settings"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/settings_btn"
-        android:icon="@drawable/ic_more_vert"
+        android:icon="@drawable/ic_assignment"
         android:orderInCategory="100"
         android:title="Settings"
         app:showAsAction="always" />
