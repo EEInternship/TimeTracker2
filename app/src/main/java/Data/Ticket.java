@@ -30,6 +30,7 @@ public class Ticket {
         this.project = project;
         state = _state;
         selected = _selected;
+        description = "";
     }
 
     public void setStartingTime(Time start){startingTime=start;}
