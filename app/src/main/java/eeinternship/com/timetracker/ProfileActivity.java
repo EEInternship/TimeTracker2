@@ -1,6 +1,8 @@
 package eeinternship.com.timetracker;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -34,6 +36,9 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("PROFILE");
+
+        // action bar color
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
 
         // status bar color
         Window window = this.getWindow();
