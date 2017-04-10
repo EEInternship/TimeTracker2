@@ -202,6 +202,10 @@ public class StartWorkActivity extends AppCompatActivity {
                 userData.addUploadRepository(data);
                 applicationTimeTracker.setUserData(userData);
                 finish();
+
+
+
+
                 //ToDo Clear UploadRepository
                 //TODO Send data to Database
             }
@@ -212,11 +216,6 @@ public class StartWorkActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
-        } else {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }
 
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {

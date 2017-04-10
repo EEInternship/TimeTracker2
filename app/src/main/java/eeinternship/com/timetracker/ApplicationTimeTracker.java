@@ -22,8 +22,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import Data.BackupData;
+import Data.Project;
 import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
@@ -48,7 +50,10 @@ public class ApplicationTimeTracker extends Application {
         }
 
 
-        userData.scenariData();
+
+        userData.addProjectList(getActiveProjects(getApplicationContext()));
+
+       // userData.scenariData();
     }
 
     public UserData getUserData() {
@@ -63,8 +68,9 @@ public class ApplicationTimeTracker extends Application {
         saveInGson();
     }
 
-    public void getActiveProjects(Context context) {
+    public ArrayList<Project> getActiveProjects(Context context) {
         Log.i("Running:", "Fetching active project list");
+        final ArrayList<Project> projects = new ArrayList<>();
         if (isNetworkAvailable()) {
             Ion.with(context)
                     .load("GET", "https://nameless-oasis-70424.herokuapp.com/getactiveprojects/?format=json")
@@ -81,6 +87,9 @@ public class ApplicationTimeTracker extends Application {
                                         Log.e("Error", "Object is null!");
                                     } else {
                                         Log.i("Info:", i + " " + project.getProject_name());
+                                        Project proj = new Project();
+                                        proj.projectName = project.getProject_name();
+                                        projects.add(proj);
                                     }
                                 }
                             } else {
@@ -92,6 +101,7 @@ public class ApplicationTimeTracker extends Application {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
 
+        return projects;
     }
 
     public void getWorkDaysAndWorkingOn(Context context, String email) {
