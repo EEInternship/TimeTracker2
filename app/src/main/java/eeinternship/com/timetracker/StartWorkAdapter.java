@@ -22,7 +22,6 @@ import Data.Ticket;
 
 public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IViewHolder> {
     ArrayList<Ticket> adapter = new ArrayList<>();
-    LinearLayout linearLayout;
 
     public StartWorkAdapter(ArrayList<Ticket> adapterC) {
         this.adapter = adapterC;
@@ -97,6 +96,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                     projectTimeTracker.start();
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
+
                 } else if (holder.startWork == Ticket.State.Stop) {
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
@@ -164,6 +164,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         }
     }
+
 
 
 }
