@@ -11,6 +11,7 @@
     android:weightSum="1"
     tools:context="eeinternship.com.timetracker.StartWorkActivity">
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_start_work"
         android:layout_width="match_parent"

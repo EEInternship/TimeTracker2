@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 import Data.Ticket;
 
@@ -22,7 +25,6 @@ import Data.Ticket;
 
 public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IViewHolder> {
     ArrayList<Ticket> adapter = new ArrayList<>();
-    LinearLayout linearLayout;
 
     public StartWorkAdapter(ArrayList<Ticket> adapterC) {
         this.adapter = adapterC;
@@ -51,7 +53,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
         } else {
             holder.colorOfProject.setBackgroundColor(Color.parseColor("#775ba3"));
         }
-
 
         if (holder.startWork != Ticket.State.Done) {
             if (holder.startWork == Ticket.State.Start) {
@@ -125,7 +126,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         });
 
-
     }
 
     public void setTextView(int hours, int minutes, TextView textView, boolean doWork) {
@@ -160,9 +160,6 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             if (startWork == Ticket.State.Start)
                 imageButton.setBackgroundResource(R.drawable.img_start_btn);
             colorOfProject = (LinearLayout) itemView.findViewById(R.id.color_of_project);
-
         }
     }
-
-
 }
