@@ -30,6 +30,7 @@ import java.util.Date;
 
 import Data.BackupData;
 import Data.Project;
+import Data.Ticket;
 import Data.UploadSpreadsheetData;
 import Data.UserData;
 import RESTtest.TestData;
@@ -173,17 +174,23 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void addWorkingOn(final Context context, String email) {
+    public void addWorkingOn(final Context context, String email, Ticket ticket) {
+        Date date =  ticket.getDate().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(ticket.getStartingTime());
+        String finishTime = timeFormat.format(ticket.getFinishTime());
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name", "TimeTracker-active")
-                    .setMultipartParameter("date", "2017-04-06")
-                    .setMultipartParameter("starting_time", "7:30")
-                    .setMultipartParameter("finish_time", "16:09")
-                    .setMultipartParameter("description", "Testing REST API from phone")
+                    .setMultipartParameter("project.project_name", ticket.getProject())
+                    .setMultipartParameter("date",dateString)
+                    .setMultipartParameter("starting_time", startingTime)
+                    .setMultipartParameter("finish_time", finishTime)
+                    .setMultipartParameter("description", ticket.getDescription())
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override

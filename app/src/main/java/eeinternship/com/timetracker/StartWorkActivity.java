@@ -208,8 +208,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
                 userData.addUploadRepository(new UploadSpreadsheetData());
                 applicationTimeTracker.setUserData(userData);
-                //ToDo Clear UploadRepository
-                //TODO Send data to Database
+                //ToDo Send all tickets
             }
         });
 
@@ -238,6 +237,17 @@ public class StartWorkActivity extends AppCompatActivity {
                     @Override
                     public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
+                            Ticket currentTicket = ticketList.get(position);
+                            if(currentTicket.getFinishTime() == null){
+                                Calendar calendar = Calendar.getInstance();
+                                currentTicket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            }
+                            if(currentTicket.getDate() == null){
+                                Toast.makeText(getApplicationContext(),"You did not start this ticket!",Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
@@ -245,7 +255,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             buttonOptions.setClickable(true);
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            //TODO send to Database
+
                         }
                         adapter.notifyDataSetChanged();
                     }
