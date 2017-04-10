@@ -205,7 +205,9 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
 
-
+                applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
+                userData.addUploadRepository(new UploadSpreadsheetData());
+                applicationTimeTracker.setUserData(userData);
                 //ToDo Clear UploadRepository
                 //TODO Send data to Database
             }

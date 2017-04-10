@@ -22,10 +22,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import Data.BackupData;
 import Data.Project;
+import Data.UploadSpreadsheetData;
 import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
@@ -135,15 +140,23 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void addWorkDay(final Context context, String email) {
+    public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
         Log.i("Running:", "Sending work day data.");
+        Date date =  uploadSpreadsheetData.date.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
+        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
+
+
         if (isNetworkAvailable()) {
             Ion.with(context)
                     .load("POST", "https://nameless-oasis-70424.herokuapp.com/workdays/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("date", "2017-04-06")
-                    .setMultipartParameter("starting_time", "7:30")
-                    .setMultipartParameter("finish_time", "16:09")
+                    .setMultipartParameter("date", dateString)
+                    .setMultipartParameter("starting_time", startingTime)
+                    .setMultipartParameter("finish_time", finishTime)
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
