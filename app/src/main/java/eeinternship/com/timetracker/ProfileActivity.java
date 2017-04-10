@@ -1,6 +1,8 @@
 package eeinternship.com.timetracker;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -9,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.SubMenu;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
@@ -25,8 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
-    private Menu mymenu;
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,10 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("MONTHLY OVERVIEW");
+        actionBar.setTitle("PROFILE");
+
+        // action bar color
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
 
         // status bar color
         Window window = this.getWindow();

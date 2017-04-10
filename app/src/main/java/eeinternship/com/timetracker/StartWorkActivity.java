@@ -1,38 +1,26 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.SimpleOnItemTouchListener;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
 
@@ -107,7 +95,7 @@ public class StartWorkActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -119,7 +107,6 @@ public class StartWorkActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isOpen) {
                     closeMenu();
-                    isOpen = false;
                 } else {
                     openMenu();
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
@@ -332,7 +319,12 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.setClickable(false);
         labelBtnThirdProject.startAnimation(txtClose);
 
-        setViewAndChildrenEnabled(recyclerView, true);
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
+            }
+        });
     }
 
     private void openMenu() {
@@ -361,7 +353,13 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
 
-        setViewAndChildrenDisabled(recyclerView, false);
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -372,28 +370,6 @@ public class StartWorkActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private static void setViewAndChildrenEnabled(View view, boolean enabled) {
-        view.setEnabled(enabled);
-        if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View child = viewGroup.getChildAt(i);
-                setViewAndChildrenDisabled(child, enabled);
-            }
-        }
-    }
-
-    private static void setViewAndChildrenDisabled(View view, boolean disabled) {
-        view.setEnabled(disabled);
-        if (view instanceof ViewGroup) {
-            ViewGroup viewGroup = (ViewGroup) view;
-            for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                View child = viewGroup.getChildAt(i);
-                setViewAndChildrenEnabled(child, disabled);
-            }
         }
     }
 

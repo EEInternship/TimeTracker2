@@ -1,20 +1,18 @@
 package eeinternship.com.timetracker;
 
-import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -42,11 +40,8 @@ public class SettingsActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
-        } else {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }
+        // action bar color
+        actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_settings);
         adapter = new SettingsAdapter(test);
