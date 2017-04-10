@@ -22,14 +22,22 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import Data.BackupData;
+import Data.Project;
+import Data.Ticket;
+import Data.UploadSpreadsheetData;
 import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
 
 
-public class ApplicationTimeTracker extends Application{
+public class ApplicationTimeTracker extends Application {
     private static final String DATA_MAP = "TimeTracker";
     private static final String FILE_NAME = "UserData.json";
     private UserData userData;
@@ -38,7 +46,7 @@ public class ApplicationTimeTracker extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
-        if (userData == null){
+        if (userData == null) {
             userData = new UserData();
             if (readFromGson()) {
                 userData.setUserAcount(backupData.getUserAcount());
@@ -48,10 +56,13 @@ public class ApplicationTimeTracker extends Application{
         }
 
 
-        userData.scenariData();
+
+        userData.addProjectList(getActiveProjects(getApplicationContext()));
+
+       // userData.scenariData();
     }
 
-    public UserData getUserData(){
+    public UserData getUserData() {
         return userData;
     }
 
@@ -63,122 +74,142 @@ public class ApplicationTimeTracker extends Application{
         saveInGson();
     }
 
-    public void getActiveProjects(Context context){
+    public ArrayList<Project> getActiveProjects(Context context) {
         Log.i("Running:", "Fetching active project list");
-        if(isNetworkAvailable()){
-            Ion.with(context)
-                    .load("GET","https://nameless-oasis-70424.herokuapp.com/getactiveprojects/?format=json")
-                    .asJsonArray()
-                    .setCallback(new FutureCallback<JsonArray>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonArray result) {
-                            if(result != null){
-                                Log.i("Info: Result size:",String.valueOf(result.size()));
-                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                                for(int i=0;i<result.size();i++) {
-                                    TestProject project = gson.fromJson(result.get(i), TestProject.class);
-                                    if (project == null) {
-                                        Log.e("Error","Object is null!");
-                                    } else {
-                                        Log.i("Info:",i+" "+project.getProject_name());
-                                    }
-                                }
-                            } else {
-                                Log.e("Error","Result is empty!");
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
-        }
-
-    }
-
-    public void getWorkDaysAndWorkingOn(Context context, String email){
-        Log.i("Running:", "Fetching work days for user.");
-        if(isNetworkAvailable()){
-            Ion.with(context)
-                    .load("GET","https://nameless-oasis-70424.herokuapp.com/getworkingon/"+email+"/?format=json")
-                    .asJsonArray()
-                    .setCallback(new FutureCallback<JsonArray>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonArray result) {
-                            if(result != null){
-                                Log.i("Info: Result size:",String.valueOf(result.size()));
-                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                                for(int i=0;i<result.size();i++) {
-                                    TestData workday = gson.fromJson(result.get(i), TestData.class);
-                                    if (workday == null) {
-                                        Log.e("Error","Object is null!");
-                                    } else {
-                                        Log.i("Info",i+" "+workday.toString());
-                                    }
-                                }
-                            } else {
-                                Log.e("Error","Result is empty!");
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();;
-        }
-    }
-
-    public void addWorkDay(final Context context,String email) {
-        Log.i("Running:", "Sending work day data.");
+        final ArrayList<Project> projects = new ArrayList<>();
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workdays/")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getactiveprojects/?format=json")
+                    .asJsonArray()
+                    .setCallback(new FutureCallback<JsonArray>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonArray result) {
+                            if (result != null) {
+                                Log.i("Info: Result size:", String.valueOf(result.size()));
+                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                                for (int i = 0; i < result.size(); i++) {
+                                    TestProject project = gson.fromJson(result.get(i), TestProject.class);
+                                    if (project == null) {
+                                        Log.e("Error", "Object is null!");
+                                    } else {
+                                        Log.i("Info:", i + " " + project.getProject_name());
+                                        Project proj = new Project();
+                                        proj.projectName = project.getProject_name();
+                                        projects.add(proj);
+                                    }
+                                }
+                            } else {
+                                Log.e("Error", "Result is empty!");
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+        }
+
+        return projects;
+    }
+
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
+        Log.i("Running:", "Fetching work days for user.");
+        if (isNetworkAvailable()) {
+            Ion.with(context)
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkingon/" + email + "/?format=json")
+                    .asJsonArray()
+                    .setCallback(new FutureCallback<JsonArray>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonArray result) {
+                            if (result != null) {
+                                Log.i("Info: Result size:", String.valueOf(result.size()));
+                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                                for (int i = 0; i < result.size(); i++) {
+                                    TestData workday = gson.fromJson(result.get(i), TestData.class);
+                                    if (workday == null) {
+                                        Log.e("Error", "Object is null!");
+                                    } else {
+                                        Log.i("Info", i + " " + workday.toString());
+                                    }
+                                }
+                            } else {
+                                Log.e("Error", "Result is empty!");
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            ;
+        }
+    }
+
+    public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
+        Log.i("Running:", "Sending work day data.");
+        Date date =  uploadSpreadsheetData.date.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
+        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
+
+
+        if (isNetworkAvailable()) {
+            Ion.with(context)
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("date", "2017-04-06")
-                    .setMultipartParameter("starting_time", "7:30")
-                    .setMultipartParameter("finish_time", "16:09")
+                    .setMultipartParameter("date", dateString)
+                    .setMultipartParameter("starting_time", startingTime)
+                    .setMultipartParameter("finish_time", finishTime)
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
-                            if(result != null) {
-                                Log.i("Info: ",result);
+                            if (result != null) {
+                                Log.i("Info: ", result);
                             } else {
-                                Log.e("Error: ",result);
+                                Log.e("Error: ", result);
                             }
                         }
                     });
         } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
     }
 
-    public void addWorkingOn(final Context context, String email) {
+    public void addWorkingOn(final Context context, String email, Ticket ticket) {
+        Date date =  ticket.getDate().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(ticket.getStartingTime());
+        String finishTime = timeFormat.format(ticket.getFinishTime());
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/addworkingon/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workingon/")
                     .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name","TimeTracker-active")
-                    .setMultipartParameter("date", "2017-04-06")
-                    .setMultipartParameter("starting_time", "7:30")
-                    .setMultipartParameter("finish_time", "16:09")
-                    .setMultipartParameter("description", "Testing REST API from phone")
+                    .setMultipartParameter("project.project_name", ticket.getProject())
+                    .setMultipartParameter("date",dateString)
+                    .setMultipartParameter("starting_time", startingTime)
+                    .setMultipartParameter("finish_time", finishTime)
+                    .setMultipartParameter("description", ticket.getDescription())
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
                         public void onCompleted(Exception e, String result) {
-                            if(result != null) {
-                                Log.i("Info: ",result);
+                            if (result != null) {
+                                Log.i("Info: ", result);
                             } else {
-                                Log.e("Error: ",result);
+                                Log.e("Error: ", result);
                             }
                         }
                     });
         } else {
-            Toast.makeText(context,"Network not available!",Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo=connectivityManager.getActiveNetworkInfo();
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
     }
@@ -191,6 +222,7 @@ public class ApplicationTimeTracker extends Application{
         }
         return false;
     }
+
     public boolean isExternalStorageReadable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state) ||
@@ -199,9 +231,11 @@ public class ApplicationTimeTracker extends Application{
         }
         return false;
     }
+
     public boolean saveInGson() {
         return saveInGson(backupData, FILE_NAME);
     }
+
     public boolean readFromGson() {
         BackupData tmp = readFromGson(FILE_NAME);
         if (tmp != null) backupData = tmp;
@@ -236,6 +270,7 @@ public class ApplicationTimeTracker extends Application{
         }
         return false;
     }
+
     private BackupData readFromGson(String name) {
         if (isExternalStorageReadable()) {
             try {

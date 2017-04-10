@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -43,7 +44,6 @@ public class StartWorkActivity extends AppCompatActivity {
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
 
-
     // dim
     FrameLayout frameLayoutDim;
 
@@ -53,7 +53,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
-
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -96,7 +95,7 @@ public class StartWorkActivity extends AppCompatActivity {
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_start_work);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -108,7 +107,6 @@ public class StartWorkActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (isOpen) {
                     closeMenu();
-                    isOpen = false;
                 } else {
                     openMenu();
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
@@ -152,7 +150,6 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-        //// test za meni
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
@@ -169,13 +166,6 @@ public class StartWorkActivity extends AppCompatActivity {
                         arg0.cancel();
                     }
                 });
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
 
         buttonSelectProject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,10 +174,8 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
 
-
         // action bar color
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
-
 
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,12 +185,42 @@ public class StartWorkActivity extends AppCompatActivity {
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
                 data.finishTime = new Time(cHourOfDay, cMinute, 00);
-                userData.setTicketList(new ArrayList<Ticket>());
-                userData.addUploadRepository(data);
-                applicationTimeTracker.setUserData(userData);
-                finish();
-                //ToDo Clear UploadRepository
-                //TODO Send data to Database
+
+                boolean allDone = true;
+                int position = 0;
+                for(Ticket ticket : userData.getTicketList()){
+                    if(ticket.getDate() != null && ticket.getStartingTime() != null){
+                        if(ticket.getFinishTime() == null){
+                            Calendar calendar = Calendar.getInstance();
+                            ticket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                        }
+                        applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),ticket);
+                    }else{
+                        Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
+                        allDone = false;
+                    }
+                    position++;
+                }
+                if(allDone){
+                    userData.setTicketList(new ArrayList<Ticket>());
+                    userData.addUploadRepository(data);
+                    applicationTimeTracker.setUserData(userData);
+                    finish();
+
+
+
+                    applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
+                    userData.addUploadRepository(new UploadSpreadsheetData());
+                    applicationTimeTracker.setUserData(userData);
+                }
+                else
+                    closeMenu();
+
+
+                //ToDo Send all tickets
             }
         });
 
@@ -211,29 +229,37 @@ public class StartWorkActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
-        } else {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }
-
-
 
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean canSwipeRight(int position) {
                         return false;
                     }
 
                     @Override
+                    public boolean canSwipeRight(int position) {
+                        return true;
+                    }
+
+                    @Override
                     public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                    }
+
+                    @Override
+                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
+                            Ticket currentTicket = ticketList.get(position);
+                            if(currentTicket.getFinishTime() == null){
+                                Calendar calendar = Calendar.getInstance();
+                                currentTicket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            }
+                            if(currentTicket.getDate() == null){
+                                Toast.makeText(getApplicationContext(),"You did not start this ticket!",Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
@@ -241,13 +267,9 @@ public class StartWorkActivity extends AppCompatActivity {
                             buttonOptions.setClickable(true);
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            //TODO send to Database
+
                         }
                         adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                     }
                 });
         recyclerView.addOnItemTouchListener(swipeTouchListener);
@@ -262,21 +284,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonOptions.show();
                     buttonOptions.setClickable(true);
                 }
-                /*if(dy>0 || dy<0 && buttonOptions.isShown())
-                {
-                    buttonOptions.hide();
-                    buttonOptions.setClickable(false);
-                }*/
             }
-
-            /*@Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if(newState==RecyclerView.SCROLL_STATE_IDLE)
-                {
-                    buttonOptions.show();
-                }
-                super.onScrollStateChanged(recyclerView, newState);
-            }*/
         });
     }
 
@@ -310,6 +318,13 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.startAnimation(fabClose);
         buttonThirdProject.setClickable(false);
         labelBtnThirdProject.startAnimation(txtClose);
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return false;
+            }
+        });
     }
 
     private void openMenu() {
@@ -337,6 +352,14 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.startAnimation(fabOpen);
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
+
+
+        recyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -349,5 +372,6 @@ public class StartWorkActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
 

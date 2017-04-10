@@ -1,12 +1,18 @@
 package Data;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by IsakFe on 29. 03. 2017.
  */
 
 public class Ticket {
+    private Calendar date;
+    private Time startingTime;
+    private Time finishTime;
+    private String description;
     private String time;
     private String project;
     private State state;
@@ -24,7 +30,20 @@ public class Ticket {
         this.project = project;
         state = _state;
         selected = _selected;
+        description = "";
     }
+
+    public void setStartingTime(Time start){startingTime=start;}
+public void setFinishTime(Time finish){finishTime = finish;}
+    public Time getStartingTime(){return startingTime;}
+    public Time getFinishTime(){return finishTime;}
+
+    public String getDescription(){return description;}
+    public void setDescription(String desc){description = desc;}
+
+    public void setDate(Calendar cal){date = cal;}
+    public Calendar getDate(){return date;}
+
 
     public String getTime() {
         return time;
@@ -59,6 +78,4 @@ public class Ticket {
     public enum Selected{
         First,Second,Third,Other
     }
-
-
 }

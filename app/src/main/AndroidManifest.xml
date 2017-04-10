@@ -23,10 +23,11 @@
         </activity>
         <activity
             android:name=".StartWorkActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ProfileActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".SettingsActivity"></activity>
     </application>
 
 </manifest>
