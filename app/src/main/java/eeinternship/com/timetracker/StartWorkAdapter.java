@@ -3,9 +3,12 @@ package eeinternship.com.timetracker;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,7 +43,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
-
+        holder.description.setText(TC.getDescription());
         if (TC.getSelected() == Ticket.Selected.First) {
             holder.colorOfProject.setBackgroundColor(Color.parseColor("#4285f4"));
         } else if (TC.getSelected() == Ticket.Selected.Second) {
@@ -90,14 +93,18 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
                 if (holder.startWork == Ticket.State.Start) {
                     holder.startTime = new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
                     holder.startWork = Ticket.State.Stop;
+                    TC.setDate(calendar);
                     holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
                     projectTimeTracker.start();
+                    TC.setStartingTime(holder.startTime);
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
+
                 } else if (holder.startWork == Ticket.State.Stop) {
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
                     holder.finishTime = new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
+                    TC.setFinishTime(holder.finishTime);
                     long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
                     Time workTime = new Time(differenceLong);
                     if (workTime.getMinutes() < 10)
@@ -123,6 +130,24 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         });
 
+
+        holder.description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                TC.setDescription(holder.description.getText().toString());
+            }
+        });
+
     }
 
     public void setTextView(int hours, int minutes, TextView textView, boolean doWork) {
@@ -142,6 +167,7 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
     public class IViewHolder extends RecyclerView.ViewHolder {
         TextView projectName, timeWork;
+        EditText description;
         ImageButton imageButton;
         Time startTime;
         Time finishTime;
@@ -154,9 +180,12 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
             projectName = (TextView) itemView.findViewById(R.id.project_name);
             timeWork = (TextView) itemView.findViewById(R.id.hour_min);
             imageButton = (ImageButton) itemView.findViewById(R.id.btn_start_work);
+            description = (EditText) itemView.findViewById(R.id.desc_text);
             if (startWork == Ticket.State.Start)
                 imageButton.setBackgroundResource(R.drawable.img_start_btn);
             colorOfProject = (LinearLayout) itemView.findViewById(R.id.color_of_project);
         }
     }
+
+
 }

@@ -185,12 +185,42 @@ public class StartWorkActivity extends AppCompatActivity {
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
                 data.finishTime = new Time(cHourOfDay, cMinute, 00);
-                userData.setTicketList(new ArrayList<Ticket>());
-                userData.addUploadRepository(data);
-                applicationTimeTracker.setUserData(userData);
-                finish();
-                //ToDo Clear UploadRepository
-                //TODO Send data to Database
+
+                boolean allDone = true;
+                int position = 0;
+                for(Ticket ticket : userData.getTicketList()){
+                    if(ticket.getDate() != null && ticket.getStartingTime() != null){
+                        if(ticket.getFinishTime() == null){
+                            Calendar calendar = Calendar.getInstance();
+                            ticket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                        }
+                        applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),ticket);
+                    }else{
+                        Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
+                        allDone = false;
+                    }
+                    position++;
+                }
+                if(allDone){
+                    userData.setTicketList(new ArrayList<Ticket>());
+                    userData.addUploadRepository(data);
+                    applicationTimeTracker.setUserData(userData);
+                    finish();
+
+
+
+                    applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
+                    userData.addUploadRepository(new UploadSpreadsheetData());
+                    applicationTimeTracker.setUserData(userData);
+                }
+                else
+                    closeMenu();
+
+
+                //ToDo Send all tickets
             }
         });
 
@@ -199,11 +229,6 @@ public class StartWorkActivity extends AppCompatActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorStatusBar));
-        } else {
-            window.setStatusBarColor(this.getResources().getColor(R.color.colorBackground));
-        }
 
         SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
@@ -224,6 +249,17 @@ public class StartWorkActivity extends AppCompatActivity {
                     @Override
                     public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
+                            Ticket currentTicket = ticketList.get(position);
+                            if(currentTicket.getFinishTime() == null){
+                                Calendar calendar = Calendar.getInstance();
+                                currentTicket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            }
+                            if(currentTicket.getDate() == null){
+                                Toast.makeText(getApplicationContext(),"You did not start this ticket!",Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
@@ -231,7 +267,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             buttonOptions.setClickable(true);
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            //TODO send to Database
+
                         }
                         adapter.notifyDataSetChanged();
                     }
