@@ -26,6 +26,9 @@ public class ProfileActivity extends AppCompatActivity {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
+    static final int DIALOG_ID = 0;
+    int hour, minute;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +46,6 @@ public class ProfileActivity extends AppCompatActivity {
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-
 
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
         addData();
@@ -73,7 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
         listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -81,8 +81,11 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.settings_btn:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                Intent project = new Intent(this, SettingsActivity.class);
+                startActivity(project);
+            case R.id.notification_btn:
+                Intent notificationInent = new Intent(this, NotificationActivity.class);
+                startActivity(notificationInent);
             default:
                 return super.onOptionsItemSelected(item);
         }
