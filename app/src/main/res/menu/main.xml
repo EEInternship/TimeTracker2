@@ -5,13 +5,13 @@
     <item
         android:id="@+id/notification_btn"
         android:icon="@drawable/ic_notifications"
-        android:orderInCategory="100"
+        android:orderInCategory="0"
         android:title="Settings"
         app:showAsAction="always" />
     <item
         android:id="@+id/settings_btn"
         android:icon="@drawable/ic_assignment"
-        android:orderInCategory="100"
+        android:orderInCategory="1"
         android:title="Settings"
         app:showAsAction="always" />
 
