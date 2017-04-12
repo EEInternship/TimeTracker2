@@ -43,7 +43,10 @@ public class StartWorkAdapter extends RecyclerView.Adapter<StartWorkAdapter.IVie
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
-        holder.description.setText(TC.getDescription());
+        if(TC.getDescription() != null)
+            holder.description.setText(TC.getDescription());
+        else
+            holder.description.setText("");
         if (TC.getSelected() == Ticket.Selected.First) {
             holder.colorOfProject.setBackgroundColor(Color.parseColor("#4285f4"));
         } else if (TC.getSelected() == Ticket.Selected.Second) {

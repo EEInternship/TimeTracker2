@@ -28,6 +28,7 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
@@ -186,42 +187,50 @@ public class StartWorkActivity extends AppCompatActivity {
                 int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
                 int cMinute = calender.get(Calendar.MINUTE);
                 data.finishTime = new Time(cHourOfDay, cMinute, 00);
-
+                ArrayList<Integer> removePositionList = new ArrayList<Integer>();
                 boolean allDone = true;
                 int position = 0;
                 for(Ticket ticket : userData.getTicketList()){
-                    if(ticket.getDate() != null && ticket.getStartingTime() != null){
+                    if(ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription()!= null){
                         if(ticket.getFinishTime() == null){
                             Calendar calendar = Calendar.getInstance();
                             ticket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
-                            ticketList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
                         }
+                        removePositionList.add(position);
+                        position--;
                         applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),ticket);
                     }else{
-                        Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
+                        if(ticket.getDescription() == null)
+                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Description is null",Toast.LENGTH_SHORT).show();
+                        else
+                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
                         allDone = false;
                     }
                     position++;
+
                 }
                 if(allDone){
                     userData.setTicketList(new ArrayList<Ticket>());
                     userData.addUploadRepository(data);
                     applicationTimeTracker.setUserData(userData);
                     finish();
-
-
-
                     applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
                     userData.addUploadRepository(new UploadSpreadsheetData());
                     applicationTimeTracker.setUserData(userData);
                 }
-                else
+                else{
+                    for(int location : removePositionList){
+                        ticketList.remove(location);
+                        adapter.notifyItemRemoved(location);
+                        adapter.notifyItemRangeChanged(location, adapter.getItemCount());
+                    }
+                    userData.setTicketList(ticketList);
+                    applicationTimeTracker.setUserData(userData);
                     closeMenu();
+                }
 
 
-                //ToDo Send all tickets
+
             }
         });
 
@@ -259,6 +268,10 @@ public class StartWorkActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(),"You did not start this ticket!",Toast.LENGTH_LONG).show();
                                 return;
                             }
+                            if(currentTicket.getDescription() == null){
+                                Toast.makeText(getApplicationContext(),"You did not write Description!",Toast.LENGTH_LONG).show();
+                                return;
+                            }
 
                             applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
                             ticketList.remove(position);
@@ -268,6 +281,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             buttonOptions.setClickable(true);
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
+                            Toast.makeText(getApplicationContext(),"Ticket successfully sent!",Toast.LENGTH_LONG).show();
 
                         }
                         adapter.notifyDataSetChanged();
