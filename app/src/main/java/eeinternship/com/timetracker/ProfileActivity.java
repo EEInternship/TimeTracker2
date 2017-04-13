@@ -19,8 +19,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import static android.R.id.home;
-
 public class ProfileActivity extends AppCompatActivity {
 
     ExpandableListAdapter listAdapter;
@@ -76,18 +74,20 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case home:
+            case android.R.id.home:
                 finish();
                 return true;
             case R.id.notification_btn:
-                Intent notificationInent = new Intent(this, NotificationActivity.class);
-                startActivity(notificationInent);
+                Intent notificationAC=new Intent(this,NotificationActivity.class);
+                startActivity(notificationAC);
+                break;
             case R.id.settings_btn:
-                Intent project = new Intent(this, SettingsActivity.class);
-                startActivity(project);
-            default:
-                return super.onOptionsItemSelected(item);
+                Intent settingsAC=new Intent(this,SettingsActivity.class);
+                startActivity(settingsAC);
+                break;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
