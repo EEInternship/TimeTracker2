@@ -16,9 +16,9 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    private TimePicker timePicker,timerPicker;
+    private TimePicker timePicker, timerPicker;
     ExpandableLayout expandableLayoutTime, expandableLayoutTimer;
-    TextView linearLayoutTxtTimer,onOffTxt;
+    TextView linearLayoutTxtTimer, onOffTxt;
     Switch onOff;
 
     boolean isOpen = false;
@@ -36,10 +36,10 @@ public class NotificationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("NOTIFICATION");
 
-        timerPicker=(TimePicker)findViewById(R.id.timer);
+        timerPicker = (TimePicker) findViewById(R.id.timer);
         timerPicker.setIs24HourView(true);
 
-        timePicker=(TimePicker)findViewById(R.id.time_picker);
+        timePicker = (TimePicker) findViewById(R.id.time_picker);
         timePicker.setIs24HourView(true);
 
         expandableLayoutTime = (ExpandableLayout) findViewById(R.id.time_picker_layout_ex);
@@ -52,24 +52,24 @@ public class NotificationActivity extends AppCompatActivity {
                 if (isOpen == false) {
                     expandableLayoutTime.expand();
                     expandableLayoutTimer.collapse();
-                    isOpen=true;
-                }else if(isOpen==true){
+                    isOpen = true;
+                } else if (isOpen == true) {
                     expandableLayoutTimer.expand();
                     expandableLayoutTime.collapse();
-                    isOpen=false;
+                    isOpen = false;
                 }
             }
         });
 
-        onOff=(Switch)findViewById(R.id.switch_on_off);
-        onOffTxt=(TextView)findViewById(R.id.on_off_txt);
+        onOff = (Switch) findViewById(R.id.switch_on_off);
+        onOffTxt = (TextView) findViewById(R.id.on_off_txt);
         onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked){
+                if (isChecked) {
                     onOffTxt.setText("On");
                     onOffTxt.setTextColor(Color.parseColor("#04b795"));
-                }else{
+                } else {
                     onOffTxt.setText("Off");
                     onOffTxt.setTextColor(Color.parseColor("#f1490b"));
                 }
@@ -83,8 +83,8 @@ public class NotificationActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
+
+        return super.onOptionsItemSelected(item);
     }
 }
