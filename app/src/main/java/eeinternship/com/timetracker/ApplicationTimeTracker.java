@@ -25,16 +25,18 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 import Data.BackupData;
+import Data.ProfileDataDropdown;
+import Data.ProfileDataLine;
 import Data.Project;
 import Data.Ticket;
 import Data.UploadSpreadsheetData;
 import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
+import RESTtest.TestWorkingOn;
 
 
 public class ApplicationTimeTracker extends Application {
@@ -52,13 +54,15 @@ public class ApplicationTimeTracker extends Application {
                 userData.setUserAcount(backupData.getUserAcount());
                 userData.setTicketList(backupData.ticketList);
                 userData.addUploadRepository(backupData.uploadSpreadsheetData);
+
             }
+
         }
 
 
 
         userData.addProjectList(getActiveProjects(getApplicationContext()));
-
+        userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
        // userData.scenariData();
     }
 
@@ -110,7 +114,8 @@ public class ApplicationTimeTracker extends Application {
         return projects;
     }
 
-    public void getWorkDaysAndWorkingOn(Context context, String email) {
+    public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
+        final ArrayList<ProfileDataDropdown> profileDataDropdownArrayList = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
@@ -123,11 +128,25 @@ public class ApplicationTimeTracker extends Application {
                                 Log.i("Info: Result size:", String.valueOf(result.size()));
                                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                                 for (int i = 0; i < result.size(); i++) {
+                                    ProfileDataDropdown profileDataDropdown = new ProfileDataDropdown();
                                     TestData workday = gson.fromJson(result.get(i), TestData.class);
                                     if (workday == null) {
                                         Log.e("Error", "Object is null!");
                                     } else {
                                         Log.i("Info", i + " " + workday.toString());
+                                        ArrayList<ProfileDataLine> profileDataLineArrayList = new ArrayList<>();
+                                        for(TestWorkingOn testWorkingOn : workday.getWork_on()){
+                                            ProfileDataLine profileDataLine = new ProfileDataLine();
+                                            profileDataLine.setProjectName(testWorkingOn.getProject().getProject_name());
+                                            profileDataLine.setStartingTime(testWorkingOn.getStarting_time());
+                                            profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
+                                            profileDataLine.setWorkDescription(testWorkingOn.getDescription());
+                                            profileDataLineArrayList.add(profileDataLine);
+                                        }
+                                        profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
+                                        profileDataDropdown.setDate(workday.getWork_day().getDate());
+                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(),workday.getWork_day().getOvertime());
+                                        profileDataDropdownArrayList.add(profileDataDropdown);
                                     }
                                 }
                             } else {
@@ -139,6 +158,7 @@ public class ApplicationTimeTracker extends Application {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
             ;
         }
+        return profileDataDropdownArrayList;
     }
 
     public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {

@@ -19,18 +19,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import Data.UserData;
+
 public class ProfileActivity extends AppCompatActivity {
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    private ApplicationTimeTracker applicationTimeTracker;
+    private UserData userData;
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+
+        applicationTimeTracker = (ApplicationTimeTracker) getApplication();
+        userData = applicationTimeTracker.getUserData();
+
+
+
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -56,7 +67,7 @@ public class ProfileActivity extends AppCompatActivity {
         listDataChild = new HashMap<String, List<String>>();
 
         // Adding child data
-        listDataHeader.add("Top 250");
+        listDataHeader.add("Monthly overview");
 
         // Adding child data
         List<String> top250 = new ArrayList<String>();

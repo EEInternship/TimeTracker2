@@ -8,11 +8,11 @@ import java.util.ArrayList;
 
 public class TestData {
     TestWorkDay work_day;
-    ArrayList<TestWorkingOn> working_on;
+    ArrayList<TestWorkingOn> work_on;
 
-    public TestData(TestWorkDay work_day, ArrayList<TestWorkingOn> working_on) {
+    public TestData(TestWorkDay work_day, ArrayList<TestWorkingOn> work_on) {
         this.work_day = work_day;
-        this.working_on = working_on;
+        this.work_on = work_on;
     }
 
     public TestWorkDay getWork_day() {
@@ -23,20 +23,20 @@ public class TestData {
         this.work_day = work_day;
     }
 
-    public ArrayList<TestWorkingOn> getWorking_on() {
-        return working_on;
+    public ArrayList<TestWorkingOn> getWork_on() {
+        return work_on;
     }
 
-    public void setWorking_on(ArrayList<TestWorkingOn> working_on) {
-        this.working_on = working_on;
+    public void setWork_on(ArrayList<TestWorkingOn> work_on) {
+        this.work_on = work_on;
     }
 
     @Override
     public String toString() {
         String string = this.work_day.toString()+"\n";
-        for(int i=0;i<this.working_on.size();i++)
+        for(int i = 0; i<this.work_on.size(); i++)
         {
-            string+="\t"+this.working_on.get(i).toString()+"\n";
+            string+="\t"+this.work_on.get(i).toString()+"\n";
         }
         return string;
     }
