@@ -9,10 +9,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import Data.ProjectsInSettings;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -22,8 +28,6 @@ public class SettingsActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
 
     TextView nameOfProject;
-
-    String[] test = {"TIME TRACKER", "BUG REPORTER", "FITNESS APP", "TIME TRACKER", "BUG REPORTER", "FITNESS APP", "TIME TRACKER", "BUG REPORTER", "FITNESS APP", "TIME TRACKER", "BUG REPORTER", "FITNESS APP"};
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
@@ -44,12 +48,15 @@ public class SettingsActivity extends AppCompatActivity {
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view_settings);
-        adapter = new SettingsAdapter(test);
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
 
-        recyclerView.setAdapter(adapter);
+        SettingsAdapter projectsA=new SettingsAdapter(this,getData());
+        recyclerView.setAdapter(projectsA);
+
+        ItemTouchHelper.Callback callback = new ProjectTouchHelper(projectsA);
+        ItemTouchHelper helper = new ItemTouchHelper(callback);
+        helper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -61,5 +68,15 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private List<ProjectsInSettings> getData(){
+        List<ProjectsInSettings> movieList = new ArrayList<>();
+        movieList.add(new ProjectsInSettings("Harry Potter"));
+        movieList.add(new ProjectsInSettings("Twilight"));
+        movieList.add(new ProjectsInSettings("Star Wars"));
+        movieList.add(new ProjectsInSettings("Star Trek"));
+        movieList.add(new ProjectsInSettings("Galaxy Quest"));
+        return movieList;
     }
 }
