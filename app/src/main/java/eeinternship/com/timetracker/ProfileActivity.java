@@ -26,9 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
 
-    static final int DIALOG_ID = 0;
-    int hour, minute;
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,15 +77,17 @@ public class ProfileActivity extends AppCompatActivity {
             case android.R.id.home:
                 finish();
                 return true;
-            case R.id.settings_btn:
-                Intent project = new Intent(this, SettingsActivity.class);
-                startActivity(project);
             case R.id.notification_btn:
-                Intent notificationInent = new Intent(this, NotificationActivity.class);
-                startActivity(notificationInent);
-            default:
-                return super.onOptionsItemSelected(item);
+                Intent notificationAC=new Intent(this,NotificationActivity.class);
+                startActivity(notificationAC);
+                break;
+            case R.id.settings_btn:
+                Intent settingsAC=new Intent(this,SettingsActivity.class);
+                startActivity(settingsAC);
+                break;
         }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -97,6 +96,4 @@ public class ProfileActivity extends AppCompatActivity {
         inflater.inflate(R.menu.main, menu);
         return true;
     }
-
-
 }

@@ -13,4 +13,5 @@
 
     <color name="dimBackground">#80000000</color>
     <color name="undimBackground">#00FFFFFF</color>
+    <color name="hint_foreground_material_light">#00000000</color>
 </resources>
