@@ -38,18 +38,17 @@
             android:layout_width="match_parent"
             android:layout_height="35dp"
             android:layout_gravity="center"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
             android:background="#04b795"
             android:gravity="center"
-            android:text="SOMETHING I DON'T KNOW WHAT"
+            android:text="SET REMINDER"
             android:textColor="#FFFFFF"
             android:textSize="15dp" />
 
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/timer_layout_ex"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:el_expanded="false">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,77 +69,79 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:background="#C0C0C0" />
-            </LinearLayout>
-        </net.cachapa.expandablelayout.ExpandableLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="15dp"
-            android:paddingTop="15dp"
-            android:weightSum="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
                     android:weightSum="1">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
                         android:layout_weight="0.5">
 
-                        <TextView
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="NOTIFICATION"
-                            android:textSize="15dp" />
+                            android:orientation="vertical"
+                            android:weightSum="1">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="0.5">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="NOTIFICATION"
+                                    android:textSize="15dp" />
+                            </LinearLayout>
+                            s
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="15dp"
+                                android:layout_weight="0.5">
+
+                                <TextView
+                                    android:id="@+id/on_off_txt"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Off"
+                                    android:textColor="#f1490b"
+                                    android:textSize="12dp" />
+                            </LinearLayout>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="15dp"
-                        android:layout_weight="0.5">
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.5"
+                        android:paddingRight="15dp">
 
-                        <TextView
-                            android:id="@+id/on_off_txt"
+                        <Switch
+                            android:id="@+id/switch_on_off"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Off"
-                            android:textColor="#f1490b"
-                            android:textSize="12dp" />
+                            android:layout_height="match_parent" />
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:paddingRight="15dp">
-
-                <Switch
-                    android:id="@+id/switch_on_off"
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="1dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="#C0C0C0" />
             </LinearLayout>
-        </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_gravity="bottom"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="#C0C0C0" />
+        </net.cachapa.expandablelayout.ExpandableLayout>
     </LinearLayout>
 
     <LinearLayout
