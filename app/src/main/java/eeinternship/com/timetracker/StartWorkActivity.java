@@ -28,7 +28,6 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
@@ -52,7 +51,6 @@ public class StartWorkActivity extends AppCompatActivity {
     // animation
     Animation fabOpen, fabClose, fabRotate, fabRotateClose, txtOpen, txtClose;
     boolean isOpen = false;
-
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
@@ -111,6 +109,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     closeMenu();
                 } else {
                     openMenu();
+
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -368,7 +367,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
 
-
         recyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -387,6 +385,5 @@ public class StartWorkActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
 
