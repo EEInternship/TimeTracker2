@@ -38,4 +38,9 @@ public class ProfileDataDropdown {
         this.totalTime = workTime;
         //ToDo: workTime + overTime
     }
+
+    public ProfileDataLine getProifleDataLine(int index){
+        return profileDataLineArrayList.get(index);
+    }
+
 }

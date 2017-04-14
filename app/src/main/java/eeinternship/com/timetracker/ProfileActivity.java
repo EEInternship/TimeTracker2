@@ -25,8 +25,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
-    List<String> listDataHeader;
-    HashMap<String, List<String>> listDataChild;
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
 
@@ -56,31 +54,11 @@ public class ProfileActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
-        addData();
-        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        listAdapter = new ExpandableListAdapter(this,userData.getProfileDataDropdownArrayList());
         expListView.setAdapter(listAdapter);
     }
 
-    private void addData() {
 
-        listDataHeader = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
-
-        // Adding child data
-        listDataHeader.add("Monthly overview");
-
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
-
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
