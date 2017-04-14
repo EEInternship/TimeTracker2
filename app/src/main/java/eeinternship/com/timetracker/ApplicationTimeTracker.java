@@ -76,6 +76,7 @@ public class ApplicationTimeTracker extends Application {
         backupData.ticketList = userData.getTicketList();
         backupData.uploadSpreadsheetData = userData.getUploadSpreadsheetData();
         saveInGson();
+
     }
 
     public ArrayList<Project> getActiveProjects(Context context) {

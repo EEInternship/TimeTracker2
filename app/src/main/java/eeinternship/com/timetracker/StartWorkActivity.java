@@ -224,6 +224,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         adapter.notifyItemRemoved(location);
                         adapter.notifyItemRangeChanged(location, adapter.getItemCount());
                     }
+                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
                     userData.setTicketList(ticketList);
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();
@@ -264,6 +265,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             Toast.makeText(getApplicationContext(),"Ticket successfully deleted!",Toast.LENGTH_LONG).show();
+
 
                         }
                         adapter.notifyDataSetChanged();
