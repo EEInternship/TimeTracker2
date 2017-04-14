@@ -28,7 +28,6 @@ import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListen
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import Data.Project;
 import Data.Ticket;
@@ -52,7 +51,6 @@ public class StartWorkActivity extends AppCompatActivity {
     // animation
     Animation fabOpen, fabClose, fabRotate, fabRotateClose, txtOpen, txtClose;
     boolean isOpen = false;
-
 
     ArrayList<Ticket> ticketList = new ArrayList<Ticket>();
 
@@ -111,6 +109,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     closeMenu();
                 } else {
                     openMenu();
+
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -224,6 +223,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         adapter.notifyItemRemoved(location);
                         adapter.notifyItemRangeChanged(location, adapter.getItemCount());
                     }
+                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
                     userData.setTicketList(ticketList);
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();
@@ -244,7 +244,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
                     @Override
                     public boolean canSwipeLeft(int position) {
-                        return false;
+                        return true;
                     }
 
                     @Override
@@ -254,6 +254,20 @@ public class StartWorkActivity extends AppCompatActivity {
 
                     @Override
                     public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                            buttonOptions.show();
+                            buttonOptions.setClickable(true);
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            Toast.makeText(getApplicationContext(),"Ticket successfully deleted!",Toast.LENGTH_LONG).show();
+
+
+                        }
+                        adapter.notifyDataSetChanged();
                     }
 
                     @Override
@@ -368,7 +382,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonThirdProject.setClickable(true);
         labelBtnThirdProject.startAnimation(txtOpen);
 
-
         recyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -387,6 +400,5 @@ public class StartWorkActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
 
