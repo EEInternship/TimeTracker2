@@ -13,10 +13,12 @@
         android:weightSum="1">
 
         <LinearLayout
+            android:id="@+id/project_color"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="0.32"
-            android:background="#FF00FF" />
+            android:background="#FF00FF"
+            android:orientation="horizontal" />
 
         <LinearLayout
             android:layout_width="match_parent"
