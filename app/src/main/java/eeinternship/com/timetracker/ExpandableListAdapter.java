@@ -1,15 +1,21 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import Data.ProfileDataDropdown;
+import Data.ProfileDataLine;
 
 /**
  * Created by IsakFe on 30. 03. 2017.
@@ -18,21 +24,16 @@ import java.util.List;
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
-    private List<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
 
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
+    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList) {
         this._context = context;
-        this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
+        this.profileDataDropdownArrayList = profileDataDropdownArrayList;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+        return profileDataDropdownArrayList.get(groupPosition).getProifleDataLine(childPosititon);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
-        final String childText = (String) getChild(groupPosition, childPosition);
+        final ProfileDataLine profileDataLine = (ProfileDataLine) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
@@ -52,27 +53,39 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_item, null);
         }
 
-        TextView txtListChild = (TextView) convertView
+        TextView projectName = (TextView) convertView
                 .findViewById(R.id.list_item_name_project);
+        TextView startTime = (TextView) convertView.findViewById((R.id.start_time));
+        TextView finishTime = (TextView) convertView.findViewById(R.id.end_time);
+        TextView description = (TextView) convertView.findViewById(R.id.list_item_name_task);
+        TextView taskTime = (TextView) convertView.findViewById(R.id.sum_time);
+        LinearLayout projectColor = (LinearLayout) convertView.findViewById(R.id.project_color);
 
-        txtListChild.setText(childText);
+
+
+        projectName.setText(profileDataLine.getProjectName());
+        startTime.setText(profileDataLine.getStartingTime());
+        finishTime.setText(profileDataLine.getFinishTime());
+        description.setText(profileDataLine.getWorkDescription());
+        taskTime.setText(profileDataLine.getWorkTime());
+        projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
+
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .size();
+        return this.profileDataDropdownArrayList.get(groupPosition).getProfileDataLineArrayList().size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this._listDataHeader.get(groupPosition);
+        return this.profileDataDropdownArrayList.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this._listDataHeader.size();
+        return profileDataDropdownArrayList.size();
     }
 
     @Override
@@ -83,7 +96,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        String headerTitle = (String) getGroup(groupPosition);
+        ProfileDataDropdown headerTitle = (ProfileDataDropdown) getGroup(groupPosition);
         if (convertView == null) {
             LayoutInflater infalInflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -93,7 +106,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.day_date_label);
         lblListHeader.setTypeface(null, Typeface.BOLD);
-        lblListHeader.setText(headerTitle);
+        lblListHeader.setText(headerTitle.getDate());
 
         return convertView;
     }
