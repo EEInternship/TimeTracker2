@@ -16,10 +16,10 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 public class NotificationActivity extends AppCompatActivity {
 
-    private TimePicker timePicker, timerPicker;
+    private TimePicker notificationStartingTimePicker, notificationShowOnTimePicker;
     ExpandableLayout expandableLayoutTime, expandableLayoutTimer;
     TextView linearLayoutTxtTimer, onOffTxt;
-    Switch onOff;
+    Switch notificationTurnOnOff;
 
     boolean isOpen = false;
 
@@ -36,11 +36,16 @@ public class NotificationActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("NOTIFICATION");
 
-        timerPicker = (TimePicker) findViewById(R.id.timer);
-        timerPicker.setIs24HourView(true);
+        notificationShowOnTimePicker = (TimePicker) findViewById(R.id.timer);
+        notificationShowOnTimePicker.setIs24HourView(true);
+        notificationShowOnTimePicker.setCurrentHour(0);
+        notificationShowOnTimePicker.setCurrentMinute(45);
 
-        timePicker = (TimePicker) findViewById(R.id.time_picker);
-        timePicker.setIs24HourView(true);
+
+        notificationStartingTimePicker = (TimePicker) findViewById(R.id.time_picker);
+        notificationStartingTimePicker.setIs24HourView(true);
+        notificationStartingTimePicker.setCurrentHour(8);
+        notificationStartingTimePicker.setCurrentMinute(0);
 
         expandableLayoutTime = (ExpandableLayout) findViewById(R.id.time_picker_layout_ex);
         expandableLayoutTimer = (ExpandableLayout) findViewById(R.id.timer_layout_ex);
@@ -61,9 +66,9 @@ public class NotificationActivity extends AppCompatActivity {
             }
         });
 
-        onOff = (Switch) findViewById(R.id.switch_on_off);
+        notificationTurnOnOff = (Switch) findViewById(R.id.switch_on_off);
         onOffTxt = (TextView) findViewById(R.id.on_off_txt);
-        onOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        notificationTurnOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if (isChecked) {
