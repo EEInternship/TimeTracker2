@@ -12,14 +12,23 @@
     tools:context="eeinternship.com.timetracker.StartWorkActivity">
 
     <LinearLayout
+        android:id="@+id/test"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/test">
+        android:orientation="vertical">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview_start_work"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/empty_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="No Records"
+            android:visibility="gone" />
     </LinearLayout>
 
     <FrameLayout
