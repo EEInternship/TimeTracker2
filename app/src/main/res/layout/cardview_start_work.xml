@@ -6,24 +6,28 @@
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
     swipe:leftEdgeSwipeOffset="0dp"
-    swipe:rightEdgeSwipeOffset="0dp"
-    android:layout_marginTop="2.5dp"
-    android:layout_marginBottom="2.5dp">
+    swipe:rightEdgeSwipeOffset="0dp">
 
     <!--Bottom View For Right to Left-->
     <LinearLayout
         android:id="@+id/bottom_wrapper"
         android:layout_width="80dp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"  >
 
         <ImageButton
             android:id="@+id/tvDelete"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#f1490b"
             android:gravity="center"
             android:src="@drawable/ic_delete" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C0C0C0" />
     </LinearLayout>
 
     <!-- Another Bottom View For Left to Right -->
@@ -31,16 +35,22 @@
         android:id="@+id/bottom_wrapper1"
         android:layout_width="80dp"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:weightSum="1">
 
         <ImageButton
             android:id="@+id/btnSend"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="#04b795"
             android:gravity="center"
             android:src="@drawable/ic_send" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C0C0C0" />
     </LinearLayout>
 
     <!-- Top View,  Row itemView of RecyclerView -->
@@ -142,5 +152,10 @@
                     android:textSize="18dp" />
             </LinearLayout>
         </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#C0C0C0" />
     </LinearLayout>
 </com.daimajia.swipe.SwipeLayout>
