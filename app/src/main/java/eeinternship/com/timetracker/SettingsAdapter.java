@@ -2,6 +2,10 @@ package eeinternship.com.timetracker;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +30,7 @@ import Data.ProjectsInSettings;
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.RecyclerViewHolder> {
     List<ProjectsInSettings> listProjects;
-    Context context;
+    static Context context;
     private View root;
 
     private int currentBackgroundColor = 0xffffffff;
@@ -90,10 +94,16 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
         TextView name;
         ImageButton color;
 
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         public RecyclerViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.project_name_settings);
             color = (ImageButton) itemView.findViewById(R.id.color_project);
+            if(Build.VERSION.SDK_INT>21){
+                color.setBackground(context.getDrawable(R.drawable.btn_circle_color));
+               // change color
+                color.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C0C0C0")));
+            }
         }
 
         public void bindProject(ProjectsInSettings data) {

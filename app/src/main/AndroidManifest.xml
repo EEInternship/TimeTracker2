@@ -32,6 +32,10 @@
         <activity android:name=".NotificationActivity"></activity>
         <receiver android:name=".AlarmReciverForDay"/>
         <receiver android:name=".AlarmReciverPerTime"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="826e0ef1baf401c1cf67973282ddf21bd33a4ba4" />
     </application>
 
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
