@@ -273,17 +273,14 @@ public class StartWorkActivity extends AppCompatActivity {
 
         /*SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
                 new SwipeableRecyclerViewTouchListener.SwipeListener() {
-
                     @Override
                     public boolean canSwipeLeft(int position) {
                         return true;
                     }
-
                     @Override
                     public boolean canSwipeRight(int position) {
                         return true;
                     }
-
                     @Override
                     public void onDismissedBySwipeLeft(final RecyclerView recyclerView, final int[] reverseSortedPositions) {
                      //   dialog.show();
@@ -296,13 +293,10 @@ public class StartWorkActivity extends AppCompatActivity {
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             Toast.makeText(getApplicationContext(), "Ticket successfully deleted!", Toast.LENGTH_LONG).show();
-
                         }
                         adapter.notifyDataSetChanged();
                         //dialog.show();
                     }
-
-
                     @Override
                     public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
                         for (int position : reverseSortedPositions) {
@@ -319,7 +313,6 @@ public class StartWorkActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), "You did not write Description!", Toast.LENGTH_LONG).show();
                                 return;
                             }
-
                             applicationTimeTracker.addWorkingOn(getApplicationContext(), userData.getUserAcount(), currentTicket);
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
@@ -329,14 +322,11 @@ public class StartWorkActivity extends AppCompatActivity {
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             Toast.makeText(getApplicationContext(), "Ticket successfully sent!", Toast.LENGTH_LONG).show();
-
                         }
                         adapter.notifyDataSetChanged();
                     }
                 });
-
         recyclerView.addOnItemTouchListener(swipeTouchListener);
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -351,8 +341,8 @@ public class StartWorkActivity extends AppCompatActivity {
         });*/
     }
 
-   protected void sendTicket() {
-       Toast.makeText(getApplicationContext(), "sio",Toast.LENGTH_LONG).show();
+    protected void sendTicket() {
+        Toast.makeText(getApplicationContext(), "sio",Toast.LENGTH_LONG).show();
     }
 
     private void closeMenu() {
@@ -434,4 +424,3 @@ public class StartWorkActivity extends AppCompatActivity {
         }
     }
 }
-
