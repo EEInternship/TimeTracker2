@@ -213,10 +213,11 @@ public class StartWorkActivity extends AppCompatActivity {
                     userData.setTicketList(new ArrayList<Ticket>());
                     userData.addUploadRepository(data);
                     applicationTimeTracker.setUserData(userData);
-                    finish();
+                    applicationTimeTracker.cancelNotificationPerMinute();
                     applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
                     userData.addUploadRepository(new UploadSpreadsheetData());
                     applicationTimeTracker.setUserData(userData);
+                    finish();
                 }
                 else{
                     for(int location : removePositionList){
