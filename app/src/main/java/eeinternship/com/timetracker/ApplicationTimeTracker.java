@@ -8,12 +8,14 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import io.fabric.sdk.android.Fabric;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -48,6 +50,7 @@ public class ApplicationTimeTracker extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         if (userData == null) {
             userData = new UserData();
             if (readFromGson()) {
