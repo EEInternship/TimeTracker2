@@ -67,10 +67,9 @@ public class ApplicationTimeTracker extends Application {
                 userData.setTicketList(backupData.ticketList);
                 userData.addUploadRepository(backupData.uploadSpreadsheetData);
                 userData.setNotificationData(backupData.notificationData);
-                if(userData.getNotificationData().isSet()){
+                if(userData.getNotificationData().isSet())
                     startNotificationOnDay(userData.getNotificationData().isTurnOnOf());
-                    startNotificationPerMinutes(userData.getNotificationData().isTurnOnOf());
-                }
+
 
             }
 
