@@ -49,6 +49,7 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
+        holder.timeWork.setText(TC.getTime());
         if(TC.getDescription() != null)
             holder.description.setText(TC.getDescription());
         else
@@ -63,19 +64,20 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
             holder.colorOfProject.setBackgroundColor(Color.parseColor("#775ba3"));
         }
 
-        if (holder.startWork != Ticket.State.Done) {
-            if (holder.startWork == Ticket.State.Start) {
-                holder.showTimer = true;
-                holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
-                TC.setTime("0:00");
-            } else if (holder.startWork == Ticket.State.Stop)
-                holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
-            else if (holder.startWork == Ticket.State.Restart)
-                holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
 
-            holder.timeWork.setText(TC.getTime());
-            holder.imageButton.setVisibility(View.VISIBLE);
-        }
+        if (holder.startWork == Ticket.State.Start) {
+            holder.showTimer = true;
+            holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
+            TC.setTime("0:00");
+        } else if (holder.startWork == Ticket.State.Stop)
+            holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
+        else if (holder.startWork == Ticket.State.Restart)
+            holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
+        else if(holder.startWork == Ticket.State.Done)
+            holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
+
+
+
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 100) {
             @Override
@@ -129,10 +131,11 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
                     adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected()));
-                    notifyItemChanged(adapter.size() - 1);
+                    notifyItemChanged(adapter.size()-1);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
+                    notifyDataSetChanged();
                 }
             }
 

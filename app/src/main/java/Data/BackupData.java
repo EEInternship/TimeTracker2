@@ -10,10 +10,12 @@ public class BackupData {
     public UploadSpreadsheetData uploadSpreadsheetData;
     public ArrayList<Ticket> ticketList;
     private String userAcount;
+    public NotificationData notificationData;
 
     public BackupData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
         ticketList = new ArrayList<>();
+        notificationData = new NotificationData();
     }
 
     public String getUserAcount(){return userAcount;}
