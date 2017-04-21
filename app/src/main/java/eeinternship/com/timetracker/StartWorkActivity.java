@@ -23,7 +23,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
+import com.daimajia.swipe.util.Attributes;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -40,7 +40,7 @@ public class StartWorkActivity extends AppCompatActivity {
     RecyclerView.Adapter adapter;
 
     FloatingActionButton buttonOptions, buttonFinishWork, buttonFirstProject, buttonSecondProject, buttonThirdProject, buttonSelectProject;
-    TextView labelBtnFirstProject, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
+    TextView labelBtnFirstProject, tvEmptyView,labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
@@ -98,9 +98,28 @@ public class StartWorkActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+
+        tvEmptyView = (TextView) findViewById(R.id.empty_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        setAdapter();
+
+
+        final newAdapter mAdapter = new newAdapter(this, ticketList);
+
+
+        // Setting Mode to Single to reveal bottom View for one item in List
+        // Setting Mode to Mutliple to reveal bottom Views for multile items in List
+        (mAdapter).setMode(Attributes.Mode.Single);
+        recyclerView.setAdapter(mAdapter);
+
+        if (ticketList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            tvEmptyView.setVisibility(View.VISIBLE);
+
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            tvEmptyView.setVisibility(View.GONE);
+        }
 
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,7 +135,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             closeMenu();
                         }
                     });
@@ -126,7 +145,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             closeMenu();
 
                         }
@@ -137,7 +156,7 @@ public class StartWorkActivity extends AppCompatActivity {
                             ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             closeMenu();
                         }
                     });
@@ -161,7 +180,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
-                        adapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged();
                         closeMenu();
 
                         arg0.cancel();
@@ -189,119 +208,51 @@ public class StartWorkActivity extends AppCompatActivity {
                 ArrayList<Integer> removePositionList = new ArrayList<Integer>();
                 boolean allDone = true;
                 int position = 0;
-                for(Ticket ticket : userData.getTicketList()){
-                    if(ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription()!= null){
-                        if(ticket.getFinishTime() == null){
+                for (Ticket ticket : userData.getTicketList()) {
+                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null) {
+                        if (ticket.getFinishTime() == null) {
                             Calendar calendar = Calendar.getInstance();
-                            ticket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
                         }
                         removePositionList.add(position);
                         position--;
-                        applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),ticket);
-                    }else{
-                        if(ticket.getDescription() == null)
-                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Description is null",Toast.LENGTH_SHORT).show();
+                        applicationTimeTracker.addWorkingOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                    } else {
+                        if (ticket.getDescription() == null)
+                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
                         else
-                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Did not start", Toast.LENGTH_SHORT).show();
                         allDone = false;
                     }
                     position++;
 
                 }
-                if(allDone){
+                if (allDone) {
                     userData.setTicketList(new ArrayList<Ticket>());
                     userData.addUploadRepository(data);
                     applicationTimeTracker.setUserData(userData);
                     finish();
-                    applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
+                    applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
                     userData.addUploadRepository(new UploadSpreadsheetData());
                     applicationTimeTracker.setUserData(userData);
-                }
-                else{
-                    for(int location : removePositionList){
+                } else {
+                    for (int location : removePositionList) {
                         ticketList.remove(location);
-                        adapter.notifyItemRemoved(location);
-                        adapter.notifyItemRangeChanged(location, adapter.getItemCount());
+                        mAdapter.notifyItemRemoved(location);
+                        mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
                     }
-                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
+                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
                     userData.setTicketList(ticketList);
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();
                 }
 
-
-
             }
         });
-
 
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-
-        SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
-                new SwipeableRecyclerViewTouchListener.SwipeListener() {
-                    @Override
-                    public boolean canSwipeLeft(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean canSwipeRight(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-
-                            ticketList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
-                            buttonOptions.show();
-                            buttonOptions.setClickable(true);
-                            userData.setTicketList(ticketList);
-                            applicationTimeTracker.setUserData(userData);
-                            Toast.makeText(getApplicationContext(),"Ticket successfully deleted!",Toast.LENGTH_LONG).show();
-
-
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-                            Ticket currentTicket = ticketList.get(position);
-                            if(currentTicket.getFinishTime() == null){
-                                Calendar calendar = Calendar.getInstance();
-                                currentTicket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
-                            }
-                            if(currentTicket.getDate() == null){
-                                Toast.makeText(getApplicationContext(),"You did not start this ticket!",Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                            if(currentTicket.getDescription() == null){
-                                Toast.makeText(getApplicationContext(),"You did not write Description!",Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                            applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
-                            ticketList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
-                            buttonOptions.show();
-                            buttonOptions.setClickable(true);
-                            userData.setTicketList(ticketList);
-                            applicationTimeTracker.setUserData(userData);
-                            Toast.makeText(getApplicationContext(),"Ticket successfully sent!",Toast.LENGTH_LONG).show();
-
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-        recyclerView.addOnItemTouchListener(swipeTouchListener);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -315,11 +266,90 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+        /*SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
+                new SwipeableRecyclerViewTouchListener.SwipeListener() {
+
+                    @Override
+                    public boolean canSwipeLeft(int position) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean canSwipeRight(int position) {
+                        return true;
+                    }
+
+                    @Override
+                    public void onDismissedBySwipeLeft(final RecyclerView recyclerView, final int[] reverseSortedPositions) {
+                     //   dialog.show();
+                       for (int position : reverseSortedPositions) {
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                            buttonOptions.show();
+                            buttonOptions.setClickable(true);
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            Toast.makeText(getApplicationContext(), "Ticket successfully deleted!", Toast.LENGTH_LONG).show();
+
+                        }
+                        adapter.notifyDataSetChanged();
+                        //dialog.show();
+                    }
+
+
+                    @Override
+                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                        for (int position : reverseSortedPositions) {
+                            Ticket currentTicket = ticketList.get(position);
+                            if (currentTicket.getFinishTime() == null) {
+                                Calendar calendar = Calendar.getInstance();
+                                currentTicket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            }
+                            if (currentTicket.getDate() == null) {
+                                Toast.makeText(getApplicationContext(), "You did not start this ticket!", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                            if (currentTicket.getDescription() == null) {
+                                Toast.makeText(getApplicationContext(), "You did not write Description!", Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                            applicationTimeTracker.addWorkingOn(getApplicationContext(), userData.getUserAcount(), currentTicket);
+                            ticketList.remove(position);
+                            adapter.notifyItemRemoved(position);
+                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+                            buttonOptions.show();
+                            buttonOptions.setClickable(true);
+                            userData.setTicketList(ticketList);
+                            applicationTimeTracker.setUserData(userData);
+                            Toast.makeText(getApplicationContext(), "Ticket successfully sent!", Toast.LENGTH_LONG).show();
+
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+
+        recyclerView.addOnItemTouchListener(swipeTouchListener);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    buttonOptions.hide();
+                    buttonOptions.setClickable(false);
+                } else if (dy < 0) {
+                    buttonOptions.show();
+                    buttonOptions.setClickable(true);
+                }
+            }
+        });*/
     }
 
-    private void setAdapter() {
-        adapter = new StartWorkAdapter(ticketList);
-        recyclerView.setAdapter(adapter);
+   protected void sendTicket() {
+       Toast.makeText(getApplicationContext(), "sio",Toast.LENGTH_LONG).show();
     }
 
     private void closeMenu() {
