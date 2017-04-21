@@ -231,12 +231,15 @@ public class StartWorkActivity extends AppCompatActivity {
                     userData.setTicketList(new ArrayList<Ticket>());
                     userData.addUploadRepository(data);
                     applicationTimeTracker.setUserData(userData);
-                    finish();
-                    applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
+
+                    applicationTimeTracker.cancelNotificationPerMinute();
+                    applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
                     userData.addUploadRepository(new UploadSpreadsheetData());
                     applicationTimeTracker.setUserData(userData);
-                } else {
-                    for (int location : removePositionList) {
+                    finish();
+                }
+                else{
+                    for(int location : removePositionList){
                         ticketList.remove(location);
                         mAdapter.notifyItemRemoved(location);
                         mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());

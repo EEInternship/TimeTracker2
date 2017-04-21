@@ -1,7 +1,10 @@
 package eeinternship.com.timetracker;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -24,9 +27,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import Data.BackupData;
@@ -46,6 +51,10 @@ public class ApplicationTimeTracker extends Application {
     private static final String FILE_NAME = "UserData.json";
     private UserData userData;
     private BackupData backupData = new BackupData();
+    private AlarmManager alarmManegerPerDay;
+    private AlarmManager alarmManagerPerTime;
+    private PendingIntent alarmRecvierForDay;
+    private PendingIntent alramRevierPerTime;
 
     @Override
     public void onCreate() {
@@ -57,6 +66,11 @@ public class ApplicationTimeTracker extends Application {
                 userData.setUserAcount(backupData.getUserAcount());
                 userData.setTicketList(backupData.ticketList);
                 userData.addUploadRepository(backupData.uploadSpreadsheetData);
+                userData.setNotificationData(backupData.notificationData);
+                if(userData.getNotificationData().isSet()){
+                    startNotificationOnDay(userData.getNotificationData().isTurnOnOf());
+                    startNotificationPerMinutes(userData.getNotificationData().isTurnOnOf());
+                }
 
             }
 
@@ -78,6 +92,7 @@ public class ApplicationTimeTracker extends Application {
         backupData.setUserAcount(userData.getUserAcount());
         backupData.ticketList = userData.getTicketList();
         backupData.uploadSpreadsheetData = userData.getUploadSpreadsheetData();
+        backupData.notificationData = userData.getNotificationData();
         saveInGson();
 
     }
@@ -323,6 +338,65 @@ public class ApplicationTimeTracker extends Application {
         System.out.println("ExternalStorageAvailable is not avaliable");
         return null;
     }
+
+
+    public void startNotificationOnDay(boolean work){
+
+        if(!work)
+            return;
+
+        Calendar firingCal= Calendar.getInstance();
+        Calendar currentTime = Calendar.getInstance();
+        Time time = userData.getNotificationData().getNotificationStartTime();
+        firingCal.set(Calendar.HOUR_OF_DAY, time.getHours()); // At the hour you wanna fire
+        firingCal.set(Calendar.MINUTE, time.getMinutes()); // Particular minute
+        firingCal.set(Calendar.SECOND, 0); // particular second
+        long intendedTime = firingCal.getTimeInMillis();
+        long timeNow = currentTime.getTimeInMillis();
+
+
+        Intent myIntent = new Intent(this , AlarmReciverForDay.class);
+        alarmManegerPerDay = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmRecvierForDay = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+        if(timeNow > intendedTime){
+            firingCal.add(Calendar.DAY_OF_MONTH,1);
+            intendedTime = firingCal.getTimeInMillis();
+            alarmManegerPerDay.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, alarmRecvierForDay);
+        }else{
+            alarmManegerPerDay.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, alarmRecvierForDay);
+        }
+
+
+    }
+
+    public void startNotificationPerMinutes(boolean work){
+        if(!work)
+            return;
+        Time time = userData.getNotificationData().getNotificationPopupTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+       // cal.add(Calendar.MILLISECOND, (int) time.getTime());
+        long currentTimeMillis = cal.getTimeInMillis();
+        long notificationOnTimeMillis = time.getTime();
+        int hourPlusMinutes = time.getHours()*60 + time.getMinutes();
+        cal.add(Calendar.MILLISECOND,hourPlusMinutes * 60 * 1000);
+        Intent myIntent = new Intent(this , AlarmReciverPerTime.class);
+        alarmManagerPerTime = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alramRevierPerTime = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+        alarmManagerPerTime.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*hourPlusMinutes, alramRevierPerTime);
+
+    }
+
+    public void cancelNotificationPerDay(){
+        if(alarmManegerPerDay != null)
+            alarmManegerPerDay.cancel(alarmRecvierForDay);
+    }
+    public void cancelNotificationPerMinute(){
+
+        if(alarmManagerPerTime != null)
+            alarmManagerPerTime.cancel(alramRevierPerTime);
+}
+
 
 
 }

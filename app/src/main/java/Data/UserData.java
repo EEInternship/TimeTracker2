@@ -10,6 +10,7 @@ public  class UserData {
     UploadSpreadsheetData uploadSpreadsheetData;
     ArrayList<Ticket> ticketList;
     ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
+    NotificationData notificationData;
 
     private String userAcount;
 
@@ -18,10 +19,17 @@ public  class UserData {
         ticketList = new ArrayList<>();
         projectList = new ArrayList<>();
         profileDataDropdownArrayList = new ArrayList<>();
-
+        notificationData = new NotificationData();
     }
 
 
+    public NotificationData getNotificationData() {
+        return notificationData;
+    }
+
+    public void setNotificationData(NotificationData notificationData) {
+        this.notificationData = notificationData;
+    }
 
     public void addUploadRepository(UploadSpreadsheetData data){
         this.uploadSpreadsheetData = data;
