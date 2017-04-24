@@ -3,7 +3,8 @@
     package="eeinternship.com.timetracker">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <application
         android:name=".ApplicationTimeTracker"
         android:allowBackup="true"
@@ -29,6 +30,8 @@
             android:screenOrientation="portrait" />
         <activity android:name=".SettingsActivity" />
         <activity android:name=".NotificationActivity"></activity>
+        <receiver android:name=".AlarmReciverForDay"/>
+        <receiver android:name=".AlarmReciverPerTime"/>
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="826e0ef1baf401c1cf67973282ddf21bd33a4ba4" />

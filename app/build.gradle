@@ -51,6 +51,8 @@ dependencies {
 
     compile 'com.github.QuadFlask:colorpicker:0.0.13'
 
+    compile 'com.daimajia.swipelayout:library:1.2.0@aar'
+
     testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
