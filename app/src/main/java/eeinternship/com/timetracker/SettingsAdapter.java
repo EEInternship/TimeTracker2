@@ -89,6 +89,20 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
                                 selectedProject.setTicketColor(hexColor);
 
 
+                                userData.addProjectList(new ArrayList<Project>());
+                                userData.addProjectList(listProjects);
+                                ArrayList<Ticket> tickets = userData.getTicketList();
+                                if(tickets!=null){
+                                    for (Ticket ticket :tickets) {
+                                        for(Project project:userData.getProjectList()){
+                                            if(ticket.getProject().equals(project.projectName))
+                                                ticket.setColor(project.getTicketColor());
+                                        }
+                                    }
+                                }
+                                userData.setTicketList(tickets);
+                                applicationTimeTracker.setUserData(userData);
+
                             }
                         })
                         .build()
@@ -96,9 +110,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
             }
         });
 
-        userData.addProjectList(new ArrayList<Project>());
-        userData.addProjectList(listProjects);
-        applicationTimeTracker.setUserData(userData);
+
     }
 
     @Override
