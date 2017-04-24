@@ -76,8 +76,10 @@ public class MainActivity extends AppCompatActivity {
                 int cMinute = calender.get(Calendar.MINUTE);
                 uploadSpreadsheetData.startingTime = new Time(cHourOfDay,cMinute,00);
                 uploadSpreadsheetData.date = calender;
-                userData.addUploadRepository(uploadSpreadsheetData);
-                applicationTimeTracker.setUserData(userData);
+                if(userData.getUploadSpreadsheetData().startingTime == null){
+                    userData.addUploadRepository(uploadSpreadsheetData);
+                    applicationTimeTracker.setUserData(userData);
+                }
 
                 Intent startWorkActivity=new Intent(getApplication(),StartWorkActivity.class);
                 startActivity(startWorkActivity);
