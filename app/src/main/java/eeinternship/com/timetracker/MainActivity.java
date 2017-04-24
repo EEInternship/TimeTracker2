@@ -81,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent startWorkActivity=new Intent(getApplication(),StartWorkActivity.class);
                 startActivity(startWorkActivity);
+
+                if(userData.getNotificationData().isSet())
+                    applicationTimeTracker.startNotificationPerMinutes(userData.getNotificationData().isTurnOnOf());
             }
         });
 

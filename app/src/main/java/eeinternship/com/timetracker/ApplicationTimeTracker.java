@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.concurrent.CountDownLatch;
 
 import Data.BackupData;
 import Data.ProfileDataDropdown;
@@ -45,6 +46,8 @@ import RESTtest.TestData;
 import RESTtest.TestProject;
 import RESTtest.TestWorkingOn;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 
 public class ApplicationTimeTracker extends Application {
     private static final String DATA_MAP = "TimeTracker";
@@ -55,6 +58,8 @@ public class ApplicationTimeTracker extends Application {
     private AlarmManager alarmManagerPerTime;
     private PendingIntent alarmRecvierForDay;
     private PendingIntent alramRevierPerTime;
+    private ArrayList<Project> tempProjects;
+    private Object lock = new Object();
 
     @Override
     public void onCreate() {
@@ -67,21 +72,59 @@ public class ApplicationTimeTracker extends Application {
                 userData.setTicketList(backupData.ticketList);
                 userData.addUploadRepository(backupData.uploadSpreadsheetData);
                 userData.setNotificationData(backupData.notificationData);
-                if(userData.getNotificationData().isSet()){
+                userData.addProjectList(backupData.projects);
+                if(userData.getNotificationData().isSet())
                     startNotificationOnDay(userData.getNotificationData().isTurnOnOf());
-                    startNotificationPerMinutes(userData.getNotificationData().isTurnOnOf());
-                }
+
 
             }
 
         }
 
+        getActiveProjects(getApplicationContext());
+       // checkForNewProjects();
+
+       synchronized (lock){
+           try {
+
+               lock.wait(3000);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
 
 
-        userData.addProjectList(getActiveProjects(getApplicationContext()));
+       }
+
         userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
-       // userData.scenariData();
+
     }
+
+    private void checkForNewProjects() {
+        synchronized (lock){
+            ArrayList<Project> newProjects = new ArrayList<>();
+            for(Project tempProject : tempProjects){
+                boolean duplicate = false;
+                for(Project project:userData.getProjectList()){
+                    if(project.projectName == tempProject.projectName){
+                        duplicate = true;
+                    }
+                }
+                if(duplicate){
+                    newProjects.add(tempProject);
+                }
+
+            }
+            ArrayList<Project> allProjects = userData.getProjectList();
+            for(Project project:newProjects){
+                allProjects.add(project);
+            }
+            userData.addProjectList(new ArrayList<Project>());
+            userData.addProjectList(allProjects);
+            lock.notify();
+        }
+
+    }
+
 
     public UserData getUserData() {
         return userData;
@@ -93,11 +136,12 @@ public class ApplicationTimeTracker extends Application {
         backupData.ticketList = userData.getTicketList();
         backupData.uploadSpreadsheetData = userData.getUploadSpreadsheetData();
         backupData.notificationData = userData.getNotificationData();
+        backupData.projects = userData.getProjectList();
         saveInGson();
 
     }
 
-    public ArrayList<Project> getActiveProjects(Context context) {
+    public void getActiveProjects(Context context) {
         Log.i("Running:", "Fetching active project list");
         final ArrayList<Project> projects = new ArrayList<>();
         if (isNetworkAvailable()) {
@@ -121,8 +165,11 @@ public class ApplicationTimeTracker extends Application {
                                         projects.add(proj);
                                     }
                                 }
+                                tempProjects=projects;
+                                checkForNewProjects();
                             } else {
                                 Log.e("Error", "Result is empty!");
+
                             }
                         }
                     });
@@ -130,7 +177,8 @@ public class ApplicationTimeTracker extends Application {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
 
-        return projects;
+
+
     }
 
     public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {

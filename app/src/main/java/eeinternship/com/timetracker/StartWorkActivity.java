@@ -37,13 +37,13 @@ import Data.UserData;
 public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
 
     FloatingActionButton buttonOptions, buttonFinishWork, buttonFirstProject, buttonSecondProject, buttonThirdProject, buttonSelectProject;
     TextView labelBtnFirstProject, tvEmptyView,labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
+    private newAdapter mAdapter;
 
     // dim
     FrameLayout frameLayoutDim;
@@ -104,7 +104,7 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
 
-        final newAdapter mAdapter = new newAdapter(this, ticketList);
+        mAdapter = new newAdapter(this, ticketList);
 
 
         // Setting Mode to Single to reveal bottom View for one item in List
@@ -132,17 +132,18 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First));
+                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First,"#000000"));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
                             closeMenu();
+
                         }
                     });
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second));
+                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second,"#000000"));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -153,7 +154,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonThirdProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third));
+                            ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third,"#000000"));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -163,7 +164,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });
-        final String[] projectList = new String[userData.getProjectList().size()];
+        final String[] projectList =  new String[userData.getProjectList().size()];
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
             projectList[projectListLength] = data.projectName;
@@ -177,7 +178,18 @@ public class StartWorkActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         String selectedProject = projectList[arg1].toString();
-                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other));
+                        String color = "#000000";
+                        ArrayList<Project> projects = userData.getProjectList();
+                        for(Project project : projects){
+                            if(project.projectName == selectedProject)
+                                if(project.getTicketColor() != null)
+                                    color = project.getTicketColor();
+                                else
+                                    color ="#000000";
+                        }
+
+
+                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other,color));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
                         mAdapter.notifyDataSetChanged();

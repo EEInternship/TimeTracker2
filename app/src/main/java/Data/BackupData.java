@@ -11,6 +11,7 @@ public class BackupData {
     public ArrayList<Ticket> ticketList;
     private String userAcount;
     public NotificationData notificationData;
+    public ArrayList<Project> projects;
 
     public BackupData(){
         uploadSpreadsheetData = new UploadSpreadsheetData();
