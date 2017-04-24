@@ -97,6 +97,7 @@ public class ApplicationTimeTracker extends Application {
     }
 
     private void checkForNewProjects() {
+
         synchronized (lock){
             ArrayList<Project> newProjects = new ArrayList<>();
             for(Project tempProject : tempProjects){
@@ -188,7 +189,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkingon/" + email + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -225,6 +226,7 @@ public class ApplicationTimeTracker extends Application {
                     });
         } else {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            ;
         }
         return profileDataDropdownArrayList;
     }
@@ -241,7 +243,7 @@ public class ApplicationTimeTracker extends Application {
 
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/create/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/")
                     .setMultipartParameter("user.email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", startingTime)
@@ -262,41 +264,7 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
-        Log.i("Running:", "Sending work day data.");
-        Date date =  uploadSpreadsheetData.date.getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
-        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
-
-
-        if (isNetworkAvailable()) {
-            Ion.with(context)
-                    //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
-                    .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("date", dateString)
-                    .setMultipartParameter("starting_time", startingTime)
-                    .setMultipartParameter("finish_time", finishTime)
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            if (result != null) {
-                                Log.i("Info: ", result);
-                            } else {
-                                Log.e("Error: ", result);
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void addWorkOn(final Context context, String email, Ticket ticket) {
+    public void addWorkingOn(final Context context, String email, Ticket ticket) {
         Date date =  ticket.getDate().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -306,7 +274,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workon/create/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workingon/")
                     .setMultipartParameter("user.email", email)
                     .setMultipartParameter("project.project_name", ticket.getProject())
                     .setMultipartParameter("date",dateString)
@@ -329,39 +297,6 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkOn(final Context context, String email, Ticket ticket) {
-        Date date =  ticket.getDate().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(ticket.getStartingTime());
-        String finishTime = timeFormat.format(ticket.getFinishTime());
-        Log.i("Running:", "Sending work on data.");
-        if (isNetworkAvailable()) {
-            Ion.with(context)
-                    //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/ID")
-                    .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name", ticket.getProject())
-                    .setMultipartParameter("date",dateString)
-                    .setMultipartParameter("starting_time", startingTime)
-                    .setMultipartParameter("finish_time", finishTime)
-                    .setMultipartParameter("description", ticket.getDescription())
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            if (result != null) {
-                                Log.i("Info: ", result);
-                            } else {
-                                Log.e("Error: ", result);
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
-        }
-    }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

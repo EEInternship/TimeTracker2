@@ -275,6 +275,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     } else {
                         if (ticket.getDescription() == null)
                             Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
+
                         else
                             Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Did not start", Toast.LENGTH_SHORT).show();
                         allDone = false;
@@ -286,7 +287,6 @@ public class StartWorkActivity extends AppCompatActivity {
                     userData.setTicketList(new ArrayList<Ticket>());
                     userData.addUploadRepository(data);
                     applicationTimeTracker.setUserData(userData);
-
                     applicationTimeTracker.cancelNotificationPerMinute();
                     applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
                     userData.addUploadRepository(new UploadSpreadsheetData());
