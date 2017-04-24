@@ -98,7 +98,15 @@ public class ApplicationTimeTracker extends Application {
 
     private void checkForNewProjects() {
 
+
+
+
         synchronized (lock){
+            if(userData.getProjectList() == null){
+                userData.addProjectList(tempProjects);
+                notify();
+                return;
+            }
             ArrayList<Project> newProjects = new ArrayList<>();
             for(Project tempProject : tempProjects){
                 boolean duplicate = false;
