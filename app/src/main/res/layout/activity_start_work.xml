@@ -48,45 +48,6 @@
         app:backgroundTint="#04b795"
         app:pressedTranslationZ="12dp" />
     <!--finish work-->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="100dp"
-        android:clipChildren="false"
-        android:gravity="right"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <TextView
-            android:id="@+id/label_finish_work"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginRight="5dp"
-            android:background="@xml/label_background_design"
-            android:gravity="center"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp"
-            android:text="FINISH WORK"
-            android:textColor="#FFFFFF"
-            android:visibility="invisible" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/btn_finish_work"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginBottom="3dp"
-            android:layout_marginRight="20dp"
-            android:elevation="6dp"
-            android:src="@drawable/ic_done"
-            android:visibility="invisible"
-            app:backgroundTint="#04b795"
-            app:pressedTranslationZ="12dp" />
-    </LinearLayout>
     <!--select projects-->
     <LinearLayout
         android:layout_width="wrap_content"
@@ -241,6 +202,46 @@
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
             app:backgroundTint="#adcd4b"
+            app:pressedTranslationZ="12dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="100dp"
+        android:clipChildren="false"
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <TextView
+            android:id="@+id/label_finish_work"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="5dp"
+            android:background="@xml/label_background_design"
+            android:gravity="center"
+            android:paddingBottom="5dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp"
+            android:text="FINISH WORK"
+            android:textColor="#FFFFFF"
+            android:visibility="invisible" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_finish_work"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="20dp"
+            android:elevation="6dp"
+            android:src="@drawable/ic_done"
+            android:visibility="invisible"
+            app:backgroundTint="#04b795"
             app:pressedTranslationZ="12dp" />
     </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>
