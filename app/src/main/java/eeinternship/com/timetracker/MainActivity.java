@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             //applicationTimeTracker.getActiveProjects(getApplicationContext());
             //applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),accountName);
             //applicationTimeTracker.addWorkDay(getApplicationContext(),accountName);
-            //applicationTimeTracker.addWorkingOn(getApplicationContext(),accountName);
+            //applicationTimeTracker.addWorkOn(getApplicationContext(),accountName);
         }
     }
 
