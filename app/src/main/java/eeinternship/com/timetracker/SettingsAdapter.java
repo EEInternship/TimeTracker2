@@ -38,7 +38,6 @@ import static java.lang.Integer.*;
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.RecyclerViewHolder> {
     private ArrayList<Project> listProjects;
     static Context context;
-    private View root;
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
 
@@ -142,5 +141,7 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
     public void swap(int firstPosition, int secondPosition) {
         Collections.swap(listProjects, firstPosition, secondPosition);
         notifyItemMoved(firstPosition, secondPosition);
+        userData.addProjectList(listProjects);
+        applicationTimeTracker.setUserData(userData);
     }
 }

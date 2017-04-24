@@ -45,6 +45,8 @@ public class StartWorkActivity extends AppCompatActivity {
     private UserData userData;
     private newAdapter mAdapter;
 
+    private ArrayList<Project>  featuredProjects;
+
     // dim
     FrameLayout frameLayoutDim;
 
@@ -65,11 +67,16 @@ public class StartWorkActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIME TRACKER");
 
+
+
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
         ticketList = userData.getTicketList();
+
+
+
 
         buttonOptions = (FloatingActionButton) findViewById(R.id.btn_options);
         buttonSelectProject = (FloatingActionButton) findViewById(R.id.btn_select_project);
@@ -121,6 +128,33 @@ public class StartWorkActivity extends AppCompatActivity {
             tvEmptyView.setVisibility(View.GONE);
         }
 
+
+
+
+        if(userData.getProjectList().size()<1){
+            buttonFirstProject.setVisibility(View.GONE);
+            labelBtnFirstProject.setVisibility(View.GONE);
+        }else
+            labelBtnFirstProject.setText(userData.getProjectList().get(0).projectName);
+        if(userData.getProjectList().size()<2){
+            buttonSecondProject.setVisibility(View.GONE);
+            labelBtnSecondProject.setVisibility(View.GONE);
+        }else
+            labelBtnSecondProject.setText(userData.getProjectList().get(1).projectName);
+        if(userData.getProjectList().size()<3){
+            buttonThirdProject.setVisibility(View.GONE);
+            labelBtnThirdProject.setVisibility(View.GONE);
+        }else
+            labelBtnThirdProject.setText(userData.getProjectList().get(2).projectName);
+
+        if(userData.getProjectList().size()<4){
+            buttonSelectProject.setVisibility(View.GONE);
+            labelSelectProject.setVisibility(View.GONE);
+        }
+
+
+
+
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,7 +166,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First,"#000000"));
+                            ticketList.add(new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First,userData.getProjectList().get(0).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -143,7 +177,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second,"#000000"));
+                            ticketList.add(new Ticket("00:00",  userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second,userData.getProjectList().get(1).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -154,7 +188,7 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonThirdProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third,"#000000"));
+                            ticketList.add(new Ticket("00:00",  userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third,userData.getProjectList().get(2).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -167,6 +201,8 @@ public class StartWorkActivity extends AppCompatActivity {
         final String[] projectList =  new String[userData.getProjectList().size()];
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
+            if(projectListLength <3)
+                continue;
             projectList[projectListLength] = data.projectName;
             projectListLength++;
         }
@@ -361,11 +397,10 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });*/
+
+        setFeautered();
     }
 
-   protected void sendTicket() {
-       Toast.makeText(getApplicationContext(), "sio",Toast.LENGTH_LONG).show();
-    }
 
     private void closeMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
@@ -445,5 +480,21 @@ public class StartWorkActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
+    private void setFeautered(){
+        if(userData.getProjectList().size() == 1){
+
+        }else if(userData.getProjectList().size() == 2){
+
+        }else if(userData.getProjectList().size() == 3){
+
+        }else if(userData.getProjectList().size() > 3){
+
+        }
+    }
+
+
+
 }
 
