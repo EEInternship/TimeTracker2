@@ -100,6 +100,7 @@ public class ApplicationTimeTracker extends Application {
     }
 
     private void checkForNewProjects() {
+
         synchronized (lock){
             ArrayList<Project> newProjects = new ArrayList<>();
             for(Project tempProject : tempProjects){
