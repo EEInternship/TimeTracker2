@@ -197,7 +197,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         }
                         removePositionList.add(position);
                         position--;
-                        applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),ticket);
+                        applicationTimeTracker.addWorkOn(getApplicationContext(),userData.getUserAcount(),ticket);
                     }else{
                         if(ticket.getDescription() == null)
                             Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Description is null",Toast.LENGTH_SHORT).show();
@@ -287,7 +287,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            applicationTimeTracker.addWorkingOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
+                            applicationTimeTracker.addWorkOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
