@@ -1,6 +1,7 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -33,6 +34,8 @@ import Data.Project;
 import Data.Ticket;
 import Data.UploadSpreadsheetData;
 import Data.UserData;
+
+import static java.io.FileDescriptor.in;
 
 public class StartWorkActivity extends AppCompatActivity {
 
@@ -129,30 +132,39 @@ public class StartWorkActivity extends AppCompatActivity {
         }
 
 
-
+//ISAK Tuki SE GLEDA KOK JIH JE
 
         if(userData.getProjectList().size()<1){
             buttonFirstProject.setVisibility(View.GONE);
             labelBtnFirstProject.setVisibility(View.GONE);
-        }else
+        }else{
             labelBtnFirstProject.setText(userData.getProjectList().get(0).projectName);
+            buttonFirstProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(0).getTicketColor())));
+        }
+
         if(userData.getProjectList().size()<2){
             buttonSecondProject.setVisibility(View.GONE);
             labelBtnSecondProject.setVisibility(View.GONE);
-        }else
+        }else{
             labelBtnSecondProject.setText(userData.getProjectList().get(1).projectName);
+            buttonSecondProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(1).getTicketColor())));
+        }
+
         if(userData.getProjectList().size()<3){
             buttonThirdProject.setVisibility(View.GONE);
             labelBtnThirdProject.setVisibility(View.GONE);
-        }else
+        }else{
             labelBtnThirdProject.setText(userData.getProjectList().get(2).projectName);
+            buttonThirdProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(2).getTicketColor())));
+        }
+
 
         if(userData.getProjectList().size()<4){
             buttonSelectProject.setVisibility(View.GONE);
             labelSelectProject.setVisibility(View.GONE);
         }
 
-
+// ISAK TUKI SE PA KONČA
 
 
         buttonOptions.setOnClickListener(new View.OnClickListener() {
