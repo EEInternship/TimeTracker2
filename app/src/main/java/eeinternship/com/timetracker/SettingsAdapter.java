@@ -2,6 +2,7 @@ package eeinternship.com.timetracker;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
@@ -19,27 +20,38 @@ import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import Data.Project;
 import Data.ProjectsInSettings;
+import Data.Ticket;
+import Data.UserData;
+
+import static java.lang.Integer.*;
 
 /**
  * Created by developer on 8.4.2017.
  */
 
 public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.RecyclerViewHolder> {
-    List<ProjectsInSettings> listProjects;
+    private ArrayList<Project> listProjects;
     static Context context;
     private View root;
+    private ApplicationTimeTracker applicationTimeTracker;
+    private UserData userData;
 
     private int currentBackgroundColor = 0xffffffff;
 
-    public SettingsAdapter(Context ctx, List<ProjectsInSettings> data) {
+    public SettingsAdapter(Context ctx, ArrayList<Project> data) {
         this.context = ctx;
         this.listProjects = data;
+        applicationTimeTracker = (ApplicationTimeTracker) ((SettingsActivity)ctx).getApplication();
+        userData = applicationTimeTracker.getUserData();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public RecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_settings, parent, false);
@@ -49,6 +61,10 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolder holder, int position) {
+
+        final Project selectedProject = listProjects.get(position);
+        if(selectedProject.getTicketColor() != null)
+            holder.color.setBackgroundColor((Color.parseColor(selectedProject.getTicketColor())));
         holder.bindProject(listProjects.get(position));
         holder.color.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,28 +77,28 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
                         .setOnColorSelectedListener(new OnColorSelectedListener() {
                             @Override
                             public void onColorSelected(int selectedColor) {
-                                ToastSporocilo("onColorSelected: 0x" + Integer.toHexString(selectedColor));
+
+
                             }
                         })
                         .setPositiveButton("Save", new ColorPickerClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                                changeBackgroundColor(selectedColor);
+                                String hexColor = String.format("#%06X", (0xFFFFFF & selectedColor));
+                                holder.color.setBackgroundColor(Color.parseColor(hexColor));
+                                selectedProject.setTicketColor(hexColor);
+
+
                             }
                         })
                         .build()
                         .show();
             }
         });
-    }
 
-    private void changeBackgroundColor(int selectedColor) {
-        currentBackgroundColor = selectedColor;
-        root.setBackgroundColor(selectedColor);
-    }
-
-    private void ToastSporocilo(String text) {
-        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+        userData.addProjectList(new ArrayList<Project>());
+        userData.addProjectList(listProjects);
+        applicationTimeTracker.setUserData(userData);
     }
 
     @Override
@@ -106,8 +122,8 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
             }
         }
 
-        public void bindProject(ProjectsInSettings data) {
-            this.name.setText(data.getName());
+        public void bindProject(Project data) {
+            this.name.setText(data.projectName);
         }
     }
 

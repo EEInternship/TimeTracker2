@@ -19,12 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import Data.ProjectsInSettings;
+import Data.UserData;
 
 public class SettingsActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     RecyclerView.Adapter adapter;
 
+
+    private ApplicationTimeTracker applicationTimeTracker;
+    private UserData userData;
     RecyclerView.LayoutManager layoutManager;
 
     TextView nameOfProject;
@@ -34,6 +38,9 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        applicationTimeTracker = (ApplicationTimeTracker) getApplication();
+        userData = applicationTimeTracker.getUserData();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -51,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        SettingsAdapter projectsA=new SettingsAdapter(this,getData());
+        SettingsAdapter projectsA=new SettingsAdapter(this,userData.getProjectList());
         recyclerView.setAdapter(projectsA);
 
         ItemTouchHelper.Callback callback = new ProjectTouchHelper(projectsA);
@@ -70,13 +77,5 @@ public class SettingsActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private List<ProjectsInSettings> getData(){
-        List<ProjectsInSettings> movieList = new ArrayList<>();
-        movieList.add(new ProjectsInSettings("Harry Potter"));
-        movieList.add(new ProjectsInSettings("Twilight"));
-        movieList.add(new ProjectsInSettings("Star Wars"));
-        movieList.add(new ProjectsInSettings("Star Trek"));
-        movieList.add(new ProjectsInSettings("Galaxy Quest"));
-        return movieList;
-    }
+
 }

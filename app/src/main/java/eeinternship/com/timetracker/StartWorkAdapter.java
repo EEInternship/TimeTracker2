@@ -130,7 +130,7 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected()));
+                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(),TC.getColor()));
                     notifyItemChanged(adapter.size()-1);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);

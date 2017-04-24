@@ -35,6 +35,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
+    ArrayList<Ticket> ticketArrayList;
 
     public newAdapter(StartWorkActivity startWorkActivity, ArrayList<Ticket> objects) {
         mContext=startWorkActivity;
@@ -53,25 +54,18 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     public void onBindViewHolder(final newAdapter.SimpleViewHolder holder, final int position) {
         final Ticket TC = adapter.get(position);
 
-        applicationTimeTracker= (ApplicationTimeTracker) ((StartWorkActivity)mContext).getApplication();
-        userData = applicationTimeTracker.getUserData();
-        adapter = userData.getTicketList();
+
+
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
+        if(TC.getColor() != null)
+            holder.colorOfProject.setBackgroundColor(Color.parseColor(TC.getColor()));
+
         if (TC.getDescription() != null)
             holder.description.setText(TC.getDescription());
         else
             holder.description.setText("");
-        if (TC.getSelected() == Ticket.Selected.First) {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#4285f4"));
-        } else if (TC.getSelected() == Ticket.Selected.Second) {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#f18864"));
-        } else if (TC.getSelected() == Ticket.Selected.Third) {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#adcd4b"));
-        } else {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#775ba3"));
-        }
 
         if (holder.startWork != Ticket.State.Done) {
             if (holder.startWork == Ticket.State.Start) {
@@ -138,7 +132,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected()));
+                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(),TC.getColor()));
                     notifyItemChanged(adapter.size() - 1);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
@@ -164,6 +158,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 TC.setDescription(holder.description.getText().toString());
             }
         });
+
+
+        applicationTimeTracker= (ApplicationTimeTracker) ((StartWorkActivity)mContext).getApplication();
+        userData = applicationTimeTracker.getUserData();
+        ticketArrayList = userData.getTicketList();
 
         holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
         holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.swipeLayout.findViewById(R.id.bottom_wrapper1));
@@ -223,8 +222,8 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.addWorkingOn(mContext, userData.getUserAcount(), currentTicket);
                 adapter.remove(position);
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, adapter.size());
-                userData.setTicketList(adapter);
+                notifyItemRangeChanged(position, ticketArrayList.size());
+                userData.setTicketList(ticketArrayList);
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
             }
@@ -233,9 +232,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onClick(View view) {
                 mItemManger.removeShownLayouts(holder.swipeLayout);
-                adapter.remove(position);
+                ticketArrayList.remove(position);
                 notifyItemRemoved(position);
-                notifyItemRangeChanged(position, adapter.size());
+                notifyItemRangeChanged(position, ticketArrayList.size());
+                userData.setTicketList(ticketArrayList);
+                applicationTimeTracker.setUserData(userData);
                 mItemManger.closeAllItems();
             }
         });
