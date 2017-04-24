@@ -78,6 +78,7 @@ public class ApplicationTimeTracker extends Application {
 
         }
 
+
         getActiveProjects(getApplicationContext());
        // checkForNewProjects();
 
@@ -104,7 +105,7 @@ public class ApplicationTimeTracker extends Application {
         synchronized (lock){
             if(userData.getProjectList() == null){
                 userData.addProjectList(tempProjects);
-                notify();
+                lock.notify();
                 return;
             }
             ArrayList<Project> newProjects = new ArrayList<>();
