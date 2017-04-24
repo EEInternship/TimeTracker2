@@ -276,10 +276,10 @@ public class StartWorkActivity extends AppCompatActivity {
                         }
                         removePositionList.add(position);
                         position--;
-                        applicationTimeTracker.addWorkingOn(getApplicationContext(), userData.getUserAcount(), ticket);
-                    } else {
-                        if (ticket.getDescription() == null)
-                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
+                        applicationTimeTracker.addWorkOn(getApplicationContext(),userData.getUserAcount(),ticket);
+                    }else{
+                        if(ticket.getDescription() == null)
+                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Description is null",Toast.LENGTH_SHORT).show();
                         else
                             Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Did not start", Toast.LENGTH_SHORT).show();
                         allDone = false;
@@ -380,7 +380,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            applicationTimeTracker.addWorkingOn(getApplicationContext(), userData.getUserAcount(), currentTicket);
+                            applicationTimeTracker.addWorkOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
                             ticketList.remove(position);
                             adapter.notifyItemRemoved(position);
                             adapter.notifyItemRangeChanged(position, adapter.getItemCount());
