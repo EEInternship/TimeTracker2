@@ -39,9 +39,6 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
         return iViewHolder;
     }
 
-
-
-
     @Override
     public void onBindViewHolder(final IViewHolder holder, final int position) {
         final Ticket TC = adapter.get(position);
@@ -75,9 +72,6 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
             holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
         else if(holder.startWork == Ticket.State.Done)
             holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-
-
-
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 100) {
             @Override

@@ -26,7 +26,7 @@ public class NotificationActivity extends AppCompatActivity {
     ExpandableLayout expandableLayoutTime, expandableLayoutTimer;
     TextView linearLayoutTxtTimer, onOffTxt;
     Switch notificationTurnOnOff;
-    private Button save;
+    private Button save,cancel;
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
     private NotificationData notificationData;
@@ -42,6 +42,7 @@ public class NotificationActivity extends AppCompatActivity {
         notificationData = userData.getNotificationData();
 
         save = (Button) findViewById(R.id.btn_save_time);
+        cancel=(Button)findViewById(R.id.btn_cancel_time);
 
         ActionBar actionBar = getSupportActionBar();
         // action bar color
@@ -53,8 +54,6 @@ public class NotificationActivity extends AppCompatActivity {
 
         notificationShowOnTimePicker = (TimePicker) findViewById(R.id.timer);
         notificationShowOnTimePicker.setIs24HourView(true);
-
-
 
         notificationStartingTimePicker = (TimePicker) findViewById(R.id.time_picker);
         notificationStartingTimePicker.setIs24HourView(true);
@@ -69,12 +68,22 @@ public class NotificationActivity extends AppCompatActivity {
             notificationStartingTimePicker.setCurrentHour(notificationData.getNotificationStartTime().getHours());
             notificationStartingTimePicker.setCurrentMinute(notificationData.getNotificationStartTime().getMinutes());
             notificationTurnOnOff.setChecked(notificationData.isTurnOnOf());
+            if(notificationData.isTurnOnOf()==true){
+                onOffTxt.setText("On");
+                onOffTxt.setTextColor(Color.parseColor("#04b795"));
+            }else{
+                onOffTxt.setText("Off");
+                onOffTxt.setTextColor(Color.parseColor("#f1490b"));
+            }
+
         }else{
             notificationShowOnTimePicker.setCurrentHour(0);
             notificationShowOnTimePicker.setCurrentMinute(45);
             notificationStartingTimePicker.setCurrentHour(8);
             notificationStartingTimePicker.setCurrentMinute(0);
-            notificationTurnOnOff.setChecked(true);
+            notificationTurnOnOff.setChecked(false);
+            onOffTxt.setText("Off");
+            onOffTxt.setTextColor(Color.parseColor("#f1490b"));
         }
 
 
@@ -129,6 +138,13 @@ public class NotificationActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {finish();
+            }
+        });
+
 
     }
 

@@ -18,7 +18,6 @@ import com.google.gson.JsonArray;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import io.fabric.sdk.android.Fabric;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -33,7 +32,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.concurrent.CountDownLatch;
 
 import Data.BackupData;
 import Data.ProfileDataDropdown;
@@ -45,8 +43,7 @@ import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
 import RESTtest.TestWorkingOn;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import io.fabric.sdk.android.Fabric;
 
 
 public class ApplicationTimeTracker extends Application {
@@ -118,6 +115,11 @@ public class ApplicationTimeTracker extends Application {
             ArrayList<Project> allProjects = userData.getProjectList();
             for(Project project:newProjects){
                 allProjects.add(project);
+            }
+            if(allProjects == null ||allProjects.size()==0){
+                userData.addProjectList(tempProjects);
+                lock.notify();
+                return;
             }
             userData.addProjectList(new ArrayList<Project>());
             userData.addProjectList(allProjects);
