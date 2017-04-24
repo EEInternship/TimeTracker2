@@ -1,7 +1,10 @@
 package eeinternship.com.timetracker;
 
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -15,7 +18,6 @@ import com.google.gson.JsonArray;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import io.fabric.sdk.android.Fabric;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -24,9 +26,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import Data.BackupData;
@@ -39,6 +43,7 @@ import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestProject;
 import RESTtest.TestWorkingOn;
+import io.fabric.sdk.android.Fabric;
 
 
 public class ApplicationTimeTracker extends Application {
@@ -46,6 +51,12 @@ public class ApplicationTimeTracker extends Application {
     private static final String FILE_NAME = "UserData.json";
     private UserData userData;
     private BackupData backupData = new BackupData();
+    private AlarmManager alarmManegerPerDay;
+    private AlarmManager alarmManagerPerTime;
+    private PendingIntent alarmRecvierForDay;
+    private PendingIntent alramRevierPerTime;
+    private ArrayList<Project> tempProjects;
+    private Object lock = new Object();
 
     @Override
     public void onCreate() {
@@ -57,17 +68,66 @@ public class ApplicationTimeTracker extends Application {
                 userData.setUserAcount(backupData.getUserAcount());
                 userData.setTicketList(backupData.ticketList);
                 userData.addUploadRepository(backupData.uploadSpreadsheetData);
+                userData.setNotificationData(backupData.notificationData);
+                userData.addProjectList(backupData.projects);
+                if(userData.getNotificationData().isSet())
+                    startNotificationOnDay(userData.getNotificationData().isTurnOnOf());
+
 
             }
 
         }
 
+        getActiveProjects(getApplicationContext());
+       // checkForNewProjects();
+
+       synchronized (lock){
+           try {
+
+               lock.wait(3000);
+           } catch (InterruptedException e) {
+               e.printStackTrace();
+           }
 
 
-        userData.addProjectList(getActiveProjects(getApplicationContext()));
+       }
+
         userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
-       // userData.scenariData();
+
     }
+
+    private void checkForNewProjects() {
+
+        synchronized (lock){
+            ArrayList<Project> newProjects = new ArrayList<>();
+            for(Project tempProject : tempProjects){
+                boolean duplicate = false;
+                for(Project project:userData.getProjectList()){
+                    if(project.projectName == tempProject.projectName){
+                        duplicate = true;
+                    }
+                }
+                if(duplicate){
+                    newProjects.add(tempProject);
+                }
+
+            }
+            ArrayList<Project> allProjects = userData.getProjectList();
+            for(Project project:newProjects){
+                allProjects.add(project);
+            }
+            if(allProjects == null ||allProjects.size()==0){
+                userData.addProjectList(tempProjects);
+                lock.notify();
+                return;
+            }
+            userData.addProjectList(new ArrayList<Project>());
+            userData.addProjectList(allProjects);
+            lock.notify();
+        }
+
+    }
+
 
     public UserData getUserData() {
         return userData;
@@ -78,11 +138,13 @@ public class ApplicationTimeTracker extends Application {
         backupData.setUserAcount(userData.getUserAcount());
         backupData.ticketList = userData.getTicketList();
         backupData.uploadSpreadsheetData = userData.getUploadSpreadsheetData();
+        backupData.notificationData = userData.getNotificationData();
+        backupData.projects = userData.getProjectList();
         saveInGson();
 
     }
 
-    public ArrayList<Project> getActiveProjects(Context context) {
+    public void getActiveProjects(Context context) {
         Log.i("Running:", "Fetching active project list");
         final ArrayList<Project> projects = new ArrayList<>();
         if (isNetworkAvailable()) {
@@ -106,8 +168,11 @@ public class ApplicationTimeTracker extends Application {
                                         projects.add(proj);
                                     }
                                 }
+                                tempProjects=projects;
+                                checkForNewProjects();
                             } else {
                                 Log.e("Error", "Result is empty!");
+
                             }
                         }
                     });
@@ -115,7 +180,8 @@ public class ApplicationTimeTracker extends Application {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
 
-        return projects;
+
+
     }
 
     public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
@@ -123,7 +189,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkingon/" + email + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -160,6 +226,7 @@ public class ApplicationTimeTracker extends Application {
                     });
         } else {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            ;
         }
         return profileDataDropdownArrayList;
     }
@@ -176,7 +243,7 @@ public class ApplicationTimeTracker extends Application {
 
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/create/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/")
                     .setMultipartParameter("user.email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", startingTime)
@@ -197,41 +264,7 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
-        Log.i("Running:", "Sending work day data.");
-        Date date =  uploadSpreadsheetData.date.getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
-        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
-
-
-        if (isNetworkAvailable()) {
-            Ion.with(context)
-                    //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
-                    .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("date", dateString)
-                    .setMultipartParameter("starting_time", startingTime)
-                    .setMultipartParameter("finish_time", finishTime)
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            if (result != null) {
-                                Log.i("Info: ", result);
-                            } else {
-                                Log.e("Error: ", result);
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
-        }
-    }
-
-    public void addWorkOn(final Context context, String email, Ticket ticket) {
+    public void addWorkingOn(final Context context, String email, Ticket ticket) {
         Date date =  ticket.getDate().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
@@ -241,7 +274,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workon/create/")
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workingon/")
                     .setMultipartParameter("user.email", email)
                     .setMultipartParameter("project.project_name", ticket.getProject())
                     .setMultipartParameter("date",dateString)
@@ -264,39 +297,6 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkOn(final Context context, String email, Ticket ticket) {
-        Date date =  ticket.getDate().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(ticket.getStartingTime());
-        String finishTime = timeFormat.format(ticket.getFinishTime());
-        Log.i("Running:", "Sending work on data.");
-        if (isNetworkAvailable()) {
-            Ion.with(context)
-                    //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/ID")
-                    .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name", ticket.getProject())
-                    .setMultipartParameter("date",dateString)
-                    .setMultipartParameter("starting_time", startingTime)
-                    .setMultipartParameter("finish_time", finishTime)
-                    .setMultipartParameter("description", ticket.getDescription())
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
-                        @Override
-                        public void onCompleted(Exception e, String result) {
-                            if (result != null) {
-                                Log.i("Info: ", result);
-                            } else {
-                                Log.e("Error: ", result);
-                            }
-                        }
-                    });
-        } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
-        }
-    }
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
@@ -389,6 +389,65 @@ public class ApplicationTimeTracker extends Application {
         System.out.println("ExternalStorageAvailable is not avaliable");
         return null;
     }
+
+
+    public void startNotificationOnDay(boolean work){
+
+        if(!work)
+            return;
+
+        Calendar firingCal= Calendar.getInstance();
+        Calendar currentTime = Calendar.getInstance();
+        Time time = userData.getNotificationData().getNotificationStartTime();
+        firingCal.set(Calendar.HOUR_OF_DAY, time.getHours()); // At the hour you wanna fire
+        firingCal.set(Calendar.MINUTE, time.getMinutes()); // Particular minute
+        firingCal.set(Calendar.SECOND, 0); // particular second
+        long intendedTime = firingCal.getTimeInMillis();
+        long timeNow = currentTime.getTimeInMillis();
+
+
+        Intent myIntent = new Intent(this , AlarmReciverForDay.class);
+        alarmManegerPerDay = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alarmRecvierForDay = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+        if(timeNow > intendedTime){
+            firingCal.add(Calendar.DAY_OF_MONTH,1);
+            intendedTime = firingCal.getTimeInMillis();
+            alarmManegerPerDay.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, alarmRecvierForDay);
+        }else{
+            alarmManegerPerDay.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, alarmRecvierForDay);
+        }
+
+
+    }
+
+    public void startNotificationPerMinutes(boolean work){
+        if(!work)
+            return;
+        Time time = userData.getNotificationData().getNotificationPopupTime();
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(System.currentTimeMillis());
+       // cal.add(Calendar.MILLISECOND, (int) time.getTime());
+        long currentTimeMillis = cal.getTimeInMillis();
+        long notificationOnTimeMillis = time.getTime();
+        int hourPlusMinutes = time.getHours()*60 + time.getMinutes();
+        cal.add(Calendar.MILLISECOND,hourPlusMinutes * 60 * 1000);
+        Intent myIntent = new Intent(this , AlarmReciverPerTime.class);
+        alarmManagerPerTime = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        alramRevierPerTime = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+        alarmManagerPerTime.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*hourPlusMinutes, alramRevierPerTime);
+
+    }
+
+    public void cancelNotificationPerDay(){
+        if(alarmManegerPerDay != null)
+            alarmManegerPerDay.cancel(alarmRecvierForDay);
+    }
+    public void cancelNotificationPerMinute(){
+
+        if(alarmManagerPerTime != null)
+            alarmManagerPerTime.cancel(alramRevierPerTime);
+}
+
 
 
 }

@@ -1,5 +1,6 @@
 package eeinternship.com.timetracker;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.daimajia.swipe.adapters.RecyclerSwipeAdapter;
 
 import java.sql.Time;
@@ -20,58 +23,63 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import Data.Ticket;
+import Data.UserData;
 
 /**
- * Created by IsakFe on 29. 03. 2017.
+ * Created by IsakFe on 18. 04. 2017.
  */
 
-public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IViewHolder> {
+public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder> {
+    private Context mContext;
     ArrayList<Ticket> adapter = new ArrayList<>();
 
-    public StartWorkAdapter(ArrayList<Ticket> adapterC) {
-        this.adapter = adapterC;
-    }
+    private ApplicationTimeTracker applicationTimeTracker;
+    private UserData userData;
+    ArrayList<Ticket> ticketArrayList;
 
-    public StartWorkAdapter.IViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_start_work, parent, false);
-        IViewHolder iViewHolder = new IViewHolder(v);
-
-        return iViewHolder;
+    public newAdapter(StartWorkActivity startWorkActivity, ArrayList<Ticket> objects) {
+        mContext=startWorkActivity;
+        this.adapter = objects;
     }
 
     @Override
-    public void onBindViewHolder(final IViewHolder holder, final int position) {
+    public SimpleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_start_work, parent, false);
+        newAdapter.SimpleViewHolder viewHolder = new newAdapter.SimpleViewHolder(view);
+
+        return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(final newAdapter.SimpleViewHolder holder, final int position) {
         final Ticket TC = adapter.get(position);
-        // do your regular binding stuff here
+
+
+
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
-        holder.timeWork.setText(TC.getTime());
-        if(TC.getDescription() != null)
+        if(TC.getColor() != null)
+            holder.colorOfProject.setBackgroundColor(Color.parseColor(TC.getColor()));
+
+        if (TC.getDescription() != null)
             holder.description.setText(TC.getDescription());
         else
             holder.description.setText("");
-        if (TC.getSelected() == Ticket.Selected.First) {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#4285f4"));
-        } else if (TC.getSelected() == Ticket.Selected.Second) {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#f18864"));
-        } else if (TC.getSelected() == Ticket.Selected.Third) {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#adcd4b"));
-        } else {
-            holder.colorOfProject.setBackgroundColor(Color.parseColor("#775ba3"));
+
+        if (holder.startWork != Ticket.State.Done) {
+            if (holder.startWork == Ticket.State.Start) {
+                holder.showTimer = true;
+                holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
+                TC.setTime("0:00");
+            } else if (holder.startWork == Ticket.State.Stop)
+                holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
+            else if (holder.startWork == Ticket.State.Restart)
+                holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
+
+            holder.timeWork.setText(TC.getTime());
+            holder.imageButton.setVisibility(View.VISIBLE);
         }
-
-
-        if (holder.startWork == Ticket.State.Start) {
-            holder.showTimer = true;
-            holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
-            TC.setTime("0:00");
-        } else if (holder.startWork == Ticket.State.Stop)
-            holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
-        else if (holder.startWork == Ticket.State.Restart)
-            holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
-        else if(holder.startWork == Ticket.State.Done)
-            holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 100) {
             @Override
@@ -125,15 +133,12 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
                     adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(),TC.getColor()));
-                    notifyItemChanged(adapter.size()-1);
+                    notifyItemChanged(adapter.size() - 1);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
-                    notifyDataSetChanged();
                 }
             }
-
-
         });
 
 
@@ -153,6 +158,91 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
                 TC.setDescription(holder.description.getText().toString());
             }
         });
+
+
+        applicationTimeTracker= (ApplicationTimeTracker) ((StartWorkActivity)mContext).getApplication();
+        userData = applicationTimeTracker.getUserData();
+        ticketArrayList = userData.getTicketList();
+
+        holder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.swipeLayout.findViewById(R.id.bottom_wrapper1));
+        holder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, holder.swipeLayout.findViewById(R.id.bottom_wrapper));
+
+        holder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onClose(SwipeLayout layout) {
+                //when the SurfaceView totally cover the BottomView.
+            }
+
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+                //you are swiping.
+            }
+
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                //when the BottomView totally show.
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+                //when user's hand released.
+            }
+        });
+
+        holder.send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*((StartWorkActivity)mContext).sendTicket();*/
+
+                Ticket currentTicket = adapter.get(position);
+                if (currentTicket.getFinishTime() == null) {
+                    Calendar calendar = Calendar.getInstance();
+                    currentTicket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                }
+                if (currentTicket.getDate() == null) {
+                    Toast.makeText(mContext, "You did not start this ticket!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (currentTicket.getDescription() == null) {
+                    Toast.makeText(mContext, "You did not write Description!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                applicationTimeTracker.addWorkOn(mContext, userData.getUserAcount(), currentTicket);
+                adapter.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, ticketArrayList.size());
+                userData.setTicketList(ticketArrayList);
+                applicationTimeTracker.setUserData(userData);
+                Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mItemManger.removeShownLayouts(holder.swipeLayout);
+                ticketArrayList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, ticketArrayList.size());
+                userData.setTicketList(ticketArrayList);
+                applicationTimeTracker.setUserData(userData);
+                mItemManger.closeAllItems();
+                ((StartWorkActivity)mContext).openFabButtonWhenDelete();
+            }
+        });
+        mItemManger.bindView(holder.itemView, position);
+
 
     }
 
@@ -176,8 +266,10 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
         return R.id.swipe;
     }
 
-    public class IViewHolder extends RecyclerView.ViewHolder {
+    public class SimpleViewHolder extends RecyclerView.ViewHolder {
+        SwipeLayout swipeLayout;
         TextView projectName, timeWork;
+        ImageButton delete, send;
         EditText description;
         ImageButton imageButton;
         Time startTime;
@@ -186,8 +278,11 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
         Ticket.State startWork = Ticket.State.Start;
         boolean showTimer = true;
 
-        public IViewHolder(View itemView) {
+        public SimpleViewHolder(View itemView) {
             super(itemView);
+            send = (ImageButton) itemView.findViewById(R.id.btnSend);
+            delete = (ImageButton) itemView.findViewById(R.id.tvDelete);
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             projectName = (TextView) itemView.findViewById(R.id.project_name);
             timeWork = (TextView) itemView.findViewById(R.id.hour_min);
             imageButton = (ImageButton) itemView.findViewById(R.id.btn_start_work);
@@ -197,6 +292,4 @@ public class StartWorkAdapter extends RecyclerSwipeAdapter<StartWorkAdapter.IVie
             colorOfProject = (LinearLayout) itemView.findViewById(R.id.color_of_project);
         }
     }
-
-
 }

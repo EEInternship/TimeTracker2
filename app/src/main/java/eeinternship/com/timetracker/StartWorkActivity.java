@@ -1,6 +1,7 @@
 package eeinternship.com.timetracker;
 
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -23,7 +24,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.brnunes.swipeablerecyclerview.SwipeableRecyclerViewTouchListener;
+import com.daimajia.swipe.util.Attributes;
 
 import java.sql.Time;
 import java.util.ArrayList;
@@ -37,13 +38,15 @@ import Data.UserData;
 public class StartWorkActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
 
     FloatingActionButton buttonOptions, buttonFinishWork, buttonFirstProject, buttonSecondProject, buttonThirdProject, buttonSelectProject;
-    TextView labelBtnFirstProject, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
+    TextView labelBtnFirstProject, tvEmptyView, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
+    private newAdapter mAdapter;
+
+    private ArrayList<Project> featuredProjects;
 
     // dim
     FrameLayout frameLayoutDim;
@@ -65,11 +68,13 @@ public class StartWorkActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIME TRACKER");
 
+
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
         ticketList = userData.getTicketList();
+
 
         buttonOptions = (FloatingActionButton) findViewById(R.id.btn_options);
         buttonSelectProject = (FloatingActionButton) findViewById(R.id.btn_select_project);
@@ -98,9 +103,64 @@ public class StartWorkActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
+
+        tvEmptyView = (TextView) findViewById(R.id.empty_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-        setAdapter();
+
+
+        mAdapter = new newAdapter(this, ticketList);
+
+
+        // Setting Mode to Single to reveal bottom View for one item in List
+        // Setting Mode to Mutliple to reveal bottom Views for multile items in List
+        (mAdapter).setMode(Attributes.Mode.Single);
+        recyclerView.setAdapter(mAdapter);
+
+        if (ticketList.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            tvEmptyView.setVisibility(View.VISIBLE);
+
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            tvEmptyView.setVisibility(View.GONE);
+        }
+
+
+//ISAK Tuki SE GLEDA KOK JIH JE
+
+        if (userData.getProjectList().size() < 1) {
+            buttonFirstProject.setVisibility(View.GONE);
+            labelBtnFirstProject.setVisibility(View.GONE);
+        } else {
+            labelBtnFirstProject.setText(userData.getProjectList().get(0).projectName);
+            buttonFirstProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(0).getTicketColor())));
+        }
+
+        if (userData.getProjectList().size() < 2) {
+            buttonSecondProject.setVisibility(View.GONE);
+            labelBtnSecondProject.setVisibility(View.GONE);
+        } else {
+            labelBtnSecondProject.setText(userData.getProjectList().get(1).projectName);
+            buttonSecondProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(1).getTicketColor())));
+        }
+
+        if (userData.getProjectList().size() < 3) {
+            buttonThirdProject.setVisibility(View.GONE);
+            labelBtnThirdProject.setVisibility(View.GONE);
+        } else {
+            labelBtnThirdProject.setText(userData.getProjectList().get(2).projectName);
+            buttonThirdProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(2).getTicketColor())));
+        }
+
+
+        if (userData.getProjectList().size() < 4) {
+            buttonSelectProject.setVisibility(View.GONE);
+            labelSelectProject.setVisibility(View.GONE);
+        }
+
+// ISAK TUKI SE PA KONČA
+
 
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,20 +173,21 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("0:00", labelBtnFirstProject.getText().toString(), Ticket.State.Start, Ticket.Selected.First));
+                            ticketList.add(new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             closeMenu();
+
                         }
                     });
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnSecondProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Second));
+                            ticketList.add(new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             closeMenu();
 
                         }
@@ -134,10 +195,10 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonThirdProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", labelBtnThirdProject.getText().toString(), Ticket.State.Start, Ticket.Selected.Third));
+                            ticketList.add(new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            adapter.notifyDataSetChanged();
+                            mAdapter.notifyDataSetChanged();
                             closeMenu();
                         }
                     });
@@ -147,6 +208,8 @@ public class StartWorkActivity extends AppCompatActivity {
         final String[] projectList = new String[userData.getProjectList().size()];
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
+            if (projectListLength < 3)
+                continue;
             projectList[projectListLength] = data.projectName;
             projectListLength++;
         }
@@ -158,10 +221,21 @@ public class StartWorkActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         String selectedProject = projectList[arg1].toString();
-                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other));
+                        String color = "#000000";
+                        ArrayList<Project> projects = userData.getProjectList();
+                        for (Project project : projects) {
+                            if (project.projectName == selectedProject)
+                                if (project.getTicketColor() != null)
+                                    color = project.getTicketColor();
+                                else
+                                    color = "#000000";
+                        }
+
+
+                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
-                        adapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged();
                         closeMenu();
 
                         arg0.cancel();
@@ -189,119 +263,53 @@ public class StartWorkActivity extends AppCompatActivity {
                 ArrayList<Integer> removePositionList = new ArrayList<Integer>();
                 boolean allDone = true;
                 int position = 0;
-                for(Ticket ticket : userData.getTicketList()){
-                    if(ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription()!= null){
-                        if(ticket.getFinishTime() == null){
+                for (Ticket ticket : userData.getTicketList()) {
+                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null) {
+                        if (ticket.getFinishTime() == null) {
                             Calendar calendar = Calendar.getInstance();
-                            ticket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
                         }
                         removePositionList.add(position);
                         position--;
-                        applicationTimeTracker.addWorkOn(getApplicationContext(),userData.getUserAcount(),ticket);
-                    }else{
-                        if(ticket.getDescription() == null)
-                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Description is null",Toast.LENGTH_SHORT).show();
+                        applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                    } else {
+                        if (ticket.getDescription() == null)
+                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
+
                         else
-                            Toast.makeText(getApplicationContext(),"Ticket ("+ticket.getProject()+") was not succesfuly send - Did not start",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Did not start", Toast.LENGTH_SHORT).show();
                         allDone = false;
                     }
                     position++;
 
                 }
-                if(allDone){
+                if (allDone) {
                     userData.setTicketList(new ArrayList<Ticket>());
                     userData.addUploadRepository(data);
                     applicationTimeTracker.setUserData(userData);
-                    finish();
-                    applicationTimeTracker.addWorkDay(getApplicationContext(),userData.getUserAcount(),userData.getUploadSpreadsheetData());
+                    applicationTimeTracker.cancelNotificationPerMinute();
+                    applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
                     userData.addUploadRepository(new UploadSpreadsheetData());
                     applicationTimeTracker.setUserData(userData);
-                }
-                else{
-                    for(int location : removePositionList){
+                    finish();
+                } else {
+                    for (int location : removePositionList) {
                         ticketList.remove(location);
-                        adapter.notifyItemRemoved(location);
-                        adapter.notifyItemRangeChanged(location, adapter.getItemCount());
+                        mAdapter.notifyItemRemoved(location);
+                        mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
                     }
-                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
+                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
                     userData.setTicketList(ticketList);
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();
                 }
 
-
-
             }
         });
-
 
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-
-        SwipeableRecyclerViewTouchListener swipeTouchListener = new SwipeableRecyclerViewTouchListener(recyclerView,
-                new SwipeableRecyclerViewTouchListener.SwipeListener() {
-                    @Override
-                    public boolean canSwipeLeft(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public boolean canSwipeRight(int position) {
-                        return true;
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeLeft(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-
-                            ticketList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
-                            buttonOptions.show();
-                            buttonOptions.setClickable(true);
-                            userData.setTicketList(ticketList);
-                            applicationTimeTracker.setUserData(userData);
-                            Toast.makeText(getApplicationContext(),"Ticket successfully deleted!",Toast.LENGTH_LONG).show();
-
-
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onDismissedBySwipeRight(RecyclerView recyclerView, int[] reverseSortedPositions) {
-                        for (int position : reverseSortedPositions) {
-                            Ticket currentTicket = ticketList.get(position);
-                            if(currentTicket.getFinishTime() == null){
-                                Calendar calendar = Calendar.getInstance();
-                                currentTicket.setFinishTime( new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
-                            }
-                            if(currentTicket.getDate() == null){
-                                Toast.makeText(getApplicationContext(),"You did not start this ticket!",Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                            if(currentTicket.getDescription() == null){
-                                Toast.makeText(getApplicationContext(),"You did not write Description!",Toast.LENGTH_LONG).show();
-                                return;
-                            }
-
-                            applicationTimeTracker.addWorkOn(getApplicationContext(),userData.getUserAcount(),currentTicket);
-                            ticketList.remove(position);
-                            adapter.notifyItemRemoved(position);
-                            adapter.notifyItemRangeChanged(position, adapter.getItemCount());
-                            buttonOptions.show();
-                            buttonOptions.setClickable(true);
-                            userData.setTicketList(ticketList);
-                            applicationTimeTracker.setUserData(userData);
-                            Toast.makeText(getApplicationContext(),"Ticket successfully sent!",Toast.LENGTH_LONG).show();
-
-                        }
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-        recyclerView.addOnItemTouchListener(swipeTouchListener);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -317,9 +325,10 @@ public class StartWorkActivity extends AppCompatActivity {
         });
     }
 
-    private void setAdapter() {
-        adapter = new StartWorkAdapter(ticketList);
-        recyclerView.setAdapter(adapter);
+    void openFabButtonWhenDelete() {
+        buttonOptions.show();
+        buttonOptions.setClickable(true);
+        setFeautered();
     }
 
     private void closeMenu() {
@@ -400,5 +409,19 @@ public class StartWorkActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    private void setFeautered() {
+        if (userData.getProjectList().size() == 1) {
+
+        } else if (userData.getProjectList().size() == 2) {
+
+        } else if (userData.getProjectList().size() == 3) {
+
+        } else if (userData.getProjectList().size() > 3) {
+
+        }
+    }
+
+
 }
 

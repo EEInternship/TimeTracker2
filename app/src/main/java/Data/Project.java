@@ -12,10 +12,19 @@ public class Project {
     public Time finishTime;
     private Time totalWork;
     public String description;
+    private String ticketColor;
 
     public Project(){}
 
     public void setTotalWork(){
         totalWork = new Time(finishTime.getHours()-startingTime.getHours(),finishTime.getMinutes()-startingTime.getMinutes(),finishTime.getSeconds()-startingTime.getSeconds());
+    }
+
+    public String getTicketColor() {
+        return ticketColor;
+    }
+
+    public void setTicketColor(String ticketColor) {
+        this.ticketColor = ticketColor;
     }
 }
