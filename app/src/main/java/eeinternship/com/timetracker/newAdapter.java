@@ -237,6 +237,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, adapter.size());
                 mItemManger.closeAllItems();
+                ((StartWorkActivity)mContext).openFabButtonWhenDelete();
             }
         });
         mItemManger.bindView(holder.itemView, position);

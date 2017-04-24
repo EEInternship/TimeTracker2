@@ -8,7 +8,7 @@
     <color name="colorBackground">#323232</color>
     <color name="colorGreenBtn">#04b795</color>
     <color name="colorText">#FFFFFF</color>
-    <color name="colorBackgroundActivity">#f9f9f9</color>
+    <color name="colorBackgroundActivity">#FFFFFF</color>
     <color name="colorStatusBar">#212121</color>
 
     <color name="dimBackground">#80000000</color>

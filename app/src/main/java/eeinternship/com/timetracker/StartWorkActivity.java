@@ -341,8 +341,10 @@ public class StartWorkActivity extends AppCompatActivity {
         });*/
     }
 
-    protected void sendTicket() {
-        Toast.makeText(getApplicationContext(), "sio",Toast.LENGTH_LONG).show();
+    void openFabButtonWhenDelete(){
+        buttonOptions.show();
+        buttonOptions.setClickable(true);
+
     }
 
     private void closeMenu() {

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
     xmlns:swipe="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
     swipe:leftEdgeSwipeOffset="0dp"
-    swipe:rightEdgeSwipeOffset="0dp">
+    swipe:rightEdgeSwipeOffset="0dp"
+    android:layout_marginTop="5dp">
 
     <!--Bottom View For Right to Left-->
     <LinearLayout
@@ -23,10 +23,10 @@
             android:id="@+id/tvDelete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:background="@xml/btn_round_right"
             android:gravity="center"
-            android:layout_gravity="center"
             android:src="@drawable/ic_delete" />
     </LinearLayout>
 
@@ -45,8 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@drawable/ic_send"
-            android:background="@xml/btn_round_left"/>
+            android:background="@xml/btn_round_left"
+            android:src="@drawable/ic_send" />
     </LinearLayout>
 
     <!-- Top View,  Row itemView of RecyclerView -->
@@ -55,8 +55,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         swipe:cardBackgroundColor="#FFFFFF"
-        swipe:cardUseCompatPadding="true"
-        swipe:cardCornerRadius="5dp">
+        swipe:cardCornerRadius="5dp"
+        swipe:cardUseCompatPadding="true">
 
         <LinearLayout
             android:layout_width="match_parent"
