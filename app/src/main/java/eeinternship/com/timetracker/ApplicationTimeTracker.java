@@ -98,7 +98,15 @@ public class ApplicationTimeTracker extends Application {
 
     private void checkForNewProjects() {
 
+
+
+
         synchronized (lock){
+            if(userData.getProjectList() == null){
+                userData.addProjectList(tempProjects);
+                lock.notify();
+                return;
+            }
             ArrayList<Project> newProjects = new ArrayList<>();
             for(Project tempProject : tempProjects){
                 boolean duplicate = false;
@@ -189,7 +197,7 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkingon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -264,7 +272,7 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void addWorkingOn(final Context context, String email, Ticket ticket) {
+    public void addWorkOn(final Context context, String email, Ticket ticket) {
         Date date =  ticket.getDate().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
