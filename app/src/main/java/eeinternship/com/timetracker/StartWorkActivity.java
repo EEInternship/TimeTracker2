@@ -128,35 +128,36 @@ public class StartWorkActivity extends AppCompatActivity {
 
 
 //ISAK Tuki SE GLEDA KOK JIH JE
-
-        if (userData.getProjectList().size() < 1) {
-            buttonFirstProject.setVisibility(View.GONE);
-            labelBtnFirstProject.setVisibility(View.GONE);
-        } else {
-            labelBtnFirstProject.setText(userData.getProjectList().get(0).projectName);
-            buttonFirstProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(0).getTicketColor())));
-        }
-
-        if (userData.getProjectList().size() < 2) {
-            buttonSecondProject.setVisibility(View.GONE);
-            labelBtnSecondProject.setVisibility(View.GONE);
-        } else {
-            labelBtnSecondProject.setText(userData.getProjectList().get(1).projectName);
-            buttonSecondProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(1).getTicketColor())));
-        }
-
-        if (userData.getProjectList().size() < 3) {
-            buttonThirdProject.setVisibility(View.GONE);
-            labelBtnThirdProject.setVisibility(View.GONE);
-        } else {
-            labelBtnThirdProject.setText(userData.getProjectList().get(2).projectName);
-            buttonThirdProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(2).getTicketColor())));
-        }
+        if(userData.getProjectList() != null){
 
 
-        if (userData.getProjectList().size() < 4) {
-            buttonSelectProject.setVisibility(View.GONE);
-            labelSelectProject.setVisibility(View.GONE);
+            if (userData.getProjectList().size() < 1) {
+                buttonFirstProject.setVisibility(View.GONE);
+                labelBtnFirstProject.setVisibility(View.GONE);
+            } else {
+                labelBtnFirstProject.setText(userData.getProjectList().get(0).projectName);
+                buttonFirstProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(0).getTicketColor())));
+            }
+
+            if (userData.getProjectList().size() < 2) {
+                buttonSecondProject.setVisibility(View.GONE);
+                labelBtnSecondProject.setVisibility(View.GONE);
+            } else {
+                labelBtnSecondProject.setText(userData.getProjectList().get(1).projectName);
+                buttonSecondProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(1).getTicketColor())));
+            }
+
+            if (userData.getProjectList().size() < 3) {
+                buttonThirdProject.setVisibility(View.GONE);
+                labelBtnThirdProject.setVisibility(View.GONE);
+            } else {
+                labelBtnThirdProject.setText(userData.getProjectList().get(2).projectName);
+                buttonThirdProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(2).getTicketColor())));
+            }
+            if (userData.getProjectList().size() < 4) {
+                buttonSelectProject.setVisibility(View.GONE);
+                labelSelectProject.setVisibility(View.GONE);
+            }
         }
 
 // ISAK TUKI SE PA KONČA
@@ -206,10 +207,14 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         });
         final String[] projectList = new String[userData.getProjectList().size()];
+        int distance = 0;
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
-            if (projectListLength < 3)
+            if (distance < 3){
+                distance++;
                 continue;
+            }
+
             projectList[projectListLength] = data.projectName;
             projectListLength++;
         }
