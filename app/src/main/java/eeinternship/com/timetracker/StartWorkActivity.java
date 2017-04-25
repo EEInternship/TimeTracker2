@@ -154,7 +154,7 @@ public class StartWorkActivity extends AppCompatActivity {
         }
 
 
-        if (userData.getProjectList().size() < 4) {
+       if (userData.getProjectList().size() < 4) {
             buttonSelectProject.setVisibility(View.GONE);
             labelSelectProject.setVisibility(View.GONE);
         }
@@ -271,7 +271,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         }
                         removePositionList.add(position);
                         position--;
-                        applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                        applicationTimeTracker.addWorkingOn(getApplicationContext(), userData.getUserAcount(), ticket);
                     } else {
                         if (ticket.getDescription() == null)
                             Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
