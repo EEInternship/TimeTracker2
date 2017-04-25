@@ -67,7 +67,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         else
             holder.description.setText("");
 
-        if (holder.startWork != Ticket.State.Done) {
+
             if (holder.startWork == Ticket.State.Start) {
                 holder.showTimer = true;
                 holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
@@ -76,10 +76,12 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
             else if (holder.startWork == Ticket.State.Restart)
                 holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
+            else if(holder.startWork == Ticket.State.Done)
+                holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
 
             holder.timeWork.setText(TC.getTime());
             holder.imageButton.setVisibility(View.VISIBLE);
-        }
+
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 100) {
             @Override
