@@ -14,7 +14,9 @@ public class Project {
     public String description;
     private String ticketColor;
 
-    public Project(){}
+    public Project(){
+        ticketColor = "#FFFFFF";
+    }
 
     public void setTotalWork(){
         totalWork = new Time(finishTime.getHours()-startingTime.getHours(),finishTime.getMinutes()-startingTime.getMinutes(),finishTime.getSeconds()-startingTime.getSeconds());
