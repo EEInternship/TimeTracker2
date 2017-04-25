@@ -154,13 +154,10 @@ public class StartWorkActivity extends AppCompatActivity {
                 labelBtnThirdProject.setText(userData.getProjectList().get(2).projectName);
                 buttonThirdProject.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(userData.getProjectList().get(2).getTicketColor())));
             }
-
-
             if (userData.getProjectList().size() < 4) {
                 buttonSelectProject.setVisibility(View.GONE);
                 labelSelectProject.setVisibility(View.GONE);
             }
-
         }
 
 // ISAK TUKI SE PA KONČA
