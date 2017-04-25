@@ -219,7 +219,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     return;
                 }
 
-                applicationTimeTracker.addWorkingOn(mContext, userData.getUserAcount(), currentTicket);
+                applicationTimeTracker.addWorkOn(mContext, userData.getUserAcount(), currentTicket);
                 adapter.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, ticketArrayList.size());
