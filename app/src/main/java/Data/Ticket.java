@@ -39,7 +39,10 @@ public void setFinishTime(Time finish){finishTime = finish;}
     public Time getStartingTime(){return startingTime;}
     public Time getFinishTime(){return finishTime;}
 
-    public String getDescription(){return description;}
+    public String getDescription(){
+        if(description == "")
+            return null;
+        return description;}
     public void setDescription(String desc){description = desc;}
 
     public void setDate(Calendar cal){date = cal;}
