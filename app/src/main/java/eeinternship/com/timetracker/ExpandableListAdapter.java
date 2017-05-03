@@ -16,6 +16,7 @@ import java.util.List;
 
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
+import Data.Project;
 
 /**
  * Created by IsakFe on 30. 03. 2017.
@@ -25,10 +26,23 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
+    private ArrayList<Project> allProjects;
 
-    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList) {
+    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList,ArrayList<Project> projectArrayList) {
         this._context = context;
         this.profileDataDropdownArrayList = profileDataDropdownArrayList;
+        this.allProjects = projectArrayList;
+
+        for(ProfileDataDropdown profileDataDropdown : profileDataDropdownArrayList){
+            for(ProfileDataLine profileDataLine: profileDataDropdown.getProfileDataLineArrayList()){
+                for(Project project: allProjects){
+                    if(profileDataLine.getProjectName().equals(project.projectName))
+                        profileDataLine.setProjectColor(project.getTicketColor());
+                }
+            }
+        }
+
+
     }
 
     @Override
