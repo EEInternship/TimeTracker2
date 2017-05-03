@@ -235,7 +235,6 @@ public class ApplicationTimeTracker extends Application {
                     });
         } else {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
-            ;
         }
         return profileDataDropdownArrayList;
     }
@@ -252,11 +251,11 @@ public class ApplicationTimeTracker extends Application {
 
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/")
-                    .setMultipartParameter("user.email", email)
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workday/create/")
+                    .setMultipartParameter("email", email)
                     .setMultipartParameter("date", dateString)
-                    .setMultipartParameter("starting_time", startingTime)
-                    .setMultipartParameter("finish_time", finishTime)
+                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
+                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
@@ -273,6 +272,39 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
+    public void updateWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
+        Log.i("Running:", "Sending work day data.");
+        Date date =  uploadSpreadsheetData.date.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
+        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
+
+
+        if (isNetworkAvailable()) {
+            Ion.with(context)
+                    //ID needs to be replaced with ID of entry
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
+                    .setMultipartParameter("email", email)
+                    .setMultipartParameter("date", dateString)
+                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
+                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
+                    .asString()
+                    .setCallback(new FutureCallback<String>() {
+                        @Override
+                        public void onCompleted(Exception e, String result) {
+                            if (result != null) {
+                                Log.i("Info: ", result);
+                            } else {
+                                Log.e("Error: ", result);
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+        }
+    }
     public void addWorkOn(final Context context, String email, Ticket ticket) {
         Date date =  ticket.getDate().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -283,12 +315,46 @@ public class ApplicationTimeTracker extends Application {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
-                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workingon/")
-                    .setMultipartParameter("user.email", email)
-                    .setMultipartParameter("project.project_name", ticket.getProject())
+                    .load("POST", "https://nameless-oasis-70424.herokuapp.com/workon/create/")
+                    .setMultipartParameter("email", email)
+                    .setMultipartParameter("project", ticket.getProject())
                     .setMultipartParameter("date",dateString)
-                    .setMultipartParameter("starting_time", startingTime)
-                    .setMultipartParameter("finish_time", finishTime)
+                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
+                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
+                    .setMultipartParameter("description", ticket.getDescription())
+                    .asString()
+                    .setCallback(new FutureCallback<String>() {
+                        @Override
+                        public void onCompleted(Exception e, String result) {
+                            if (result != null) {
+                                Log.i("Info: ", result);
+                            } else {
+                                Log.e("Error: ", result);
+                            }
+                        }
+                    });
+        } else {
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void updateWorkOn(final Context context, String email, Ticket ticket) {
+        Date date =  ticket.getDate().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
+        String dateString = dateFormat.format(date);
+        String startingTime = timeFormat.format(ticket.getStartingTime());
+        String finishTime = timeFormat.format(ticket.getFinishTime());
+        Log.i("Running:", "Sending work on data.");
+        if (isNetworkAvailable()) {
+            Ion.with(context)
+                    //ID needs to be replaced with ID of entry
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/ID")
+                    .setMultipartParameter("email", email)
+                    .setMultipartParameter("project", ticket.getProject())
+                    .setMultipartParameter("date",dateString)
+                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
+                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
                     .setMultipartParameter("description", ticket.getDescription())
                     .asString()
                     .setCallback(new FutureCallback<String>() {
