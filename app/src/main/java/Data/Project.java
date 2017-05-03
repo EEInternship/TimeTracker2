@@ -15,7 +15,7 @@ public class Project {
     private String ticketColor;
 
     public Project(){
-        ticketColor = "#FFFFFF";
+        ticketColor = "#1E90FF";
     }
 
     public void setTotalWork(){

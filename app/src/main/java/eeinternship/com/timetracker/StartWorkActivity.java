@@ -232,8 +232,6 @@ public class StartWorkActivity extends AppCompatActivity {
                             if (project.projectName == selectedProject)
                                 if (project.getTicketColor() != null)
                                     color = project.getTicketColor();
-                                else
-                                    color = "#000000";
                         }
 
 
