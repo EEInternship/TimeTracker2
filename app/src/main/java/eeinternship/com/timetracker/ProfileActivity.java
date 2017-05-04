@@ -15,10 +15,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import Data.UserData;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -37,9 +33,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
-
-
-
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

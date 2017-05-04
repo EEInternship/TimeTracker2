@@ -126,8 +126,6 @@ public class StartWorkActivity extends AppCompatActivity {
             tvEmptyView.setVisibility(View.GONE);
         }
 
-
-//ISAK Tuki SE GLEDA KOK JIH JE
         if(userData.getProjectList() != null){
 
 
@@ -159,9 +157,6 @@ public class StartWorkActivity extends AppCompatActivity {
                 labelSelectProject.setVisibility(View.GONE);
             }
         }
-
-// ISAK TUKI SE PA KONČA
-
 
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,7 +419,5 @@ public class StartWorkActivity extends AppCompatActivity {
 
         }
     }
-
-
 }
 

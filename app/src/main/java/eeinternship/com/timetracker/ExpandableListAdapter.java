@@ -1,18 +1,19 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
@@ -61,14 +62,35 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView taskTime = (TextView) convertView.findViewById(R.id.sum_time);
         LinearLayout projectColor = (LinearLayout) convertView.findViewById(R.id.project_color);
 
-
-
         projectName.setText(profileDataLine.getProjectName());
         startTime.setText(profileDataLine.getStartingTime());
         finishTime.setText(profileDataLine.getFinishTime());
         description.setText(profileDataLine.getWorkDescription());
         taskTime.setText(profileDataLine.getWorkTime());
         projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
+
+
+        projectColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater infalInflater = (LayoutInflater) _context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                final View alertLayout = infalInflater.inflate(R.layout.edit_dialog, null);
+                AlertDialog.Builder editDialog = new AlertDialog.Builder(_context);
+                editDialog.setView(alertLayout);
+                editDialog.setCancelable(false);
+                editDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(_context, "Cancel clicked", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog dialog=editDialog.create();
+                dialog.show();
+            }
+        });
 
         return convertView;
     }
@@ -102,7 +124,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
-
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.day_date_label);
         lblListHeader.setTypeface(null, Typeface.BOLD);

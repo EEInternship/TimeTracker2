@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:background="#FFFFFF"
     swipe:leftEdgeSwipeOffset="0dp"
-    swipe:rightEdgeSwipeOffset="0dp"
-    android:layout_marginTop="5dp">
+    swipe:show_mode="lay_down"
+    swipe:rightEdgeSwipeOffset="0dp">
 
     <!--Bottom View For Right to Left-->
     <LinearLayout
@@ -126,7 +126,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"
                 android:orientation="vertical"
-                android:paddingTop="5dp">
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp">
 
                 <ImageButton
                     android:id="@+id/btn_start_work"

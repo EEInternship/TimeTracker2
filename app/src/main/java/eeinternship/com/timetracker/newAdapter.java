@@ -54,9 +54,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     public void onBindViewHolder(final newAdapter.SimpleViewHolder holder, final int position) {
         final Ticket TC = adapter.get(position);
 
-
-
-
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
         if(TC.getColor() != null)
@@ -198,7 +195,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
 
             @Override
             public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-                //when user's hand released.
             }
         });
 
@@ -228,6 +224,9 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 userData.setTicketList(ticketArrayList);
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
+
+
+
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
