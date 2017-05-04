@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
-        listAdapter = new ExpandableListAdapter(this,userData.getProfileDataDropdownArrayList());
+        listAdapter = new ExpandableListAdapter(this,userData.getProfileDataDropdownArrayList(),userData.getProjectList());
         expListView.setAdapter(listAdapter);
     }
 
