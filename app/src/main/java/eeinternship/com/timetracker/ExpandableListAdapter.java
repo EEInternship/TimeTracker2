@@ -1,7 +1,6 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
@@ -9,9 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
 
@@ -29,15 +33,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
     private ArrayList<Project> allProjects;
 
-    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList,ArrayList<Project> projectArrayList) {
+    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList, ArrayList<Project> projectArrayList) {
         this._context = context;
         this.profileDataDropdownArrayList = profileDataDropdownArrayList;
         this.allProjects = projectArrayList;
 
-        for(ProfileDataDropdown profileDataDropdown : profileDataDropdownArrayList){
-            for(ProfileDataLine profileDataLine: profileDataDropdown.getProfileDataLineArrayList()){
-                for(Project project: allProjects){
-                    if(profileDataLine.getProjectName().equals(project.projectName))
+        for (ProfileDataDropdown profileDataDropdown : profileDataDropdownArrayList) {
+            for (ProfileDataLine profileDataLine : profileDataDropdown.getProfileDataLineArrayList()) {
+                for (Project project : allProjects) {
+                    if (profileDataLine.getProjectName().equals(project.projectName))
                         profileDataLine.setProjectColor(project.getTicketColor());
                 }
             }
@@ -76,33 +80,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView taskTime = (TextView) convertView.findViewById(R.id.sum_time);
         LinearLayout projectColor = (LinearLayout) convertView.findViewById(R.id.project_color);
 
-        projectName.setText(profileDataLine.getProjectName());
-        startTime.setText(profileDataLine.getStartingTime());
-        finishTime.setText(profileDataLine.getFinishTime());
-        description.setText(profileDataLine.getWorkDescription());
-        taskTime.setText(profileDataLine.getWorkTime());
-        projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
-
-
-        projectColor.setOnClickListener(new View.OnClickListener() {
+        RelativeLayout infoTicket=(RelativeLayout)convertView.findViewById(R.id.ticket_profile);
+        infoTicket.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                LayoutInflater infalInflater = (LayoutInflater) _context
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                final View alertLayout = infalInflater.inflate(R.layout.edit_dialog, null);
-                AlertDialog.Builder editDialog = new AlertDialog.Builder(_context);
-                editDialog.setView(alertLayout);
-                editDialog.setCancelable(false);
-                editDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(_context, "Cancel clicked", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                AlertDialog dialog=editDialog.create();
-                dialog.show();
+            public boolean onLongClick(View view) {
+                openEditDialog();
+                return true;
             }
         });
 
@@ -154,5 +137,44 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    public void openEditDialog(){
+        LayoutInflater infalInflater = (LayoutInflater) _context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertLayout = infalInflater.inflate(R.layout.edit_dialog, null);
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(_context);
+        editDialog.setView(alertLayout);
+
+        TextView labelProject = (TextView) alertLayout.findViewById(R.id.project_name_edit);
+        EditText editDescription = (EditText) alertLayout.findViewById(R.id.edit_description);
+        TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
+        timePicker.setIs24HourView(true);
+        final TextView labelStartingFinish = (TextView) alertLayout.findViewById(R.id.starting_finsihed_time);
+        final Switch pickTime = (Switch) alertLayout.findViewById(R.id.select_time);
+        Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
+
+        pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (pickTime.isChecked()) {
+                    labelStartingFinish.setText("FINISHED TIME");
+                    labelStartingFinish.setTextColor(Color.parseColor("#f1490b"));
+                } else {
+                    labelStartingFinish.setText("STARTING TIME");
+                    labelStartingFinish.setTextColor(Color.parseColor("#04b795"));
+                }
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        AlertDialog dialog = editDialog.create();
+        dialog.show();
     }
 }
