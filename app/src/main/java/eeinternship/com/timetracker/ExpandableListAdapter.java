@@ -26,21 +26,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
-    private ArrayList<Project> allProjects;
 
-    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList,ArrayList<Project> projectArrayList) {
+    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList) {
         this._context = context;
         this.profileDataDropdownArrayList = profileDataDropdownArrayList;
-        this.allProjects = projectArrayList;
 
-        for(ProfileDataDropdown profileDataDropdown : profileDataDropdownArrayList){
-            for(ProfileDataLine profileDataLine: profileDataDropdown.getProfileDataLineArrayList()){
-                for(Project project: allProjects){
-                    if(profileDataLine.getProjectName().equals(project.projectName))
-                        profileDataLine.setProjectColor(project.getTicketColor());
-                }
-            }
-        }
+
 
 
     }
