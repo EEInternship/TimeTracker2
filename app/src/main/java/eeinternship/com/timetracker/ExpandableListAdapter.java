@@ -1,11 +1,13 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +17,9 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.graphics.Color;
+
 import java.util.ArrayList;
 
 import Data.ProfileDataDropdown;
@@ -152,7 +153,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
         timePicker.setIs24HourView(true);
         final TextView labelStartingFinish = (TextView) alertLayout.findViewById(R.id.starting_finsihed_time);
-        final Switch pickTime = (Switch) alertLayout.findViewById(R.id.select_time);
+        final SwitchCompat pickTime = (SwitchCompat) alertLayout.findViewById(R.id.select_time);
         Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
 
         pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -162,7 +163,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 if (pickTime.isChecked()) {
                     labelStartingFinish.setText("FINISHED TIME");
                     labelStartingFinish.setTextColor(parseColor("#f1490b"));
-                   // pickTime.thum
                 } else {
                     labelStartingFinish.setText("STARTING TIME");
                     labelStartingFinish.setTextColor(parseColor("#04b795"));
