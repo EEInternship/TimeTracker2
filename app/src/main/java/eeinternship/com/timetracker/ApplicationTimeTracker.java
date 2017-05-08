@@ -1,5 +1,7 @@
 package eeinternship.com.timetracker;
 
+import android.accounts.AccountManager;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -58,6 +60,7 @@ public class ApplicationTimeTracker extends Application {
     private ArrayList<Project> tempProjects;
     private Object lock = new Object();
 
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -76,27 +79,35 @@ public class ApplicationTimeTracker extends Application {
 
             }
 
+            if(!userData.userAccountIsSet()) {
+                return;
+            }
         }
-
-
-        getActiveProjects(getApplicationContext());
-       // checkForNewProjects();
-
-       synchronized (lock){
-           try {
-
-               lock.wait(3000);
-           } catch (InterruptedException e) {
-               e.printStackTrace();
-           }
-
-
-       }
-
-        userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
-
+        setAllData();
 
     }
+
+
+    public void setAllData(){
+
+        getActiveProjects(getApplicationContext());
+        // checkForNewProjects();
+
+        synchronized (lock){
+            try {
+
+                lock.wait(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+        userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
+    }
+
+
 
     private void checkForNewProjects() {
 
@@ -528,3 +539,5 @@ public class ApplicationTimeTracker extends Application {
 
 
 }
+
+
