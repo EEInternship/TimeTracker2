@@ -1,16 +1,10 @@
 package eeinternship.com.timetracker;
 
 import android.accounts.AccountManager;
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -25,7 +19,7 @@ import java.util.Calendar;
 import Data.UploadSpreadsheetData;
 import Data.UserData;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
@@ -45,12 +39,11 @@ public class MainActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
         uploadSpreadsheetData = userData.getUploadSpreadsheetData();
 
-
-
-
         if(!userData.userAccountIsSet()){
             chooseAccount();
         }
+
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
@@ -98,11 +91,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
+
     public void chooseAccount(){
         Intent intent = AccountManager.newChooseAccountIntent(null, null, new String[]{"com.google"},
                 false, null, null, null, null);
         startActivityForResult(intent, 999);
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("Choosen accountName:", accountName);
             userData.setUserAcount(accountName);
             applicationTimeTracker.setUserData(userData);
-            applicationTimeTracker.saveInGson();
+            applicationTimeTracker.setAllData();
             //applicationTimeTracker.getActiveProjects(getApplicationContext());
             //applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),accountName);
             //applicationTimeTracker.addWorkDay(getApplicationContext(),accountName);
