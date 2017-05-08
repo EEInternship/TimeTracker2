@@ -49,10 +49,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         }
-
-
-
-
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
