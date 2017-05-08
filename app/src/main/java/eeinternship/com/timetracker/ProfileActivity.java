@@ -15,6 +15,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import Data.ProfileDataDropdown;
+import Data.ProfileDataLine;
+import Data.Project;
 import Data.UserData;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -34,6 +41,14 @@ public class ProfileActivity extends AppCompatActivity {
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
 
+        for(ProfileDataDropdown profileDataDropdown : userData.getProfileDataDropdownArrayList()){
+            for(ProfileDataLine profileDataLine: profileDataDropdown.getProfileDataLineArrayList()){
+                for(Project project: userData.getProjectList()){
+                    if(profileDataLine.getProjectName().equals(project.projectName))
+                        profileDataLine.setProjectColor(project.getTicketColor());
+                }
+            }
+        }
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
@@ -47,7 +62,7 @@ public class ProfileActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
-        listAdapter = new ExpandableListAdapter(this,userData.getProfileDataDropdownArrayList(),userData.getProjectList());
+        listAdapter = new ExpandableListAdapter(this,userData.getProfileDataDropdownArrayList());
         expListView.setAdapter(listAdapter);
     }
 

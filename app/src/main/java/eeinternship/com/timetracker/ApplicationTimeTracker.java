@@ -95,6 +95,7 @@ public class ApplicationTimeTracker extends Application {
 
         userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
 
+
     }
 
     private void checkForNewProjects() {
@@ -220,6 +221,7 @@ public class ApplicationTimeTracker extends Application {
                                             profileDataLine.setStartingTime(testWorkingOn.getStarting_time());
                                             profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
                                             profileDataLine.setWorkDescription(testWorkingOn.getDescription());
+                                            profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
                                             profileDataLineArrayList.add(profileDataLine);
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);

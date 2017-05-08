@@ -35,7 +35,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
-    private ArrayList<Project> allProjects;
 
     public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList, ArrayList<Project> projectArrayList) {
         this._context = context;
@@ -50,8 +49,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                 }
             }
         }
-
-
     }
 
     @Override
