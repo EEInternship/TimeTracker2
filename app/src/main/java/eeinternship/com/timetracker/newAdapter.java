@@ -1,7 +1,6 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
@@ -226,11 +225,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
 
-                Intent intent = ((StartWorkActivity) mContext).getIntent();
+              /*  Intent intent = ((StartWorkActivity) mContext).getIntent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 ((StartWorkActivity)mContext).finish();
                 mContext.startActivity(intent);
-                ((StartWorkActivity)mContext).overridePendingTransition(0,0);
+                ((StartWorkActivity)mContext).overridePendingTransition(0,0);*/
 
             }
         });
