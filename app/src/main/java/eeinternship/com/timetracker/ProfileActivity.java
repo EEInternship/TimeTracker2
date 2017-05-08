@@ -77,7 +77,6 @@ public class ProfileActivity extends AppCompatActivity {
                 startActivity(settingsAC);
                 break;
             case R.id.account_picker:
-                // tukaj mas....
 
         }
 
