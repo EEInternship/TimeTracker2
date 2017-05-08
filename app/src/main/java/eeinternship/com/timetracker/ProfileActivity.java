@@ -15,10 +15,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
 import Data.Project;
@@ -66,8 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
         expListView.setAdapter(listAdapter);
     }
 
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -82,6 +76,9 @@ public class ProfileActivity extends AppCompatActivity {
                 Intent settingsAC=new Intent(this,SettingsActivity.class);
                 startActivity(settingsAC);
                 break;
+            case R.id.account_picker:
+                // tukaj mas....
+
         }
 
         return super.onOptionsItemSelected(item);
