@@ -71,6 +71,7 @@ public class StartWorkActivity extends AppCompatActivity {
 
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
+
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
         ticketList = userData.getTicketList();
@@ -111,7 +112,6 @@ public class StartWorkActivity extends AppCompatActivity {
 
         mAdapter = new newAdapter(this, ticketList);
 
-
         // Setting Mode to Single to reveal bottom View for one item in List
         // Setting Mode to Mutliple to reveal bottom Views for multile items in List
         (mAdapter).setMode(Attributes.Mode.Single);
@@ -126,9 +126,7 @@ public class StartWorkActivity extends AppCompatActivity {
             tvEmptyView.setVisibility(View.GONE);
         }
 
-
-//ISAK Tuki SE GLEDA KOK JIH JE
-        if(userData.getProjectList() != null){
+        if (userData.getProjectList() != null) {
 
 
             if (userData.getProjectList().size() < 1) {
@@ -159,9 +157,6 @@ public class StartWorkActivity extends AppCompatActivity {
                 labelSelectProject.setVisibility(View.GONE);
             }
         }
-
-// ISAK TUKI SE PA KONČA
-
 
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,7 +205,7 @@ public class StartWorkActivity extends AppCompatActivity {
         int distance = 0;
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
-            if (distance < 3){
+            if (distance < 3) {
                 distance++;
                 continue;
             }
@@ -222,10 +217,9 @@ public class StartWorkActivity extends AppCompatActivity {
         final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        String selectedProject = projectList[arg1].toString();
+                        String selectedProject = projectList[arg1];
                         String color = "#000000";
                         ArrayList<Project> projects = userData.getProjectList();
                         for (Project project : projects) {
@@ -233,8 +227,6 @@ public class StartWorkActivity extends AppCompatActivity {
                                 if (project.getTicketColor() != null)
                                     color = project.getTicketColor();
                         }
-
-
                         ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
@@ -336,6 +328,9 @@ public class StartWorkActivity extends AppCompatActivity {
 
     private void closeMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
+        frameLayoutDim.setEnabled(false);
+        frameLayoutDim.setClickable(false);
+
         buttonOptions.startAnimation(fabRotateClose);
 
         isOpen = false;
@@ -370,6 +365,9 @@ public class StartWorkActivity extends AppCompatActivity {
 
     private void openMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
+        frameLayoutDim.setEnabled(true);
+        frameLayoutDim.setClickable(true);
+
         buttonOptions.startAnimation(fabRotate);
 
         isOpen = true;
@@ -425,6 +423,13 @@ public class StartWorkActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if (isOpen) {
+            closeMenu();
+        } else {
+            finish();
+        }
+    }
 }
 

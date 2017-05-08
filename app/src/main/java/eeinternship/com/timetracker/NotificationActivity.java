@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -24,7 +25,8 @@ public class NotificationActivity extends AppCompatActivity {
 
     private TimePicker notificationStartingTimePicker, notificationShowOnTimePicker;
     ExpandableLayout expandableLayoutTime, expandableLayoutTimer;
-    TextView linearLayoutTxtTimer, onOffTxt;
+    LinearLayout linearLayoutTxtTimer;
+    TextView onOffTxt;
     Switch notificationTurnOnOff;
     private Button save,cancel;
     private ApplicationTimeTracker applicationTimeTracker;
@@ -86,26 +88,24 @@ public class NotificationActivity extends AppCompatActivity {
             onOffTxt.setTextColor(Color.parseColor("#f1490b"));
         }
 
-
         expandableLayoutTime = (ExpandableLayout) findViewById(R.id.time_picker_layout_ex);
         expandableLayoutTimer = (ExpandableLayout) findViewById(R.id.timer_layout_ex);
-        linearLayoutTxtTimer = (TextView) findViewById(R.id.timer_text);
+        linearLayoutTxtTimer = (LinearLayout) findViewById(R.id.timer_text);
 
         linearLayoutTxtTimer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isOpen == false) {
+                if(!isOpen){
+                    expandableLayoutTime.collapse();
+                    expandableLayoutTimer.expand();
+                    isOpen=true;
+                }else{
                     expandableLayoutTime.expand();
                     expandableLayoutTimer.collapse();
-                    isOpen = true;
-                } else if (isOpen == true) {
-                    expandableLayoutTimer.expand();
-                    expandableLayoutTime.collapse();
-                    isOpen = false;
+                    isOpen=false;
                 }
             }
         });
-
 
         notificationTurnOnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
