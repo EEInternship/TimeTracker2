@@ -18,12 +18,11 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
-
+import android.graphics.Color;
 import java.util.ArrayList;
 
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
-import Data.Project;
 
 import static android.graphics.Color.parseColor;
 
@@ -36,19 +35,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
 
-    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList, ArrayList<Project> projectArrayList) {
+    public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList) {
         this._context = context;
         this.profileDataDropdownArrayList = profileDataDropdownArrayList;
-        this.allProjects = projectArrayList;
 
-        for (ProfileDataDropdown profileDataDropdown : profileDataDropdownArrayList) {
-            for (ProfileDataLine profileDataLine : profileDataDropdown.getProfileDataLineArrayList()) {
-                for (Project project : allProjects) {
-                    if (profileDataLine.getProjectName().equals(project.projectName))
-                        profileDataLine.setProjectColor(project.getTicketColor());
-                }
-            }
-        }
     }
 
     @Override
@@ -80,6 +70,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView description = (TextView) convertView.findViewById(R.id.list_item_name_task);
         TextView taskTime = (TextView) convertView.findViewById(R.id.sum_time);
         LinearLayout projectColor = (LinearLayout) convertView.findViewById(R.id.project_color);
+
+        projectName.setText(profileDataLine.getProjectName());
+        startTime.setText(profileDataLine.getStartingTime());
+        finishTime.setText(profileDataLine.getFinishTime());
+        description.setText(profileDataLine.getWorkDescription());
+        taskTime.setText(profileDataLine.getWorkTime());
+        projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
 
         RelativeLayout infoTicket=(RelativeLayout)convertView.findViewById(R.id.ticket_profile);
         infoTicket.setOnLongClickListener(new View.OnLongClickListener() {
