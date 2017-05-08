@@ -1,5 +1,6 @@
 package eeinternship.com.timetracker;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -110,23 +111,13 @@ public class StartWorkActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-
         mAdapter = new newAdapter(this, ticketList);
+
 
         // Setting Mode to Single to reveal bottom View for one item in List
         // Setting Mode to Mutliple to reveal bottom Views for multile items in List
         (mAdapter).setMode(Attributes.Mode.Single);
         recyclerView.setAdapter(mAdapter);
-
-        if (ticketList.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            tvEmptyView.setVisibility(View.VISIBLE);
-
-        } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            tvEmptyView.setVisibility(View.GONE);
-        }
-
         if (userData.getProjectList() != null) {
 
 
@@ -173,7 +164,8 @@ public class StartWorkActivity extends AppCompatActivity {
                             ticketList.add(new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor()));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
-                            mAdapter.notifyDataSetChanged();
+
+                            mAdapter.swap(ticketList);
                             closeMenu();
 
                         }
@@ -333,6 +325,8 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setClickable(true);
         setFeautered();
     }
+
+
 
     private void closeMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
