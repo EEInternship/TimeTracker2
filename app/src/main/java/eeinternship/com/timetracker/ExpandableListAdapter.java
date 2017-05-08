@@ -1,8 +1,10 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
+import android.os.Vibrator;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,8 @@ import java.util.ArrayList;
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
 import Data.Project;
+
+import static android.graphics.Color.parseColor;
 
 /**
  * Created by IsakFe on 30. 03. 2017.
@@ -84,6 +88,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         infoTicket.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                Vibrator v = (Vibrator)_context.getSystemService(Context.VIBRATOR_SERVICE);
+                // Vibrate for 500 milliseconds
+                v.vibrate(500);
                 openEditDialog();
                 return true;
             }
@@ -155,14 +162,16 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
 
         pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (pickTime.isChecked()) {
                     labelStartingFinish.setText("FINISHED TIME");
-                    labelStartingFinish.setTextColor(Color.parseColor("#f1490b"));
+                    labelStartingFinish.setTextColor(parseColor("#f1490b"));
+                   // pickTime.thum
                 } else {
                     labelStartingFinish.setText("STARTING TIME");
-                    labelStartingFinish.setTextColor(Color.parseColor("#04b795"));
+                    labelStartingFinish.setTextColor(parseColor("#04b795"));
                 }
             }
         });

@@ -1,6 +1,7 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +39,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     ArrayList<Ticket> ticketArrayList;
 
     public newAdapter(StartWorkActivity startWorkActivity, ArrayList<Ticket> objects) {
-        mContext=startWorkActivity;
+        mContext = startWorkActivity;
         this.adapter = objects;
     }
 
@@ -56,7 +57,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
 
         holder.startWork = TC.getState();
         holder.projectName.setText(TC.getProject());
-        if(TC.getColor() != null)
+        if (TC.getColor() != null)
             holder.colorOfProject.setBackgroundColor(Color.parseColor(TC.getColor()));
 
         if (TC.getDescription() != null)
@@ -65,19 +66,19 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             holder.description.setText("");
 
 
-            if (holder.startWork == Ticket.State.Start) {
-                holder.showTimer = true;
-                holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
-                TC.setTime("0:00");
-            } else if (holder.startWork == Ticket.State.Stop)
-                holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
-            else if (holder.startWork == Ticket.State.Restart)
-                holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
-            else if(holder.startWork == Ticket.State.Done)
-                holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
+        if (holder.startWork == Ticket.State.Start) {
+            holder.showTimer = true;
+            holder.imageButton.setBackgroundResource(R.drawable.img_start_btn);
+            TC.setTime("0:00");
+        } else if (holder.startWork == Ticket.State.Stop)
+            holder.imageButton.setBackgroundResource(R.drawable.img_stop_btn);
+        else if (holder.startWork == Ticket.State.Restart)
+            holder.imageButton.setBackgroundResource(R.drawable.img_recreate_btn);
+        else if (holder.startWork == Ticket.State.Done)
+            holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
 
-            holder.timeWork.setText(TC.getTime());
-            holder.imageButton.setVisibility(View.VISIBLE);
+        holder.timeWork.setText(TC.getTime());
+        holder.imageButton.setVisibility(View.VISIBLE);
 
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 100) {
@@ -131,7 +132,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(),TC.getColor()));
+                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
                     notifyItemChanged(adapter.size() - 1);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
@@ -159,7 +160,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         });
 
 
-        applicationTimeTracker= (ApplicationTimeTracker) ((StartWorkActivity)mContext).getApplication();
+        applicationTimeTracker = (ApplicationTimeTracker) ((StartWorkActivity) mContext).getApplication();
         userData = applicationTimeTracker.getUserData();
         ticketArrayList = userData.getTicketList();
 
@@ -225,7 +226,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
 
-
+                Intent intent = ((StartWorkActivity) mContext).getIntent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                ((StartWorkActivity)mContext).finish();
+                mContext.startActivity(intent);
+                ((StartWorkActivity)mContext).overridePendingTransition(0,0);
 
             }
         });
@@ -239,7 +244,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 userData.setTicketList(ticketArrayList);
                 applicationTimeTracker.setUserData(userData);
                 mItemManger.closeAllItems();
-                ((StartWorkActivity)mContext).openFabButtonWhenDelete();
+                ((StartWorkActivity) mContext).openFabButtonWhenDelete();
             }
         });
         mItemManger.bindView(holder.itemView, position);

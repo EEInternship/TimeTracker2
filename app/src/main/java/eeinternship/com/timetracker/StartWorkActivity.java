@@ -126,7 +126,7 @@ public class StartWorkActivity extends AppCompatActivity {
             tvEmptyView.setVisibility(View.GONE);
         }
 
-        if(userData.getProjectList() != null){
+        if (userData.getProjectList() != null) {
 
 
             if (userData.getProjectList().size() < 1) {
@@ -205,7 +205,7 @@ public class StartWorkActivity extends AppCompatActivity {
         int distance = 0;
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
-            if (distance < 3){
+            if (distance < 3) {
                 distance++;
                 continue;
             }

@@ -70,10 +70,10 @@
                 android:layout_weight="0.5">
 
                 <TextView
-                    android:layout_marginLeft="10dp"
                     android:id="@+id/starting_finsihed_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
                     android:gravity="center_vertical"
                     android:text="STARTING TIME"
                     android:textColor="#04b795"
@@ -91,7 +91,9 @@
                     android:id="@+id/select_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:checked="false" />
+                    android:checked="false"
+                    android:thumbTint="#04b795"
+                    android:trackTint="#04b795" />
             </LinearLayout>
 
         </LinearLayout>
