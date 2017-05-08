@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -201,7 +202,14 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });
-        final String[] projectList = new String[userData.getProjectList().size()];
+
+        final String[] projectList;
+        if(userData.getProjectList().size() >3){
+            projectList = new String[userData.getProjectList().size()-3];
+        }else{
+            projectList = new String[0];
+        }
+
         int distance = 0;
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
