@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -79,7 +78,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         taskTime.setText(profileDataLine.getWorkTime());
         projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
 
-        RelativeLayout infoTicket=(RelativeLayout)convertView.findViewById(R.id.ticket_profile);
+        LinearLayout infoTicket=(LinearLayout)convertView.findViewById(R.id.ticket_profile);
         infoTicket.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
@@ -180,4 +179,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         AlertDialog dialog = editDialog.create();
         dialog.show();
     }
+
+
 }
