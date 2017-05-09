@@ -1,6 +1,7 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
@@ -36,6 +37,8 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
     ArrayList<Ticket> ticketArrayList;
+    boolean enableStart=true;
+    Integer indexCurrentTicket=-1;
 
     public newAdapter(StartWorkActivity startWorkActivity, ArrayList<Ticket> objects) {
         mContext = startWorkActivity;
@@ -84,6 +87,10 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         holder.timeWork.setText(TC.getTime());
         holder.imageButton.setVisibility(View.VISIBLE);
 
+        if(!holder.enableStart){
+            holder.imageButton.setEnabled(false);
+        }
+
 
         final CountDownTimer projectTimeTracker = new CountDownTimer(1000000000, 100) {
             @Override
@@ -107,7 +114,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             public void onClick(View v) {
                 final Calendar calendar = Calendar.getInstance();
 
-                if (holder.startWork == Ticket.State.Start) {
+                if (holder.startWork == Ticket.State.Start && TC.getStateStart()==true) {
                     holder.startTime = new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
                     holder.startWork = Ticket.State.Stop;
                     TC.setDate(calendar);
@@ -115,14 +122,20 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     projectTimeTracker.start();
                     TC.setStartingTime(holder.startTime);
                     TC.setState(holder.startWork);
-
+                    updateTicketState(position);
+                    indexCurrentTicket=position;
                     adapter.set(position, TC);
+                    userData.setTicketList(adapter);
+                    applicationTimeTracker.setUserData(userData);
 
-                } else if (holder.startWork == Ticket.State.Stop) {
+                } else if (holder.startWork == Ticket.State.Stop ) {
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
                     holder.finishTime = new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
                     TC.setFinishTime(holder.finishTime);
+                    if(holder.startTime == null){
+                        holder.startTime = TC.getStartingTime();
+                    }
                     long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
                     Time workTime = new Time(differenceLong);
                     if (workTime.getMinutes() < 10)
@@ -134,11 +147,15 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     holder.startWork = Ticket.State.Restart;
                     TC.setTime(timeWork);
                     TC.setState(holder.startWork);
+                    updateTicketState(-1);
+                    indexCurrentTicket=-1;
+                    TC.setStateStart(true);
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
                     adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
                     notifyDataSetChanged();
+                    updateTicketState(indexCurrentTicket);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
@@ -231,11 +248,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
 
-              /*  Intent intent = ((StartWorkActivity) mContext).getIntent();
+               Intent intent = ((StartWorkActivity) mContext).getIntent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 ((StartWorkActivity)mContext).finish();
                 mContext.startActivity(intent);
-                ((StartWorkActivity)mContext).overridePendingTransition(0,0);*/
+                ((StartWorkActivity)mContext).overridePendingTransition(0,0);
 
             }
         });
@@ -285,6 +302,20 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         }
         notifyDataSetChanged();
     }
+    public void updateTicketState(int index){
+        if(index==-1) {
+            for (int i = 0; i < adapter.size(); i++) {
+                if (i != index) {
+                    adapter.get(i).setStateStart(true);
+                }
+            }
+        }
+        else {
+            for (int i = 0; i < adapter.size(); i++) {
+                    adapter.get(i).setStateStart(false);
+            }
+        }
+    }
 
 
     public class SimpleViewHolder extends RecyclerView.ViewHolder {
@@ -298,6 +329,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         LinearLayout colorOfProject;
         Ticket.State startWork = Ticket.State.Start;
         boolean showTimer = true;
+        boolean enableStart=true;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
