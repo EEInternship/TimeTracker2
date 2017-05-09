@@ -18,6 +18,7 @@ public class Ticket {
     private State state;
     private Selected selected;
     private String color;
+    private Boolean stateStart;
 
     public Ticket(ArrayList<Ticket> arrayList) {
     }
@@ -32,6 +33,15 @@ public class Ticket {
         state = _state;
         selected = _selected;
         color = colour;
+        stateStart=true;
+    }
+    public Ticket(String hour, String project,State _state,Selected _selected, String colour,Boolean state1) {
+        this.time = hour;
+        this.project = project;
+        state = _state;
+        selected = _selected;
+        color = colour;
+        stateStart=state1;
     }
 
     public void setStartingTime(Time start){startingTime=start;}
@@ -90,5 +100,13 @@ public void setFinishTime(Time finish){finishTime = finish;}
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public Boolean getStateStart() {
+        return stateStart;
+    }
+
+    public void setStateStart(Boolean state) {
+        this.stateStart = state;
     }
 }
