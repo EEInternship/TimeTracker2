@@ -90,39 +90,38 @@ public class ApplicationTimeTracker extends Application {
     private CountDownTimer cnt;
 
     public void setAllData(){
-          cnt =new CountDownTimer(30000, 1000) {
 
-            public void onTick(long millisUntilFinished) {
-
-            }
-
-            public void onFinish() {
-
-            }
-        }.start();
         getActiveProjects(getApplicationContext());
 
-        // checkForNewProjects();
+        //checkForNewProjects();
 
 
 
         userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
+
+
     }
 
+
+    public void setColors(){
+        for (ProfileDataDropdown profileDataDropdown : userData.getProfileDataDropdownArrayList()) {
+            for (ProfileDataLine profileDataLine : profileDataDropdown.getProfileDataLineArrayList()) {
+                for (Project project : userData.getProjectList()) {
+                    if (profileDataLine.getProjectName().equals(project.projectName))
+                        profileDataLine.setProjectColor(project.getTicketColor());
+                }
+            }
+        }
+    }
 
 
     private void checkForNewProjects() {
 
 
 
-
-        synchronized (lock){
-            cnt.cancel();
-            Toast.makeText(getApplicationContext(),"test",Toast.LENGTH_SHORT).show();
-
             if(userData.getProjectList() == null){
                 userData.addProjectList(tempProjects);
-                lock.notify();
+                //lock.notify();
                 return;
             }
             ArrayList<Project> newProjects = new ArrayList<>();
@@ -144,13 +143,12 @@ public class ApplicationTimeTracker extends Application {
             }
             if(allProjects.size()==0){
                 userData.addProjectList(tempProjects);
-                lock.notify();
+//                lock.notify();
                 return;
             }
             userData.addProjectList(new ArrayList<Project>());
             userData.addProjectList(allProjects);
-            lock.notify();
-        }
+
 
     }
 

@@ -152,6 +152,7 @@ public class NotificationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                applicationTimeTracker.setColors();
                 finish();
                 return true;
         }

@@ -125,8 +125,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     updateTicketState(position);
                     indexCurrentTicket=position;
                     adapter.set(position, TC);
-                    userData.setTicketList(adapter);
-                    applicationTimeTracker.setUserData(userData);
 
                 } else if (holder.startWork == Ticket.State.Stop ) {
                     holder.showTimer = false;
@@ -153,13 +151,16 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
+                    adapter.add(0,new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
                     notifyDataSetChanged();
                     updateTicketState(indexCurrentTicket);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
-                    adapter.set(position, TC);
+                    adapter.set(position+1, TC);
                 }
+
+                userData.setTicketList(adapter);
+                applicationTimeTracker.setUserData(userData);
             }
         });
 
@@ -235,7 +236,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     Toast.makeText(mContext, "You did not start this ticket!", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (currentTicket.getDescription() == null) {
+                if (currentTicket.getDescription() == null || currentTicket.getDescription().equals("")) {
                     Toast.makeText(mContext, "You did not write Description!", Toast.LENGTH_LONG).show();
                     return;
                 }
