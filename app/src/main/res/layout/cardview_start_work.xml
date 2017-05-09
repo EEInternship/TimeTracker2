@@ -13,7 +13,7 @@
     <LinearLayout
         android:id="@+id/bottom_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
@@ -34,7 +34,7 @@
     <LinearLayout
         android:id="@+id/bottom_wrapper1"
         android:layout_width="match_parent"
-        android:layout_height="85dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
@@ -55,7 +55,9 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         swipe:cardBackgroundColor="#FFFFFF"
-        swipe:cardUseCompatPadding="false">
+        swipe:cardUseCompatPadding="false"
+        swipe:cardCornerRadius="0dp"
+        swipe:cardElevation="0dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -148,5 +150,10 @@
             </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#1A000000"></LinearLayout>
     </android.support.v7.widget.CardView>
 </com.daimajia.swipe.SwipeLayout>
