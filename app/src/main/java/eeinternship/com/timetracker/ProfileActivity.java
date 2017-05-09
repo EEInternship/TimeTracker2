@@ -62,7 +62,9 @@ public class ProfileActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-               //applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
+                applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
+                userData = applicationTimeTracker.getUserData();
+                listAdapter.notifyDataSetChanged();
                 Toast.makeText(getApplicationContext(),"Test refresh",Toast.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(false);
             }
