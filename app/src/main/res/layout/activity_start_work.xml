@@ -21,17 +21,9 @@
             android:id="@+id/recyclerview_start_work"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/empty_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="No Records"
-            android:visibility="gone" />
     </LinearLayout>
 
-   <FrameLayout
+    <FrameLayout
         android:id="@+id/frame_layout_dim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -158,8 +150,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_marginBottom="3dp"
-            android:elevation="6dp"
             android:layout_marginRight="20dp"
+            android:elevation="6dp"
             android:src="@drawable/ic_assignment"
             android:visibility="invisible"
             app:backgroundTint="#f18864"
@@ -210,8 +202,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="325dp"
-        android:gravity="right"
         android:layout_marginRight="20dp"
+        android:gravity="right"
         android:orientation="horizontal"
         android:weightSum="1">
 
