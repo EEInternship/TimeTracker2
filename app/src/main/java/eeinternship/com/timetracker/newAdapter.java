@@ -50,6 +50,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         return viewHolder;
     }
 
+    public void swap(ArrayList<Ticket> tickets){
+        this.adapter = tickets;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(final newAdapter.SimpleViewHolder holder, final int position) {
         final Ticket TC = adapter.get(position);
@@ -110,6 +115,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     projectTimeTracker.start();
                     TC.setStartingTime(holder.startTime);
                     TC.setState(holder.startWork);
+
                     adapter.set(position, TC);
 
                 } else if (holder.startWork == Ticket.State.Stop) {
@@ -132,7 +138,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
                     adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
-                    notifyItemChanged(adapter.size() - 1);
+                    notifyDataSetChanged();
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
                     adapter.set(position, TC);
@@ -270,6 +276,16 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     public int getSwipeLayoutResourceId(int position) {
         return R.id.swipe;
     }
+
+
+    public void update(ArrayList<Ticket> tickets){
+        adapter.clear();
+        for(Ticket ticket:tickets){
+            adapter.add(ticket);
+        }
+        notifyDataSetChanged();
+    }
+
 
     public class SimpleViewHolder extends RecyclerView.ViewHolder {
         SwipeLayout swipeLayout;
