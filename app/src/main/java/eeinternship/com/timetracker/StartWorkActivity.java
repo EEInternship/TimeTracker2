@@ -1,7 +1,5 @@
 package eeinternship.com.timetracker;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -21,7 +19,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +38,7 @@ public class StartWorkActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     FloatingActionButton buttonOptions, buttonFinishWork, buttonFirstProject, buttonSecondProject, buttonThirdProject, buttonSelectProject;
-    TextView labelBtnFirstProject, tvEmptyView, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
+    TextView labelBtnFirstProject, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
@@ -103,8 +100,6 @@ public class StartWorkActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-
-        tvEmptyView = (TextView) findViewById(R.id.empty_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 

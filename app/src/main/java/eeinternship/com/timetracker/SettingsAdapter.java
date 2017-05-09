@@ -94,9 +94,14 @@ public class SettingsAdapter extends RecyclerView.Adapter<SettingsAdapter.Recycl
                                 }
                                 userData.setTicketList(tickets);
                                 applicationTimeTracker.setUserData(userData);
-
                             }
                         })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        })
+                        .noSliders()
                         .build()
                         .show();
             }
