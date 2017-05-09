@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
@@ -40,14 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
 
-        for (ProfileDataDropdown profileDataDropdown : userData.getProfileDataDropdownArrayList()) {
-            for (ProfileDataLine profileDataLine : profileDataDropdown.getProfileDataLineArrayList()) {
-                for (Project project : userData.getProjectList()) {
-                    if (profileDataLine.getProjectName().equals(project.projectName))
-                        profileDataLine.setProjectColor(project.getTicketColor());
-                }
-            }
-        }
+        applicationTimeTracker.setColors();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
@@ -64,11 +58,13 @@ public class ProfileActivity extends AppCompatActivity {
         listAdapter = new ExpandableListAdapter(this, userData.getProfileDataDropdownArrayList());
         expListView.setAdapter(listAdapter);
 
-        SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Ledinek to je tvoje delo.
+               //applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
+                Toast.makeText(getApplicationContext(),"Test refresh",Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -85,7 +81,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             case R.id.settings_btn:
                 Intent settingsAC = new Intent(this, SettingsActivity.class);
-                startActivity(settingsAC);
+                startActivityForResult(settingsAC,88);
                 break;
             case R.id.account_picker:
                 chooseAccount();
@@ -121,6 +117,10 @@ public class ProfileActivity extends AppCompatActivity {
             userData.setUserAcount(accountName);
             applicationTimeTracker.setUserData(userData);
             applicationTimeTracker.setAllData();
+        }
+        if(requestCode == 88){
+            applicationTimeTracker.setColors();
+            listAdapter.notifyDataSetChanged();
         }
     }
 }
