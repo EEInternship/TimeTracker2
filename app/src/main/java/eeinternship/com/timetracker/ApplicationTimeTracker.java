@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -60,7 +61,6 @@ public class ApplicationTimeTracker extends Application {
     private ArrayList<Project> tempProjects;
     private Object lock = new Object();
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -87,22 +87,24 @@ public class ApplicationTimeTracker extends Application {
 
     }
 
+    private CountDownTimer cnt;
 
     public void setAllData(){
+          cnt =new CountDownTimer(30000, 1000) {
 
-        getActiveProjects(getApplicationContext());
-        // checkForNewProjects();
+            public void onTick(long millisUntilFinished) {
 
-        synchronized (lock){
-            try {
-
-                lock.wait(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
 
+            public void onFinish() {
 
-        }
+            }
+        }.start();
+        getActiveProjects(getApplicationContext());
+
+        // checkForNewProjects();
+
+
 
         userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
     }
@@ -115,6 +117,9 @@ public class ApplicationTimeTracker extends Application {
 
 
         synchronized (lock){
+            cnt.cancel();
+            Toast.makeText(getApplicationContext(),"test",Toast.LENGTH_SHORT).show();
+
             if(userData.getProjectList() == null){
                 userData.addProjectList(tempProjects);
                 lock.notify();

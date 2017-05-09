@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -223,7 +224,7 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-       /* final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+       final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -250,11 +251,12 @@ public class StartWorkActivity extends AppCompatActivity {
 
                         arg0.cancel();
                     }
-                });*/
+                });
 
         buttonSelectProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                alertDialog.show();
             }
         });
 
