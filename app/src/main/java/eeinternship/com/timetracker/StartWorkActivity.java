@@ -392,7 +392,7 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.startAnimation(fabRotate);
 
         isOpen = true;
-
+        
         buttonSelectProject.startAnimation(fabOpen);
         buttonSelectProject.setClickable(true);
         labelSelectProject.startAnimation(txtOpen);
