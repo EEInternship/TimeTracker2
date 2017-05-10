@@ -1,6 +1,5 @@
 package eeinternship.com.timetracker;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,8 +33,6 @@ import Data.UserData;
 public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder> {
     private Context mContext;
     ArrayList<Ticket> adapter = new ArrayList<>();
-
-    Activity activity;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
