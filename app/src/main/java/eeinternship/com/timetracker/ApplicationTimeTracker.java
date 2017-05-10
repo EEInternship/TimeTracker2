@@ -121,7 +121,6 @@ public class ApplicationTimeTracker extends Application {
 
             if(userData.getProjectList() == null){
                 userData.addProjectList(tempProjects);
-                //lock.notify();
                 return;
             }
             ArrayList<Project> newProjects = new ArrayList<>();

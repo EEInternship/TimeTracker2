@@ -10,7 +10,7 @@ public class ProfileDataLine {
     private String startingTime;
     private String finishTime;
     private String workTime;
-    private String projectColor = "#000000";
+    private String projectColor = "#1E90FF";
     public ProfileDataLine(){}
 
     public String getProjectName() {
