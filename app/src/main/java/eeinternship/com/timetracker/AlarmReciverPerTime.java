@@ -1,6 +1,7 @@
 package eeinternship.com.timetracker;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -30,9 +31,17 @@ public class AlarmReciverPerTime extends BroadcastReceiver {
                         .setContentTitle("TimeTracker")
                         .setLights(0xFFff0000, 100, 100)
                         .setVibrate(new long[]{1000, 1000, 1000, 0, 0})
-                        .setContentText("Are you still working on same ticket?");
+                        .setContentText("Are you still working on same ticket?")
+                        .setAutoCancel(true);
 
+        Intent resultIntent = new Intent(context, StartWorkActivity.class);
+        resultIntent.setAction("android.intent.action.MAIN");
+        resultIntent.addCategory("android.intent.category.LAUNCHER");
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, mBuilder.build());
+        mNotificationManager.notify(0, mBuilder.build());
     }
 }

@@ -40,7 +40,7 @@ public class StartWorkActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     FloatingActionButton buttonOptions, buttonFinishWork, buttonFirstProject, buttonSecondProject, buttonThirdProject, buttonSelectProject;
-    TextView labelBtnFirstProject, tvEmptyView, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
+    TextView labelBtnFirstProject, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
@@ -67,7 +67,6 @@ public class StartWorkActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIME TRACKER");
-
 
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
@@ -103,11 +102,8 @@ public class StartWorkActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-
-        tvEmptyView = (TextView) findViewById(R.id.empty_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
-
 
         mAdapter = new newAdapter(this, ticketList);
 
@@ -116,19 +112,7 @@ public class StartWorkActivity extends AppCompatActivity {
         // Setting Mode to Mutliple to reveal bottom Views for multile items in List
         (mAdapter).setMode(Attributes.Mode.Single);
         recyclerView.setAdapter(mAdapter);
-
-        if (ticketList.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            tvEmptyView.setVisibility(View.VISIBLE);
-
-        } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            tvEmptyView.setVisibility(View.GONE);
-        }
-
-
-//ISAK Tuki SE GLEDA KOK JIH JE
-        if(userData.getProjectList() != null){
+        if (userData.getProjectList() != null) {
 
 
             if (userData.getProjectList().size() < 1) {
@@ -160,9 +144,6 @@ public class StartWorkActivity extends AppCompatActivity {
             }
         }
 
-// ISAK TUKI SE PA KONČA
-
-
         buttonOptions.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,7 +155,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ticketList.add(new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor()));
+                            Boolean ticketState=true;
+                            for(Ticket ticket:ticketList){
+                                if(ticket.getStateStart()==false){
+                                    ticketState=false;
+                                }
+                            }
+                            ticketList.add(0,new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(),ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -185,7 +172,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor()));
+                            Boolean ticketState=true;
+                            for(Ticket ticket:ticketList){
+                                if(ticket.getStateStart()==false){
+                                    ticketState=false;
+                                }
+                            }
+                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(),ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -196,7 +189,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonThirdProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ticketList.add(new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor()));
+                            Boolean ticketState=true;
+                            for(Ticket ticket:ticketList){
+                                if(ticket.getStateStart()==false){
+                                    ticketState=false;
+                                }
+                            }
+                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(),ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -206,11 +205,18 @@ public class StartWorkActivity extends AppCompatActivity {
                 }
             }
         });
-        final String[] projectList = new String[userData.getProjectList().size()];
+
+        final String[] projectList;
+        if(userData.getProjectList().size() >3){
+            projectList = new String[userData.getProjectList().size()-3];
+        }else{
+            projectList = new String[0];
+        }
+
         int distance = 0;
         int projectListLength = 0;
         for (Project data : userData.getProjectList()) {
-            if (distance < 3){
+            if (distance < 3) {
                 distance++;
                 continue;
             }
@@ -219,13 +225,12 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+       final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
-                        String selectedProject = projectList[arg1].toString();
+                        String selectedProject = projectList[arg1];
                         String color = "#000000";
                         ArrayList<Project> projects = userData.getProjectList();
                         for (Project project : projects) {
@@ -233,9 +238,13 @@ public class StartWorkActivity extends AppCompatActivity {
                                 if (project.getTicketColor() != null)
                                     color = project.getTicketColor();
                         }
-
-
-                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color));
+                        Boolean ticketState=true;
+                        for(Ticket ticket : ticketList){
+                            if(ticket.getStateStart()==false){
+                                ticketState=false;
+                            }
+                        }
+                        ticketList.add(0,new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color,ticketState));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
                         mAdapter.notifyDataSetChanged();
@@ -267,7 +276,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 boolean allDone = true;
                 int position = 0;
                 for (Ticket ticket : userData.getTicketList()) {
-                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null) {
+                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null && !ticket.getDescription().equals("")) {
                         if (ticket.getFinishTime() == null) {
                             Calendar calendar = Calendar.getInstance();
                             ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
@@ -276,7 +285,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         position--;
                         applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
                     } else {
-                        if (ticket.getDescription() == null)
+                        if (ticket.getDescription() == null || ticket.getDescription().equals(""))
                             Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
 
                         else
@@ -334,8 +343,13 @@ public class StartWorkActivity extends AppCompatActivity {
         setFeautered();
     }
 
+
+
     private void closeMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
+        frameLayoutDim.setEnabled(false);
+        frameLayoutDim.setClickable(false);
+
         buttonOptions.startAnimation(fabRotateClose);
 
         isOpen = false;
@@ -370,6 +384,9 @@ public class StartWorkActivity extends AppCompatActivity {
 
     private void openMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
+        frameLayoutDim.setEnabled(true);
+        frameLayoutDim.setClickable(true);
+
         buttonOptions.startAnimation(fabRotate);
 
         isOpen = true;
@@ -425,6 +442,13 @@ public class StartWorkActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if (isOpen) {
+            closeMenu();
+        } else {
+            finish();
+        }
+    }
 }
 
