@@ -1,7 +1,5 @@
 package eeinternship.com.timetracker;
 
-import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -61,6 +59,8 @@ public class ApplicationTimeTracker extends Application {
     private ArrayList<Project> tempProjects;
     private Object lock = new Object();
 
+    ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -90,16 +90,9 @@ public class ApplicationTimeTracker extends Application {
     private CountDownTimer cnt;
 
     public void setAllData(){
-
         getActiveProjects(getApplicationContext());
-
         //checkForNewProjects();
-
-
-
-        userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
-
-
+        //userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
     }
 
 
@@ -208,7 +201,7 @@ public class ApplicationTimeTracker extends Application {
     }
 
     public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
-        final ArrayList<ProfileDataDropdown> profileDataDropdownArrayList = new ArrayList<>();
+        profileDataDropdownArrayList = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
             Ion.with(context)
@@ -243,9 +236,11 @@ public class ApplicationTimeTracker extends Application {
                                         profileDataDropdownArrayList.add(profileDataDropdown);
                                     }
                                 }
+                                Log.i("InfoAPPTIMETRACKERsize",String.valueOf(profileDataDropdownArrayList.size()));
                             } else {
                                 Log.e("Error", "Result is empty!");
                             }
+
                         }
                     });
         } else {
@@ -387,7 +382,7 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    private boolean isNetworkAvailable() {
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
