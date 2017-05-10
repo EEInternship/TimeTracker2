@@ -431,6 +431,7 @@ public class StartWorkActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                clearFocus();
                 finish();
                 return true;
             default:
@@ -455,6 +456,7 @@ public class StartWorkActivity extends AppCompatActivity {
         if (isOpen) {
             closeMenu();
         } else {
+            clearFocus();
             finish();
         }
     }

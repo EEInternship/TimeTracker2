@@ -40,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
     ExpandableListView expListView;
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
+    private ProfileActivity profileActivity;
     ArrayList<ProfileDataDropdown> resultOfCall;
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -65,15 +66,14 @@ public class ProfileActivity extends AppCompatActivity {
         // status bar color
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
-        resultOfCall=getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
-
+        profileActivity = this;
+        getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount());
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                resultOfCall=getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
+                getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount());
             }
         });
     }
@@ -133,7 +133,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
         resultOfCall = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (applicationTimeTracker.isNetworkAvailable()) {
@@ -170,8 +170,10 @@ public class ProfileActivity extends AppCompatActivity {
                                     }
                                 }
                                 Log.i("Profile:Array size",String.valueOf(resultOfCall.size()));
+                                userData.setProfileDataDropdownArrayList(resultOfCall);
                                 swipeRefreshLayout.setRefreshing(false);
-                                listAdapter = new ExpandableListAdapter(getApplicationContext(),resultOfCall);
+                                applicationTimeTracker.setColors();
+                                listAdapter=new ExpandableListAdapter(profileActivity,userData.getProfileDataDropdownArrayList());
                                 expListView.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
                             } else {
@@ -183,6 +185,5 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
-        return resultOfCall;
     }
 }

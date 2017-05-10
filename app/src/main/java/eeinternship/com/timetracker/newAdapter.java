@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -168,27 +166,14 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         });
 
 
-        holder.description.addTextChangedListener(new TextWatcher() {
+        holder.description.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if(!s.toString().equals("") ){
-                    if(!s.toString().equals("Task description")) {
-                        TC.setDescription(s.toString());
-                        adapter.set(position, TC);
-                        userData.setTicketList(adapter);
-                        applicationTimeTracker.setUserData(userData);
-
-                    }
+            public void onFocusChange(View view, boolean b) {
+                if (!holder.description.getText().toString().equals("")) {
+                    TC.setDescription(holder.description.getText().toString());
+                    adapter.set(position, TC);
+                    userData.setTicketList(adapter);
+                    applicationTimeTracker.setUserData(userData);
                 }
             }
         });
