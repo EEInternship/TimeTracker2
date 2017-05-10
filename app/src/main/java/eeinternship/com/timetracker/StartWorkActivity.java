@@ -1,5 +1,6 @@
 package eeinternship.com.timetracker;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -20,6 +21,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -390,7 +392,7 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.startAnimation(fabRotate);
 
         isOpen = true;
-
+        
         buttonSelectProject.startAnimation(fabOpen);
         buttonSelectProject.setClickable(true);
         labelSelectProject.startAnimation(txtOpen);
@@ -449,6 +451,11 @@ public class StartWorkActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager)this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 }
 
