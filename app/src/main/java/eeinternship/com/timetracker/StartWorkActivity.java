@@ -22,7 +22,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -386,6 +385,7 @@ public class StartWorkActivity extends AppCompatActivity {
     }
 
     private void openMenu() {
+
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.dimBackground));
         frameLayoutDim.setEnabled(true);
         frameLayoutDim.setClickable(true);
@@ -395,8 +395,9 @@ public class StartWorkActivity extends AppCompatActivity {
         isOpen = true;
         hideSoftKeyboard();
 
-        EditText description = (EditText)findViewById(R.id.desc_text);
-        description.clearFocus();
+        if(mAdapter.getItemCount()!=0){
+            clearFocus();
+        }
 
         buttonSelectProject.startAnimation(fabOpen);
         buttonSelectProject.setClickable(true);
@@ -430,6 +431,7 @@ public class StartWorkActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
+                clearFocus();
                 finish();
                 return true;
             default:
@@ -454,6 +456,7 @@ public class StartWorkActivity extends AppCompatActivity {
         if (isOpen) {
             closeMenu();
         } else {
+            clearFocus();
             finish();
         }
     }
@@ -461,6 +464,10 @@ public class StartWorkActivity extends AppCompatActivity {
     public void hideSoftKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager)this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void clearFocus(){
+        recyclerView.clearFocus();
     }
 }
 
