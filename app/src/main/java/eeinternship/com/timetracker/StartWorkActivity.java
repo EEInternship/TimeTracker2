@@ -396,7 +396,7 @@ public class StartWorkActivity extends AppCompatActivity {
         hideSoftKeyboard();
 
         if(mAdapter.getItemCount()!=0){
-            recyclerView.clearFocus();
+            clearFocus();
         }
 
         buttonSelectProject.startAnimation(fabOpen);
@@ -462,6 +462,10 @@ public class StartWorkActivity extends AppCompatActivity {
     public void hideSoftKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager)this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+    }
+
+    public void clearFocus(){
+        recyclerView.clearFocus();
     }
 }
 
