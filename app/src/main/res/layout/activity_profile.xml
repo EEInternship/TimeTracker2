@@ -6,15 +6,9 @@
     android:background="@color/colorBackgroundActivity"
     tools:context="eeinternship.com.timetracker.ProfileActivity">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swiperefresh"
+    <ExpandableListView
+        android:id="@+id/expandle_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ExpandableListView
-            android:id="@+id/expandle_listview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

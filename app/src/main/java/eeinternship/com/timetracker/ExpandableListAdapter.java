@@ -174,6 +174,4 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         AlertDialog dialog = editDialog.create();
         dialog.show();
     }
-
-
 }

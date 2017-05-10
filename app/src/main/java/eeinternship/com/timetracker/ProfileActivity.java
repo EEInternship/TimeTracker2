@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,11 +16,7 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
-import Data.ProfileDataDropdown;
-import Data.ProfileDataLine;
-import Data.Project;
 import Data.UserData;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -57,18 +52,6 @@ public class ProfileActivity extends AppCompatActivity {
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
         listAdapter = new ExpandableListAdapter(this, userData.getProfileDataDropdownArrayList());
         expListView.setAdapter(listAdapter);
-
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
-                userData = applicationTimeTracker.getUserData();
-                listAdapter.notifyDataSetChanged();
-                Toast.makeText(getApplicationContext(),"Test refresh",Toast.LENGTH_LONG).show();
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
     }
 
     @Override
