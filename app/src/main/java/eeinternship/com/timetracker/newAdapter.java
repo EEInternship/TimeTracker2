@@ -1,5 +1,6 @@
 package eeinternship.com.timetracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -34,11 +35,13 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     private Context mContext;
     ArrayList<Ticket> adapter = new ArrayList<>();
 
+    Activity activity;
+
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
     ArrayList<Ticket> ticketArrayList;
-    boolean enableStart=true;
-    Integer indexCurrentTicket=-1;
+    boolean enableStart = true;
+    Integer indexCurrentTicket = -1;
 
     public newAdapter(StartWorkActivity startWorkActivity, ArrayList<Ticket> objects) {
         mContext = startWorkActivity;
@@ -53,7 +56,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         return viewHolder;
     }
 
-    public void swap(ArrayList<Ticket> tickets){
+    public void swap(ArrayList<Ticket> tickets) {
         this.adapter = tickets;
         notifyDataSetChanged();
     }
@@ -87,7 +90,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         holder.timeWork.setText(TC.getTime());
         holder.imageButton.setVisibility(View.VISIBLE);
 
-        if(!holder.enableStart){
+        if (!holder.enableStart) {
             holder.imageButton.setEnabled(false);
         }
 
@@ -114,7 +117,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             public void onClick(View v) {
                 final Calendar calendar = Calendar.getInstance();
 
-                if (holder.startWork == Ticket.State.Start && TC.getStateStart()==true) {
+                if (holder.startWork == Ticket.State.Start && TC.getStateStart() == true) {
                     holder.startTime = new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
                     holder.startWork = Ticket.State.Stop;
                     TC.setDate(calendar);
@@ -123,15 +126,15 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     TC.setStartingTime(holder.startTime);
                     TC.setState(holder.startWork);
                     updateTicketState(position);
-                    indexCurrentTicket=position;
+                    indexCurrentTicket = position;
                     adapter.set(position, TC);
 
-                } else if (holder.startWork == Ticket.State.Stop ) {
+                } else if (holder.startWork == Ticket.State.Stop) {
                     holder.showTimer = false;
                     projectTimeTracker.cancel();
                     holder.finishTime = new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND));
                     TC.setFinishTime(holder.finishTime);
-                    if(holder.startTime == null){
+                    if (holder.startTime == null) {
                         holder.startTime = TC.getStartingTime();
                     }
                     long differenceLong = holder.finishTime.getTime() - holder.startTime.getTime();
@@ -146,18 +149,20 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     TC.setTime(timeWork);
                     TC.setState(holder.startWork);
                     updateTicketState(-1);
-                    indexCurrentTicket=-1;
+                    indexCurrentTicket = -1;
                     TC.setStateStart(true);
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-                    adapter.add(0,new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
+                    adapter.add(0, new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
                     notifyDataSetChanged();
                     updateTicketState(indexCurrentTicket);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
-                    adapter.set(position+1, TC);
+                    adapter.set(position + 1, TC);
                 }
+
+                ((StartWorkActivity)mContext).hideSoftKeyboard();
 
                 userData.setTicketList(adapter);
                 applicationTimeTracker.setUserData(userData);
@@ -249,11 +254,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
 
-               Intent intent = ((StartWorkActivity) mContext).getIntent();
+                Intent intent = ((StartWorkActivity) mContext).getIntent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                ((StartWorkActivity)mContext).finish();
+                ((StartWorkActivity) mContext).finish();
                 mContext.startActivity(intent);
-                ((StartWorkActivity)mContext).overridePendingTransition(0,0);
+                ((StartWorkActivity) mContext).overridePendingTransition(0, 0);
 
             }
         });
@@ -296,24 +301,24 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     }
 
 
-    public void update(ArrayList<Ticket> tickets){
+    public void update(ArrayList<Ticket> tickets) {
         adapter.clear();
-        for(Ticket ticket:tickets){
+        for (Ticket ticket : tickets) {
             adapter.add(ticket);
         }
         notifyDataSetChanged();
     }
-    public void updateTicketState(int index){
-        if(index==-1) {
+
+    public void updateTicketState(int index) {
+        if (index == -1) {
             for (int i = 0; i < adapter.size(); i++) {
                 if (i != index) {
                     adapter.get(i).setStateStart(true);
                 }
             }
-        }
-        else {
+        } else {
             for (int i = 0; i < adapter.size(); i++) {
-                    adapter.get(i).setStateStart(false);
+                adapter.get(i).setStateStart(false);
             }
         }
     }
@@ -330,7 +335,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         LinearLayout colorOfProject;
         Ticket.State startWork = Ticket.State.Start;
         boolean showTimer = true;
-        boolean enableStart=true;
+        boolean enableStart = true;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
