@@ -181,9 +181,9 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void afterTextChanged(Editable s) {
                 TC.setDescription(holder.description.getText().toString());
-                adapter.set(position, TC);
+                /*adapter.set(position, TC);
                 userData.setTicketList(adapter);
-                applicationTimeTracker.setUserData(userData);
+                applicationTimeTracker.setUserData(userData);*/
             }
         });
 
