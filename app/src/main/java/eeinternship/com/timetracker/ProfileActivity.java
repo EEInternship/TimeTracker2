@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,15 +17,11 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
-import java.util.ArrayList;
-
-import Data.NotificationData;
 import Data.ProfileDataDropdown;
 import Data.ProfileDataLine;
 import Data.Project;
-import Data.Ticket;
-import Data.UploadSpreadsheetData;
 import Data.UserData;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -44,14 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
 
-        for(ProfileDataDropdown profileDataDropdown : userData.getProfileDataDropdownArrayList()){
-            for(ProfileDataLine profileDataLine: profileDataDropdown.getProfileDataLineArrayList()){
-                for(Project project: userData.getProjectList()){
-                    if(profileDataLine.getProjectName().equals(project.projectName))
-                        profileDataLine.setProjectColor(project.getTicketColor());
-                }
-            }
-        }
+        applicationTimeTracker.setColors();
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
@@ -65,8 +55,20 @@ public class ProfileActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
-        listAdapter = new ExpandableListAdapter(this,userData.getProfileDataDropdownArrayList());
+        listAdapter = new ExpandableListAdapter(this, userData.getProfileDataDropdownArrayList());
         expListView.setAdapter(listAdapter);
+
+        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount());
+                userData = applicationTimeTracker.getUserData();
+                listAdapter.notifyDataSetChanged();
+                Toast.makeText(getApplicationContext(),"Test refresh",Toast.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     @Override
@@ -76,12 +78,12 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.notification_btn:
-                Intent notificationAC=new Intent(this,NotificationActivity.class);
+                Intent notificationAC = new Intent(this, NotificationActivity.class);
                 startActivity(notificationAC);
                 break;
             case R.id.settings_btn:
-                Intent settingsAC=new Intent(this,SettingsActivity.class);
-                startActivity(settingsAC);
+                Intent settingsAC = new Intent(this, SettingsActivity.class);
+                startActivityForResult(settingsAC,88);
                 break;
             case R.id.account_picker:
                 chooseAccount();
@@ -99,7 +101,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
 
-    public void chooseAccount(){
+    public void chooseAccount() {
         Intent intent = AccountManager.newChooseAccountIntent(null, null, new String[]{"com.google"},
                 false, null, null, null, null);
         startActivityForResult(intent, 999);
@@ -110,13 +112,17 @@ public class ProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 999&& resultCode == RESULT_OK) {
+        if (requestCode == 999 && resultCode == RESULT_OK) {
             String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
             Log.i("Choosen accountName:", accountName);
             userData = new UserData();
             userData.setUserAcount(accountName);
             applicationTimeTracker.setUserData(userData);
             applicationTimeTracker.setAllData();
+        }
+        if(requestCode == 88){
+            applicationTimeTracker.setColors();
+            listAdapter.notifyDataSetChanged();
         }
     }
 }

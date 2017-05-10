@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -60,7 +61,6 @@ public class ApplicationTimeTracker extends Application {
     private ArrayList<Project> tempProjects;
     private Object lock = new Object();
 
-
     @Override
     public void onCreate() {
         super.onCreate();
@@ -87,37 +87,41 @@ public class ApplicationTimeTracker extends Application {
 
     }
 
+    private CountDownTimer cnt;
 
     public void setAllData(){
 
         getActiveProjects(getApplicationContext());
-        // checkForNewProjects();
 
-        synchronized (lock){
-            try {
-
-                lock.wait(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        //checkForNewProjects();
 
 
-        }
 
         userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
+
+
     }
 
+
+    public void setColors(){
+        for (ProfileDataDropdown profileDataDropdown : userData.getProfileDataDropdownArrayList()) {
+            for (ProfileDataLine profileDataLine : profileDataDropdown.getProfileDataLineArrayList()) {
+                for (Project project : userData.getProjectList()) {
+                    if (profileDataLine.getProjectName().equals(project.projectName))
+                        profileDataLine.setProjectColor(project.getTicketColor());
+                }
+            }
+        }
+    }
 
 
     private void checkForNewProjects() {
 
 
 
-
-        synchronized (lock){
             if(userData.getProjectList() == null){
                 userData.addProjectList(tempProjects);
-                lock.notify();
+                //lock.notify();
                 return;
             }
             ArrayList<Project> newProjects = new ArrayList<>();
@@ -139,13 +143,12 @@ public class ApplicationTimeTracker extends Application {
             }
             if(allProjects.size()==0){
                 userData.addProjectList(tempProjects);
-                lock.notify();
+//                lock.notify();
                 return;
             }
             userData.addProjectList(new ArrayList<Project>());
             userData.addProjectList(allProjects);
-            lock.notify();
-        }
+
 
     }
 

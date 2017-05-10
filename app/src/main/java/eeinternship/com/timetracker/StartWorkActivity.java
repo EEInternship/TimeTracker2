@@ -1,6 +1,5 @@
 package eeinternship.com.timetracker;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -22,7 +21,6 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +40,7 @@ public class StartWorkActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     FloatingActionButton buttonOptions, buttonFinishWork, buttonFirstProject, buttonSecondProject, buttonThirdProject, buttonSelectProject;
-    TextView labelBtnFirstProject, tvEmptyView, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
+    TextView labelBtnFirstProject, labelBtnSecondProject, labelBtnThirdProject, labelSelectProject, labelFinishWork;
 
     private ApplicationTimeTracker applicationTimeTracker;
     private UserData userData;
@@ -70,9 +68,7 @@ public class StartWorkActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle("TIME TRACKER");
 
-
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
-
 
         applicationTimeTracker = (ApplicationTimeTracker) getApplication();
         userData = applicationTimeTracker.getUserData();
@@ -106,8 +102,6 @@ public class StartWorkActivity extends AppCompatActivity {
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
 
-
-        tvEmptyView = (TextView) findViewById(R.id.empty_view);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
@@ -167,7 +161,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                     ticketState=false;
                                 }
                             }
-                            ticketList.add(new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(),ticketState));
+                            ticketList.add(0,new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(),ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -184,7 +178,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                     ticketState=false;
                                 }
                             }
-                            ticketList.add(new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(),ticketState));
+                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(),ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -201,7 +195,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                     ticketState=false;
                                 }
                             }
-                            ticketList.add(new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(),ticketState));
+                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(),ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -231,7 +225,7 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+       final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -250,7 +244,7 @@ public class StartWorkActivity extends AppCompatActivity {
                                 ticketState=false;
                             }
                         }
-                        ticketList.add(new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color,ticketState));
+                        ticketList.add(0,new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color,ticketState));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
                         mAdapter.notifyDataSetChanged();
@@ -282,7 +276,7 @@ public class StartWorkActivity extends AppCompatActivity {
                 boolean allDone = true;
                 int position = 0;
                 for (Ticket ticket : userData.getTicketList()) {
-                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null) {
+                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null && !ticket.getDescription().equals("")) {
                         if (ticket.getFinishTime() == null) {
                             Calendar calendar = Calendar.getInstance();
                             ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
@@ -291,7 +285,7 @@ public class StartWorkActivity extends AppCompatActivity {
                         position--;
                         applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
                     } else {
-                        if (ticket.getDescription() == null)
+                        if (ticket.getDescription() == null || ticket.getDescription().equals(""))
                             Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
 
                         else

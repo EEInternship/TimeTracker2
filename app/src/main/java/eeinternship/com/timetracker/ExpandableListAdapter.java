@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
@@ -16,7 +15,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -79,15 +77,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         taskTime.setText(profileDataLine.getWorkTime());
         projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
 
-        RelativeLayout infoTicket=(RelativeLayout)convertView.findViewById(R.id.ticket_profile);
-        infoTicket.setOnLongClickListener(new View.OnLongClickListener() {
+        LinearLayout infoTicket=(LinearLayout)convertView.findViewById(R.id.ticket_profile);
+        infoTicket.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
-                Vibrator v = (Vibrator)_context.getSystemService(Context.VIBRATOR_SERVICE);
-                // Vibrate for 500 milliseconds
-                v.vibrate(500);
+            public void onClick(View view) {
                 openEditDialog();
-                return true;
             }
         });
 
@@ -180,4 +174,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         AlertDialog dialog = editDialog.create();
         dialog.show();
     }
+
+
 }

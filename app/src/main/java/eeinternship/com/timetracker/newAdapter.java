@@ -1,6 +1,7 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
@@ -124,8 +125,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     updateTicketState(position);
                     indexCurrentTicket=position;
                     adapter.set(position, TC);
-                    userData.setTicketList(adapter);
-                    applicationTimeTracker.setUserData(userData);
 
                 } else if (holder.startWork == Ticket.State.Stop ) {
                     holder.showTimer = false;
@@ -152,13 +151,16 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     adapter.set(position, TC);
                 } else if (holder.startWork == Ticket.State.Restart) {
                     holder.imageButton.setBackgroundResource(R.drawable.img_finish_btn);
-                    adapter.add(new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
+                    adapter.add(0,new Ticket("0:00", TC.getProject(), Ticket.State.Start, TC.getSelected(), TC.getColor()));
                     notifyDataSetChanged();
                     updateTicketState(indexCurrentTicket);
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
-                    adapter.set(position, TC);
+                    adapter.set(position+1, TC);
                 }
+
+                userData.setTicketList(adapter);
+                applicationTimeTracker.setUserData(userData);
             }
         });
 
@@ -177,6 +179,9 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void afterTextChanged(Editable s) {
                 TC.setDescription(holder.description.getText().toString());
+                adapter.set(position, TC);
+                userData.setTicketList(adapter);
+                applicationTimeTracker.setUserData(userData);
             }
         });
 
@@ -234,7 +239,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     Toast.makeText(mContext, "You did not start this ticket!", Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (currentTicket.getDescription() == null) {
+                if (currentTicket.getDescription() == null || currentTicket.getDescription().equals("")) {
                     Toast.makeText(mContext, "You did not write Description!", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -247,11 +252,11 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
 
-              /*  Intent intent = ((StartWorkActivity) mContext).getIntent();
+               Intent intent = ((StartWorkActivity) mContext).getIntent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 ((StartWorkActivity)mContext).finish();
                 mContext.startActivity(intent);
-                ((StartWorkActivity)mContext).overridePendingTransition(0,0);*/
+                ((StartWorkActivity)mContext).overridePendingTransition(0,0);
 
             }
         });
