@@ -73,8 +73,10 @@ public class ProfileActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount());
+                test123(getApplicationContext(), userData.getUserAcount());
             }
+
+            
         });
     }
 
@@ -129,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
         if(requestCode == 88){
             applicationTimeTracker.setColors();
+            userData = applicationTimeTracker.getUserData();
             listAdapter.notifyDataSetChanged();
         }
     }
@@ -186,4 +189,64 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
     }
+
+
+
+    public void test123(Context context, String email) {
+        resultOfCall = new ArrayList<>();
+        Log.i("Running:", "Fetching work days for user.");
+        if (applicationTimeTracker.isNetworkAvailable()) {
+            Ion.with(context)
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .asJsonArray()
+                    .setCallback(new FutureCallback<JsonArray>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonArray result) {
+                            if (result != null) {
+                                Log.i("Profile:Result size:", String.valueOf(result.size()));
+                                Gson gson = new GsonBuilder().setPrettyPrinting().create();
+                                for (int i = 0; i < result.size(); i++) {
+                                    ProfileDataDropdown profileDataDropdown = new ProfileDataDropdown();
+                                    TestData workday = gson.fromJson(result.get(i), TestData.class);
+                                    if (workday == null) {
+                                        Log.e("Error", "Object is null!");
+                                    } else {
+                                        Log.i("Info", i + " " + workday.toString());
+                                        ArrayList<ProfileDataLine> profileDataLineArrayList = new ArrayList<>();
+                                        for(TestWorkingOn testWorkingOn : workday.getWork_on()){
+                                            ProfileDataLine profileDataLine = new ProfileDataLine();
+                                            profileDataLine.setProjectName(testWorkingOn.getProject().getProject_name());
+                                            profileDataLine.setStartingTime(testWorkingOn.getStarting_time());
+                                            profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
+                                            profileDataLine.setWorkDescription(testWorkingOn.getDescription());
+                                            profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
+                                            profileDataLineArrayList.add(profileDataLine);
+                                        }
+                                        profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
+                                        profileDataDropdown.setDate(workday.getWork_day().getDate());
+                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(),workday.getWork_day().getOvertime());
+                                        resultOfCall.add(profileDataDropdown);
+                                    }
+                                }
+                                Log.i("Profile:Array size",String.valueOf(resultOfCall.size()));
+                                userData.setProfileDataDropdownArrayList(resultOfCall);
+                                applicationTimeTracker.setUserData(userData);
+                                applicationTimeTracker.setColors();
+                                userData = applicationTimeTracker.getUserData();
+                                listAdapter = new ExpandableListAdapter(profileActivity,userData.getProfileDataDropdownArrayList());
+                                swipeRefreshLayout.setRefreshing(false);
+                                expListView.invalidate();
+                                listAdapter.notifyDataSetChanged();
+                            } else {
+                                Log.e("Error", "Result is empty!");
+                            }
+
+                        }
+                    });
+        } else {
+            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
 }
