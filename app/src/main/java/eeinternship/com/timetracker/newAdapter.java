@@ -211,7 +211,7 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onOpen(SwipeLayout layout) {
                 //when the BottomView totally show.
-                
+
                 ((StartWorkActivity)mContext).hideSoftKeyboard();
                 ((StartWorkActivity)mContext).clearFocus();
             }
@@ -244,6 +244,12 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     return;
                 }
 
+                if(TC.getStateStart()==false){
+                    currentTicket.setStateStart(true);
+                    ticketArrayList.set(position,currentTicket);
+                    TC.setStateStart(true);
+                    updateTicketState(-1);
+                }
                 applicationTimeTracker.addWorkOn(mContext, userData.getUserAcount(), currentTicket);
                 adapter.remove(position);
                 notifyItemRemoved(position);
@@ -263,6 +269,13 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TC.getStateStart()==false){
+                    adapter.get(position).setStateStart(true);
+                    ticketArrayList.set(position,adapter.get(position));
+                    TC.setStateStart(true);
+                    updateTicketState(-1);
+                }
+
                 mItemManger.removeShownLayouts(holder.swipeLayout);
                 ticketArrayList.remove(position);
                 notifyItemRemoved(position);
