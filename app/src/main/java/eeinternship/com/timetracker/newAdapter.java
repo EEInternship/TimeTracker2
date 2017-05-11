@@ -1,7 +1,6 @@
 package eeinternship.com.timetracker;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.support.v7.widget.RecyclerView;
@@ -193,7 +192,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onClose(SwipeLayout layout) {
                 //when the SurfaceView totally cover the BottomView.
-
                 ((StartWorkActivity)mContext).hideSoftKeyboard();
                 ((StartWorkActivity)mContext).clearFocus();
             }
@@ -211,14 +209,12 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onOpen(SwipeLayout layout) {
                 //when the BottomView totally show.
-
                 ((StartWorkActivity)mContext).hideSoftKeyboard();
                 ((StartWorkActivity)mContext).clearFocus();
             }
 
             @Override
             public void onStartClose(SwipeLayout layout) {
-
             }
 
             @Override
@@ -251,18 +247,22 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     updateTicketState(-1);
                 }
                 applicationTimeTracker.addWorkOn(mContext, userData.getUserAcount(), currentTicket);
+
+                mItemManger.removeShownLayouts(holder.swipeLayout);
                 adapter.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, ticketArrayList.size());
                 userData.setTicketList(ticketArrayList);
                 applicationTimeTracker.setUserData(userData);
+                mItemManger.closeAllItems();
+
                 Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
 
-                Intent intent = ((StartWorkActivity) mContext).getIntent();
+               /* Intent intent = ((StartWorkActivity) mContext).getIntent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
                 ((StartWorkActivity) mContext).finish();
                 mContext.startActivity(intent);
-                ((StartWorkActivity) mContext).overridePendingTransition(0, 0);
+                ((StartWorkActivity) mContext).overridePendingTransition(0, 0);*/
 
             }
         });

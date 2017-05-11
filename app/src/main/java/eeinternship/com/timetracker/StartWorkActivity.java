@@ -157,13 +157,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Boolean ticketState=true;
-                            for(Ticket ticket:ticketList){
-                                if(ticket.getStateStart()==false){
-                                    ticketState=false;
+                            Boolean ticketState = true;
+                            for (Ticket ticket : ticketList) {
+                                if (ticket.getStateStart() == false) {
+                                    ticketState = false;
                                 }
                             }
-                            ticketList.add(0,new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(),ticketState));
+                            ticketList.add(0, new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(), ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -174,13 +174,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Boolean ticketState=true;
-                            for(Ticket ticket:ticketList){
-                                if(ticket.getStateStart()==false){
-                                    ticketState=false;
+                            Boolean ticketState = true;
+                            for (Ticket ticket : ticketList) {
+                                if (ticket.getStateStart() == false) {
+                                    ticketState = false;
                                 }
                             }
-                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(),ticketState));
+                            ticketList.add(0, new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(), ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -191,13 +191,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonThirdProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Boolean ticketState=true;
-                            for(Ticket ticket:ticketList){
-                                if(ticket.getStateStart()==false){
-                                    ticketState=false;
+                            Boolean ticketState = true;
+                            for (Ticket ticket : ticketList) {
+                                if (ticket.getStateStart() == false) {
+                                    ticketState = false;
                                 }
                             }
-                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(),ticketState));
+                            ticketList.add(0, new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(), ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -209,9 +209,9 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
         final String[] projectList;
-        if(userData.getProjectList().size() >3){
-            projectList = new String[userData.getProjectList().size()-3];
-        }else{
+        if (userData.getProjectList().size() > 3) {
+            projectList = new String[userData.getProjectList().size() - 3];
+        } else {
             projectList = new String[0];
         }
 
@@ -227,7 +227,7 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-       final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -240,13 +240,13 @@ public class StartWorkActivity extends AppCompatActivity {
                                 if (project.getTicketColor() != null)
                                     color = project.getTicketColor();
                         }
-                        Boolean ticketState=true;
-                        for(Ticket ticket : ticketList){
-                            if(ticket.getStateStart()==false){
-                                ticketState=false;
+                        Boolean ticketState = true;
+                        for (Ticket ticket : ticketList) {
+                            if (ticket.getStateStart() == false) {
+                                ticketState = false;
                             }
                         }
-                        ticketList.add(0,new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color,ticketState));
+                        ticketList.add(0, new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color, ticketState));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
                         mAdapter.notifyDataSetChanged();
@@ -317,7 +317,6 @@ public class StartWorkActivity extends AppCompatActivity {
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();
                 }
-
             }
         });
 
@@ -344,8 +343,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setClickable(true);
         setFeautered();
     }
-
-
 
     private void closeMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));
@@ -395,7 +392,7 @@ public class StartWorkActivity extends AppCompatActivity {
         isOpen = true;
         hideSoftKeyboard();
 
-        if(mAdapter.getItemCount()!=0){
+        if (mAdapter.getItemCount() != 0) {
             clearFocus();
         }
 
@@ -462,11 +459,11 @@ public class StartWorkActivity extends AppCompatActivity {
     }
 
     public void hideSoftKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager)this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 
-    public void clearFocus(){
+    public void clearFocus() {
         recyclerView.clearFocus();
     }
 }
