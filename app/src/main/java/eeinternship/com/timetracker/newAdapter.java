@@ -155,7 +155,18 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     TC.setState(holder.startWork);
                     adapter.set(position + 1, TC);
                 }else if(TC.getStateStart()==false) {
-                    Toast.makeText(mContext,"Another ticket is still running.",Toast.LENGTH_LONG).show();
+                    //Toast.makeText(mContext,"Another ticket is still running.",Toast.LENGTH_LONG).show();
+                    LayoutInflater inflater = ((StartWorkActivity) mContext).getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                            (ViewGroup)((StartWorkActivity) mContext).findViewById(R.id.custom_toast_container));
+
+                    TextView text = (TextView) layout.findViewById(R.id.text);
+                    text.setText("Another ticket is still running. ");
+
+                    Toast toast = new Toast(mContext);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
                 }
 
                 ((StartWorkActivity)mContext).hideSoftKeyboard();
@@ -232,11 +243,36 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     currentTicket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
                 }
                 if (currentTicket.getDate() == null) {
-                    Toast.makeText(mContext, "You did not start this ticket!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(mContext, "You did not start this ticket!", Toast.LENGTH_LONG).show();
+
+                    LayoutInflater inflater = ((StartWorkActivity) mContext).getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                            (ViewGroup)((StartWorkActivity) mContext).findViewById(R.id.custom_toast_container));
+
+                    TextView text = (TextView) layout.findViewById(R.id.text);
+                    text.setText("You didn't start this ticket. ");
+
+                    Toast toast = new Toast(mContext);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
+                    mItemManger.closeAllItems();
                     return;
                 }
                 if (currentTicket.getDescription() == null || currentTicket.getDescription().equals("")) {
-                    Toast.makeText(mContext, "You did not write Description!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(mContext, "You did not write Description!", Toast.LENGTH_LONG).show();
+                    LayoutInflater inflater = ((StartWorkActivity) mContext).getLayoutInflater();
+                    View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                            (ViewGroup)((StartWorkActivity) mContext).findViewById(R.id.custom_toast_container));
+
+                    TextView text = (TextView) layout.findViewById(R.id.text);
+                    text.setText("You didn't write description. ");
+
+                    Toast toast = new Toast(mContext);
+                    toast.setDuration(Toast.LENGTH_LONG);
+                    toast.setView(layout);
+                    toast.show();
+                    mItemManger.closeAllItems();
                     return;
                 }
 
@@ -256,7 +292,19 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 mItemManger.closeAllItems();
 
-                Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
+               // Toast.makeText(mContext, "Ticket successfully sent!", Toast.LENGTH_LONG).show();
+
+                LayoutInflater inflater = ((StartWorkActivity) mContext).getLayoutInflater();
+                View layout = inflater.inflate(R.layout.custom_dialog,
+                        (ViewGroup)((StartWorkActivity) mContext).findViewById(R.id.custom_toast_container));
+
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                    text.setText("Ticket successfully sent. ");
+
+                Toast toast = new Toast(mContext);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
 
                /* Intent intent = ((StartWorkActivity) mContext).getIntent();
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -284,6 +332,18 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                 applicationTimeTracker.setUserData(userData);
                 mItemManger.closeAllItems();
                 ((StartWorkActivity) mContext).openFabButtonWhenDelete();
+
+                LayoutInflater inflater = ((StartWorkActivity) mContext).getLayoutInflater();
+                View layout = inflater.inflate(R.layout.custom_dialog_red,
+                        (ViewGroup)((StartWorkActivity) mContext).findViewById(R.id.custom_toast_container));
+
+                TextView text = (TextView) layout.findViewById(R.id.text);
+                text.setText("Ticket successfully deleted. ");
+
+                Toast toast = new Toast(mContext);
+                toast.setDuration(Toast.LENGTH_LONG);
+                toast.setView(layout);
+                toast.show();
             }
         });
         mItemManger.bindView(holder.itemView, position);
