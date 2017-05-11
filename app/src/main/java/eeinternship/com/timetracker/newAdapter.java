@@ -193,6 +193,9 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onClose(SwipeLayout layout) {
                 //when the SurfaceView totally cover the BottomView.
+
+                ((StartWorkActivity)mContext).hideSoftKeyboard();
+                ((StartWorkActivity)mContext).clearFocus();
             }
 
             @Override
@@ -208,6 +211,9 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onOpen(SwipeLayout layout) {
                 //when the BottomView totally show.
+                
+                ((StartWorkActivity)mContext).hideSoftKeyboard();
+                ((StartWorkActivity)mContext).clearFocus();
             }
 
             @Override
@@ -224,7 +230,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
             @Override
             public void onClick(View view) {
                 /*((StartWorkActivity)mContext).sendTicket();*/
-
                 Ticket currentTicket = adapter.get(position);
                 if (currentTicket.getFinishTime() == null) {
                     Calendar calendar = Calendar.getInstance();
