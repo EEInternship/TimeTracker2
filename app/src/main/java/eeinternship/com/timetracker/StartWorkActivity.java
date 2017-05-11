@@ -288,10 +288,10 @@ public class StartWorkActivity extends AppCompatActivity {
                         applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
                     } else {
                         if (ticket.getDescription() == null || ticket.getDescription().equals(""))
-                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Description is missing", Toast.LENGTH_SHORT).show();
 
                         else
-                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Did not start", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Did not start", Toast.LENGTH_SHORT).show();
                         allDone = false;
                     }
                     position++;

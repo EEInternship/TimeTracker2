@@ -155,6 +155,8 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
                     holder.startWork = Ticket.State.Done;
                     TC.setState(holder.startWork);
                     adapter.set(position + 1, TC);
+                }else if(TC.getStateStart()==false) {
+                    Toast.makeText(mContext,"Another ticket is still running.",Toast.LENGTH_LONG).show();
                 }
 
                 ((StartWorkActivity)mContext).hideSoftKeyboard();
