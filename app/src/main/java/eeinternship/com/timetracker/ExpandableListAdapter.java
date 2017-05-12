@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+
 import android.provider.ContactsContract;
+import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
@@ -79,7 +81,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         taskTime.setText(profileDataLine.getWorkTime());
         projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
 
-        LinearLayout infoTicket=(LinearLayout)convertView.findViewById(R.id.ticket_profile);
+        LinearLayout infoTicket = (LinearLayout) convertView.findViewById(R.id.ticket_profile);
         infoTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,10 +121,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
+        LinearLayout group = (LinearLayout) convertView.findViewById(R.id.group_list);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.day_date_label);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle.getDate());
+
+        group.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Vibrator v = (Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+                openEditDialogGroup();
+                return true;
+            }
+        });
 
         return convertView;
     }
@@ -229,11 +242,50 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     }
 
+
     private Time getTime(String time){
         String[] array = new String[2];
         array = time.split(":");
         Time timer = new Time(Integer.parseInt(array[0]),Integer.parseInt(array[1]),0);
         return timer;
     }
+  
+    public void openEditDialogGroup() {
+        LayoutInflater infalInflater = (LayoutInflater) _context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertLayout = infalInflater.inflate(R.layout.edit_dialog_group, null);
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(_context);
+        editDialog.setView(alertLayout);
 
+        TextView labelProject = (TextView) alertLayout.findViewById(R.id.project_name_edit);
+        TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
+        timePicker.setIs24HourView(true);
+        final TextView labelStartingFinish = (TextView) alertLayout.findViewById(R.id.starting_finsihed_time);
+        final SwitchCompat pickTime = (SwitchCompat) alertLayout.findViewById(R.id.select_time);
+        Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
+
+        pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (pickTime.isChecked()) {
+                    labelStartingFinish.setText("FINISHED TIME");
+                    labelStartingFinish.setTextColor(parseColor("#f1490b"));
+                } else {
+                    labelStartingFinish.setText("STARTING TIME");
+                    labelStartingFinish.setTextColor(parseColor("#04b795"));
+                }
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        AlertDialog dialog = editDialog.create();
+        dialog.show();
+    }
 }
