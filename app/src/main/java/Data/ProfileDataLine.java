@@ -41,6 +41,14 @@ public class ProfileDataLine {
         this.workDescription = workDescription;
     }
 
+    public void calculateTime(){
+        String[] arrFinish = finishTime.split(":");
+        String[] arrStarting = finishTime.split(":");
+        int hours = Integer.parseInt(arrFinish[0]) - Integer.parseInt(arrStarting[0]) ;
+        int minutes = Integer.parseInt(arrFinish[1]) - Integer.parseInt(arrStarting[1]) ;
+        this.workTime = hours + ":" + minutes + ":00";
+    }
+
     public String getDate() {
         return date;
     }
