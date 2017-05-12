@@ -200,7 +200,7 @@ public class ApplicationTimeTracker extends Application {
 
     }
 
-    public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
         profileDataDropdownArrayList = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
@@ -239,16 +239,15 @@ public class ApplicationTimeTracker extends Application {
                                     }
                                 }
                                 Log.i("InfoAPPTIMETRACKERsize",String.valueOf(profileDataDropdownArrayList.size()));
+                                userData.setProfileDataDropdownArrayList(profileDataDropdownArrayList);
                             } else {
                                 Log.e("Error", "Result is empty!");
                             }
-
                         }
                     });
         } else {
             Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
         }
-        return profileDataDropdownArrayList;
     }
 
     public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
@@ -297,7 +296,7 @@ public class ApplicationTimeTracker extends Application {
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID/")
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", dateString + " " + startingTime)
@@ -351,14 +350,11 @@ public class ApplicationTimeTracker extends Application {
     }
 
     public void updateWorkOn(final Context context, String email, ProfileDataLine ticket) {
-
-
-
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId())
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId()+"/")
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("project", ticket.getProjectName())
                     .setMultipartParameter("date",ticket.getDate())
