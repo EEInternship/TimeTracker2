@@ -111,9 +111,7 @@ public class ApplicationTimeTracker extends Application {
     }
 
 
-    private void checkForNewProjects() {
-
-
+    private void checkForNewProjects() {            
         if (userData.getProjectList() == null) {
             userData.addProjectList(tempProjects);
             //lock.notify();
@@ -143,8 +141,6 @@ public class ApplicationTimeTracker extends Application {
         }
         userData.addProjectList(new ArrayList<Project>());
         userData.addProjectList(allProjects);
-
-
     }
 
 
@@ -213,7 +209,7 @@ public class ApplicationTimeTracker extends Application {
 
     }
 
-    public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
         profileDataDropdownArrayList = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
@@ -241,6 +237,8 @@ public class ApplicationTimeTracker extends Application {
                                             profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
                                             profileDataLine.setWorkDescription(testWorkingOn.getDescription());
                                             profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
+                                            profileDataLine.setId(testWorkingOn.getPk());
+                                            profileDataLine.setDate(workday.getWork_day().getDate());
                                             profileDataLineArrayList.add(profileDataLine);
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
@@ -249,11 +247,11 @@ public class ApplicationTimeTracker extends Application {
                                         profileDataDropdownArrayList.add(profileDataDropdown);
                                     }
                                 }
-                                Log.i("InfoAPPTIMETRACKERsize", String.valueOf(profileDataDropdownArrayList.size()));
+                                Log.i("InfoAPPTIMETRACKERsize",String.valueOf(profileDataDropdownArrayList.size()));
+                                userData.setProfileDataDropdownArrayList(profileDataDropdownArrayList);
                             } else {
                                 Log.e("Error", "Result is empty!");
                             }
-
                         }
                     });
         } else {
@@ -270,7 +268,6 @@ public class ApplicationTimeTracker extends Application {
             toast.show();
 
         }
-        return profileDataDropdownArrayList;
     }
 
     public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
@@ -329,7 +326,7 @@ public class ApplicationTimeTracker extends Application {
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID/")
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", dateString + " " + startingTime)
@@ -402,25 +399,18 @@ public class ApplicationTimeTracker extends Application {
             toast.show();
         }
     }
-
-    public void updateWorkOn(final Context context, String email, Ticket ticket) {
-        Date date = ticket.getDate().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(ticket.getStartingTime());
-        String finishTime = timeFormat.format(ticket.getFinishTime());
+    public void updateWorkOn(final Context context, String email, ProfileDataLine ticket) {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId()+"/")
                     .setMultipartParameter("email", email)
-                    .setMultipartParameter("project", ticket.getProject())
-                    .setMultipartParameter("date", dateString)
-                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
-                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
-                    .setMultipartParameter("description", ticket.getDescription())
+                    .setMultipartParameter("project", ticket.getProjectName())
+                    .setMultipartParameter("date",ticket.getDate())
+                    .setMultipartParameter("starting_time", ticket.getDate() + " " + returnTime(ticket.getStartingTime()))
+                    .setMultipartParameter("finish_time", ticket.getDate() + " " + returnTime(ticket.getFinishTime()))
+                    .setMultipartParameter("description", ticket.getWorkDescription())
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
@@ -446,6 +436,14 @@ public class ApplicationTimeTracker extends Application {
             toast.show();
         }
     }
+
+    private String returnTime(String time){
+        String[] arrayStartingTime;
+        arrayStartingTime = time.split(":");
+
+        return arrayStartingTime[0] + ":"+ arrayStartingTime[1];
+    }
+
 
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
