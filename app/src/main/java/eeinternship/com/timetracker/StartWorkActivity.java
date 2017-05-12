@@ -349,6 +349,9 @@ public class StartWorkActivity extends AppCompatActivity {
                         applicationTimeTracker.setUserData(userData);
                         closeMenu();
                     }
+                    userData.setTicketList(ticketList);
+                    applicationTimeTracker.setUserData(userData);
+                    closeMenu();
                 }
 
 
