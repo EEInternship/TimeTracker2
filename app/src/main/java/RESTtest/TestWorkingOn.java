@@ -11,14 +11,24 @@ public class TestWorkingOn {
     String finish_time;
     String working_hours;
     String description;
+    String pk;
 
-    public TestWorkingOn(TestProject project, String date, String starting_time, String finish_time, String working_hours, String description) {
+    public TestWorkingOn(TestProject project, String date, String starting_time, String finish_time, String working_hours, String description,String pk) {
         this.project = project;
         this.date = date;
         this.starting_time = starting_time;
         this.finish_time = finish_time;
         this.working_hours = working_hours;
         this.description = description;
+        this.pk = pk;
+    }
+
+    public String getPk() {
+        return pk;
+    }
+
+    public void setPk(String pk) {
+        this.pk = pk;
     }
 
     public TestProject getProject() {
