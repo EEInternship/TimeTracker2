@@ -16,6 +16,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -109,37 +110,29 @@ public class ApplicationTimeTracker extends Application {
 
 
     private void checkForNewProjects() {
-
-
-
-            if(userData.getProjectList() == null){
+        if(userData.getProjectList() == null){
                 userData.addProjectList(tempProjects);
                 return;
-            }
-            ArrayList<Project> newProjects = new ArrayList<>();
-            for(Project tempProject : tempProjects){
-                boolean duplicate = false;
-                for(Project project:userData.getProjectList()){
-                    if(project.projectName == tempProject.projectName){
-                        duplicate = true;
+        }
+
+
+        ArrayList<Project> newProjects = new ArrayList<>();
+        for(Project tempProject : tempProjects){
+            boolean check = false;
+            for(Project project:userData.getProjectList()){
+                if(project.projectName.equals(tempProject.projectName)){
+                        check = true;
+                        newProjects.add(project);
                     }
-                }
-                if(duplicate){
-                    newProjects.add(tempProject);
-                }
+            }
 
-            }
-            ArrayList<Project> allProjects = userData.getProjectList();
-            for(Project project:newProjects){
-                allProjects.add(project);
-            }
-            if(allProjects.size()==0){
-                userData.addProjectList(tempProjects);
-//                lock.notify();
-                return;
-            }
+            if(!check)
+                newProjects.add(tempProject);
+        }
+
+
             userData.addProjectList(new ArrayList<Project>());
-            userData.addProjectList(allProjects);
+            userData.addProjectList(newProjects);
 
 
     }
@@ -349,7 +342,7 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkOn(final Context context, String email, ProfileDataLine ticket) {
+    public void updateWorkOn(final Context context, String email, final ProfileDataLine ticket, final ExpandableListAdapter expandableListAdapter) {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
@@ -361,14 +354,19 @@ public class ApplicationTimeTracker extends Application {
                     .setMultipartParameter("starting_time", ticket.getDate() + " " + returnTime(ticket.getStartingTime()))
                     .setMultipartParameter("finish_time", ticket.getDate() + " " + returnTime(ticket.getFinishTime()))
                     .setMultipartParameter("description", ticket.getWorkDescription())
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
                         @Override
-                        public void onCompleted(Exception e, String result) {
+                        public void onCompleted(Exception e, JsonObject result) {
                             if (result != null) {
-                                Log.i("Info: ", result);
+                                JsonObject jsonObject = result;
+                                Log.i("Info: ", jsonObject.get("working_hours").toString());
+                                String workTime = (jsonObject.get("working_hours").toString());
+                                workTime = workTime.replace("\"","");
+                                ticket.setWorkTime(workTime);
+                                expandableListAdapter.notifyDataSetChanged();
                             } else {
-                                Log.e("Error: ", result);
+                                Log.e("Error: ","Error");
                             }
                         }
                     });
@@ -440,8 +438,6 @@ public class ApplicationTimeTracker extends Application {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Error saveInGson! (FileNotFoundException)");
-            } catch (IOException e) {
-                System.out.println("Error saveInGson! (IOException)");
             }
         } else {
             System.out.println(this.getClass().getCanonicalName() + " NOT Writable");

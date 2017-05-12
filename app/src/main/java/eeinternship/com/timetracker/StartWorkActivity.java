@@ -312,7 +312,6 @@ public class StartWorkActivity extends AppCompatActivity {
                         mAdapter.notifyItemRemoved(location);
                         mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
                     }
-                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
                     userData.setTicketList(ticketList);
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();

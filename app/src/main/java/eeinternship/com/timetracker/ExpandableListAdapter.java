@@ -36,11 +36,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private Context _context;
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
     private ApplicationTimeTracker applicationTimeTracker;
+    private ExpandableListAdapter expandableListAdapter;
     public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList) {
         this._context = context;
         this.profileDataDropdownArrayList = profileDataDropdownArrayList;
-
-
     }
 
     @Override
@@ -139,6 +138,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     public void openEditDialog(int groupPosition,int childPosition){
+        expandableListAdapter = this;
         LayoutInflater infalInflater = (LayoutInflater) _context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertLayout = infalInflater.inflate(R.layout.edit_dialog, null);
@@ -171,6 +171,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final SwitchCompat pickTime = (SwitchCompat) alertLayout.findViewById(R.id.select_time);
         Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
 
+
         pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
@@ -197,13 +198,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (pickTime.isChecked()) {
+                    finishChangedTime.setHours(timePicker.getCurrentHour());
+                    finishChangedTime.setMinutes(timePicker.getCurrentMinute());
+                } else {
+                    startingChangedTime.setHours(timePicker.getCurrentHour());
+                    startingChangedTime.setMinutes(timePicker.getCurrentMinute());
+                }
+
+
                 getTime(finishChangedTime.toString());
                 profileDataLine.setFinishTime(timeToString(finishChangedTime.toString()));
                 profileDataLine.setStartingTime(timeToString(startingChangedTime.toString()));
                 profileDataLine.setWorkDescription(editDescription.getText().toString());
+                applicationTimeTracker.updateWorkOn(_context,applicationTimeTracker.getUserData().getUserAcount(),profileDataLine,expandableListAdapter);
                 notifyDataSetChanged();
-
-                applicationTimeTracker.updateWorkOn(_context,applicationTimeTracker.getUserData().getUserAcount(),profileDataLine);
                 dialog.cancel();
             }
         });
