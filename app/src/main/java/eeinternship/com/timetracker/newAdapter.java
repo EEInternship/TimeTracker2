@@ -221,8 +221,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
         holder.send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*((StartWorkActivity)mContext).sendTicket();*/
-
                 Ticket currentTicket = adapter.get(position);
                 if (currentTicket.getFinishTime() == null) {
                     Calendar calendar = Calendar.getInstance();
@@ -290,16 +288,6 @@ public class newAdapter extends RecyclerSwipeAdapter<newAdapter.SimpleViewHolder
     public int getSwipeLayoutResourceId(int position) {
         return R.id.swipe;
     }
-
-
-    public void update(ArrayList<Ticket> tickets) {
-        adapter.clear();
-        for (Ticket ticket : tickets) {
-            adapter.add(ticket);
-        }
-        notifyDataSetChanged();
-    }
-
     public void updateTicketState(int index) {
         if (index == -1) {
             for (int i = 0; i < adapter.size(); i++) {

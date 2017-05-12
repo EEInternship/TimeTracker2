@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                test123(getApplicationContext(), userData.getUserAcount());
+                addWorkDays(getApplicationContext(), userData.getUserAcount());
             }
 
             
@@ -123,11 +123,13 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 999 && resultCode == RESULT_OK) {
             String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-            Log.i("Choosen accountName:", accountName);
-            userData = new UserData();
-            userData.setUserAcount(accountName);
-            applicationTimeTracker.setUserData(userData);
-            applicationTimeTracker.setAllData();
+            if (!accountName.equals(userData.getUserAcount())) {
+                Log.i("Choosen accountName:", accountName);
+                userData = new UserData();
+                userData.setUserAcount(accountName);
+                applicationTimeTracker.setUserData(userData);
+                applicationTimeTracker.setAllData();
+            }
         }
         if(requestCode == 88){
             applicationTimeTracker.setColors();
@@ -164,6 +166,8 @@ public class ProfileActivity extends AppCompatActivity {
                                             profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
                                             profileDataLine.setWorkDescription(testWorkingOn.getDescription());
                                             profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
+                                            profileDataLine.setId(testWorkingOn.getPk());
+                                            profileDataLine.setDate(workday.getWork_day().getDate());
                                             profileDataLineArrayList.add(profileDataLine);
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
@@ -192,7 +196,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
 
-    public void test123(Context context, String email) {
+    public void addWorkDays(Context context, String email) {
         resultOfCall = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (applicationTimeTracker.isNetworkAvailable()) {
@@ -220,6 +224,8 @@ public class ProfileActivity extends AppCompatActivity {
                                             profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
                                             profileDataLine.setWorkDescription(testWorkingOn.getDescription());
                                             profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
+                                            profileDataLine.setId(testWorkingOn.getPk());
+                                            profileDataLine.setDate(workday.getWork_day().getDate());
                                             profileDataLineArrayList.add(profileDataLine);
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
@@ -235,7 +241,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 userData = applicationTimeTracker.getUserData();
                                 listAdapter = new ExpandableListAdapter(profileActivity,userData.getProfileDataDropdownArrayList());
                                 swipeRefreshLayout.setRefreshing(false);
-                                expListView.invalidate();
+                                expListView.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
                             } else {
                                 Log.e("Error", "Result is empty!");
