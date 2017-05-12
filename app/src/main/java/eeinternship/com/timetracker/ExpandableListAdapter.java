@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
+
+import android.provider.ContactsContract;
+import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
@@ -18,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import java.sql.Time;
 import java.util.ArrayList;
 
 import Data.ProfileDataDropdown;
@@ -33,10 +37,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context _context;
     private ArrayList<ProfileDataDropdown> profileDataDropdownArrayList;
-
+    private ApplicationTimeTracker applicationTimeTracker;
     public ExpandableListAdapter(Context context, ArrayList<ProfileDataDropdown> profileDataDropdownArrayList) {
         this._context = context;
         this.profileDataDropdownArrayList = profileDataDropdownArrayList;
+
 
     }
 
@@ -51,7 +56,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getChildView(int groupPosition, final int childPosition,
+    public View getChildView(final int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
 
         final ProfileDataLine profileDataLine = (ProfileDataLine) getChild(groupPosition, childPosition);
@@ -77,11 +82,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         taskTime.setText(profileDataLine.getWorkTime());
         projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
 
-        LinearLayout infoTicket=(LinearLayout)convertView.findViewById(R.id.ticket_profile);
+        LinearLayout infoTicket = (LinearLayout) convertView.findViewById(R.id.ticket_profile);
         infoTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openEditDialog();
+                openEditDialog(groupPosition,childPosition);
             }
         });
 
@@ -117,10 +122,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
+        LinearLayout group = (LinearLayout) convertView.findViewById(R.id.group_list);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.day_date_label);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle.getDate());
+
+        group.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Vibrator v = (Vibrator) _context.getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
+                openEditDialogGroup();
+                return true;
+            }
+        });
 
         return convertView;
     }
@@ -135,15 +151,104 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public void openEditDialog(){
+    public void openEditDialog() {
         LayoutInflater infalInflater = (LayoutInflater) _context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View alertLayout = infalInflater.inflate(R.layout.edit_dialog, null);
         AlertDialog.Builder editDialog = new AlertDialog.Builder(_context);
         editDialog.setView(alertLayout);
+        applicationTimeTracker = (ApplicationTimeTracker) ((ProfileActivity) _context).getApplication();
+        final ProfileDataLine profileDataLine = (ProfileDataLine) getChild(groupPosition, childPosition);
 
         TextView labelProject = (TextView) alertLayout.findViewById(R.id.project_name_edit);
-        EditText editDescription = (EditText) alertLayout.findViewById(R.id.edit_description);
+        final EditText editDescription = (EditText) alertLayout.findViewById(R.id.edit_description);
+
+        labelProject.setText(profileDataLine.getProjectName());
+        editDescription.setText(profileDataLine.getWorkDescription());
+
+        final TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
+        timePicker.setIs24HourView(true);
+
+
+        final Time startingTime = getTime(profileDataLine.getStartingTime());
+        final Time finishTime = getTime(profileDataLine.getFinishTime());
+
+
+        final Time startingChangedTime = getTime(profileDataLine.getStartingTime());
+        final Time finishChangedTime = getTime(profileDataLine.getFinishTime());
+
+
+        timePicker.setCurrentHour(startingChangedTime.getHours());
+        timePicker.setCurrentMinute(startingChangedTime.getMinutes());
+        final TextView labelStartingFinish = (TextView) alertLayout.findViewById(R.id.starting_finsihed_time);
+        final SwitchCompat pickTime = (SwitchCompat) alertLayout.findViewById(R.id.select_time);
+        Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
+
+        pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (pickTime.isChecked()) {
+                    labelStartingFinish.setText("FINISHED TIME");
+                    labelStartingFinish.setTextColor(parseColor("#f1490b"));
+                    startingChangedTime.setHours(timePicker.getCurrentHour());
+                    startingChangedTime.setMinutes(timePicker.getCurrentMinute());
+                    timePicker.setCurrentHour(finishChangedTime.getHours());
+                    timePicker.setCurrentMinute(finishChangedTime.getMinutes());
+                } else {
+                    labelStartingFinish.setText("STARTING TIME");
+                    labelStartingFinish.setTextColor(parseColor("#04b795"));
+                    finishChangedTime.setHours(timePicker.getCurrentHour());
+                    finishChangedTime.setMinutes(timePicker.getCurrentMinute());
+                    timePicker.setCurrentHour(startingChangedTime.getHours());
+                    timePicker.setCurrentMinute(startingChangedTime.getMinutes());
+                }
+            }
+        });
+        final AlertDialog dialog = editDialog.create();
+        dialog.show();
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getTime(finishChangedTime.toString());
+                profileDataLine.setFinishTime(timeToString(finishChangedTime.toString()));
+                profileDataLine.setStartingTime(timeToString(startingChangedTime.toString()));
+                profileDataLine.setWorkDescription(editDescription.getText().toString());
+                notifyDataSetChanged();
+
+                applicationTimeTracker.updateWorkOn(_context,applicationTimeTracker.getUserData().getUserAcount(),profileDataLine);
+                dialog.cancel();
+            }
+        });
+
+
+    }
+
+
+    private String timeToString(String time){
+
+            String[] array;
+            array = time.split(":");
+            return array[0] + ":"+array[1];
+
+    }
+
+
+    private Time getTime(String time){
+        String[] array = new String[2];
+        array = time.split(":");
+        Time timer = new Time(Integer.parseInt(array[0]),Integer.parseInt(array[1]),0);
+        return timer;
+    }
+  
+    public void openEditDialogGroup() {
+        LayoutInflater infalInflater = (LayoutInflater) _context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertLayout = infalInflater.inflate(R.layout.edit_dialog_group, null);
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(_context);
+        editDialog.setView(alertLayout);
+
+        TextView labelProject = (TextView) alertLayout.findViewById(R.id.project_name_edit);
         TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
         timePicker.setIs24HourView(true);
         final TextView labelStartingFinish = (TextView) alertLayout.findViewById(R.id.starting_finsihed_time);

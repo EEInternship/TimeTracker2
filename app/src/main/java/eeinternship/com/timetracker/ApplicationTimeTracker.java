@@ -1,7 +1,5 @@
 package eeinternship.com.timetracker;
 
-import android.accounts.AccountManager;
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Application;
 import android.app.PendingIntent;
@@ -12,6 +10,9 @@ import android.net.NetworkInfo;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -75,13 +76,13 @@ public class ApplicationTimeTracker extends Application {
                 userData.addUploadRepository(backupData.uploadSpreadsheetData);
                 userData.setNotificationData(backupData.notificationData);
                 userData.addProjectList(backupData.projects);
-                if(userData.getNotificationData().isSet())
+                if (userData.getNotificationData().isSet())
                     startNotificationOnDay(userData.getNotificationData().isTurnOnOf());
 
 
             }
 
-            if(!userData.userAccountIsSet()) {
+            if (!userData.userAccountIsSet()) {
                 return;
             }
         }
@@ -91,14 +92,14 @@ public class ApplicationTimeTracker extends Application {
 
     private CountDownTimer cnt;
 
-    public void setAllData(){
+    public void setAllData() {
         getActiveProjects(getApplicationContext());
         //checkForNewProjects();
         //userData.setProfileDataDropdownArrayList(getWorkDaysAndWorkingOn(getApplicationContext(),userData.getUserAcount()));
     }
 
 
-    public void setColors(){
+    public void setColors() {
         for (ProfileDataDropdown profileDataDropdown : userData.getProfileDataDropdownArrayList()) {
             for (ProfileDataLine profileDataLine : profileDataDropdown.getProfileDataLineArrayList()) {
                 for (Project project : userData.getProjectList()) {
@@ -110,41 +111,36 @@ public class ApplicationTimeTracker extends Application {
     }
 
 
-    private void checkForNewProjects() {
-
-
-
-            if(userData.getProjectList() == null){
-                userData.addProjectList(tempProjects);
-                //lock.notify();
-                return;
-            }
-            ArrayList<Project> newProjects = new ArrayList<>();
-            for(Project tempProject : tempProjects){
-                boolean duplicate = false;
-                for(Project project:userData.getProjectList()){
-                    if(project.projectName == tempProject.projectName){
-                        duplicate = true;
-                    }
+    private void checkForNewProjects() {            
+        if (userData.getProjectList() == null) {
+            userData.addProjectList(tempProjects);
+            //lock.notify();
+            return;
+        }
+        ArrayList<Project> newProjects = new ArrayList<>();
+        for (Project tempProject : tempProjects) {
+            boolean duplicate = false;
+            for (Project project : userData.getProjectList()) {
+                if (project.projectName == tempProject.projectName) {
+                    duplicate = true;
                 }
-                if(duplicate){
-                    newProjects.add(tempProject);
-                }
+            }
+            if (duplicate) {
+                newProjects.add(tempProject);
+            }
 
-            }
-            ArrayList<Project> allProjects = userData.getProjectList();
-            for(Project project:newProjects){
-                allProjects.add(project);
-            }
-            if(allProjects.size()==0){
-                userData.addProjectList(tempProjects);
+        }
+        ArrayList<Project> allProjects = userData.getProjectList();
+        for (Project project : newProjects) {
+            allProjects.add(project);
+        }
+        if (allProjects.size() == 0) {
+            userData.addProjectList(tempProjects);
 //                lock.notify();
-                return;
-            }
-            userData.addProjectList(new ArrayList<Project>());
-            userData.addProjectList(allProjects);
-
-
+            return;
+        }
+        userData.addProjectList(new ArrayList<Project>());
+        userData.addProjectList(allProjects);
     }
 
 
@@ -187,7 +183,7 @@ public class ApplicationTimeTracker extends Application {
                                         projects.add(proj);
                                     }
                                 }
-                                tempProjects=projects;
+                                tempProjects = projects;
                                 checkForNewProjects();
                             } else {
                                 Log.e("Error", "Result is empty!");
@@ -196,14 +192,24 @@ public class ApplicationTimeTracker extends Application {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
-        }
+            //Toast.makeText(context, "Network!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,null);
 
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+
+        }
 
 
     }
 
-    public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
         profileDataDropdownArrayList = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
@@ -224,37 +230,49 @@ public class ApplicationTimeTracker extends Application {
                                     } else {
                                         Log.i("Info", i + " " + workday.toString());
                                         ArrayList<ProfileDataLine> profileDataLineArrayList = new ArrayList<>();
-                                        for(TestWorkingOn testWorkingOn : workday.getWork_on()){
+                                        for (TestWorkingOn testWorkingOn : workday.getWork_on()) {
                                             ProfileDataLine profileDataLine = new ProfileDataLine();
                                             profileDataLine.setProjectName(testWorkingOn.getProject().getProject_name());
                                             profileDataLine.setStartingTime(testWorkingOn.getStarting_time());
                                             profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
                                             profileDataLine.setWorkDescription(testWorkingOn.getDescription());
                                             profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
+                                            profileDataLine.setId(testWorkingOn.getPk());
+                                            profileDataLine.setDate(workday.getWork_day().getDate());
                                             profileDataLineArrayList.add(profileDataLine);
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
                                         profileDataDropdown.setDate(workday.getWork_day().getDate());
-                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(),workday.getWork_day().getOvertime());
+                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(), workday.getWork_day().getOvertime());
                                         profileDataDropdownArrayList.add(profileDataDropdown);
                                     }
                                 }
                                 Log.i("InfoAPPTIMETRACKERsize",String.valueOf(profileDataDropdownArrayList.size()));
+                                userData.setProfileDataDropdownArrayList(profileDataDropdownArrayList);
                             } else {
                                 Log.e("Error", "Result is empty!");
                             }
-
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,null);
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
+
         }
-        return profileDataDropdownArrayList;
     }
 
     public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
         Log.i("Running:", "Sending work day data.");
-        Date date =  uploadSpreadsheetData.date.getTime();
+        Date date = uploadSpreadsheetData.date.getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
         String dateString = dateFormat.format(date);
@@ -281,13 +299,23 @@ public class ApplicationTimeTracker extends Application {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,null);
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
         }
     }
 
     public void updateWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
         Log.i("Running:", "Sending work day data.");
-        Date date =  uploadSpreadsheetData.date.getTime();
+        Date date = uploadSpreadsheetData.date.getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
         String dateString = dateFormat.format(date);
@@ -298,7 +326,7 @@ public class ApplicationTimeTracker extends Application {
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID/")
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", dateString + " " + startingTime)
@@ -315,11 +343,22 @@ public class ApplicationTimeTracker extends Application {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,null);
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
         }
     }
+
     public void addWorkOn(final Context context, String email, Ticket ticket) {
-        Date date =  ticket.getDate().getTime();
+        Date date = ticket.getDate().getTime();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm");
         String dateString = dateFormat.format(date);
@@ -331,7 +370,7 @@ public class ApplicationTimeTracker extends Application {
                     .load("POST", "https://nameless-oasis-70424.herokuapp.com/workon/create/")
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("project", ticket.getProject())
-                    .setMultipartParameter("date",dateString)
+                    .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", dateString + " " + startingTime)
                     .setMultipartParameter("finish_time", dateString + " " + finishTime)
                     .setMultipartParameter("description", ticket.getDescription())
@@ -347,28 +386,31 @@ public class ApplicationTimeTracker extends Application {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,null);
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
         }
     }
-
-    public void updateWorkOn(final Context context, String email, Ticket ticket) {
-        Date date =  ticket.getDate().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(ticket.getStartingTime());
-        String finishTime = timeFormat.format(ticket.getFinishTime());
+    public void updateWorkOn(final Context context, String email, ProfileDataLine ticket) {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId()+"/")
                     .setMultipartParameter("email", email)
-                    .setMultipartParameter("project", ticket.getProject())
-                    .setMultipartParameter("date",dateString)
-                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
-                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
-                    .setMultipartParameter("description", ticket.getDescription())
+                    .setMultipartParameter("project", ticket.getProjectName())
+                    .setMultipartParameter("date",ticket.getDate())
+                    .setMultipartParameter("starting_time", ticket.getDate() + " " + returnTime(ticket.getStartingTime()))
+                    .setMultipartParameter("finish_time", ticket.getDate() + " " + returnTime(ticket.getFinishTime()))
+                    .setMultipartParameter("description", ticket.getWorkDescription())
                     .asString()
                     .setCallback(new FutureCallback<String>() {
                         @Override
@@ -381,9 +423,27 @@ public class ApplicationTimeTracker extends Application {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,null);
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
         }
     }
+
+    private String returnTime(String time){
+        String[] arrayStartingTime;
+        arrayStartingTime = time.split(":");
+
+        return arrayStartingTime[0] + ":"+ arrayStartingTime[1];
+    }
+
 
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -479,12 +539,12 @@ public class ApplicationTimeTracker extends Application {
     }
 
 
-    public void startNotificationOnDay(boolean work){
+    public void startNotificationOnDay(boolean work) {
 
-        if(!work)
+        if (!work)
             return;
 
-        Calendar firingCal= Calendar.getInstance();
+        Calendar firingCal = Calendar.getInstance();
         Calendar currentTime = Calendar.getInstance();
         Time time = userData.getNotificationData().getNotificationStartTime();
         firingCal.set(Calendar.HOUR_OF_DAY, time.getHours()); // At the hour you wanna fire
@@ -494,48 +554,48 @@ public class ApplicationTimeTracker extends Application {
         long timeNow = currentTime.getTimeInMillis();
 
 
-        Intent myIntent = new Intent(this , AlarmReciverForDay.class);
-        alarmManegerPerDay = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        Intent myIntent = new Intent(this, AlarmReciverForDay.class);
+        alarmManegerPerDay = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alarmRecvierForDay = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-        if(timeNow > intendedTime){
-            firingCal.add(Calendar.DAY_OF_MONTH,1);
+        if (timeNow > intendedTime) {
+            firingCal.add(Calendar.DAY_OF_MONTH, 1);
             intendedTime = firingCal.getTimeInMillis();
             alarmManegerPerDay.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, alarmRecvierForDay);
-        }else{
+        } else {
             alarmManegerPerDay.setRepeating(AlarmManager.RTC_WAKEUP, intendedTime, AlarmManager.INTERVAL_DAY, alarmRecvierForDay);
         }
 
 
     }
 
-    public void startNotificationPerMinutes(boolean work){
-        if(!work)
+    public void startNotificationPerMinutes(boolean work) {
+        if (!work)
             return;
         Time time = userData.getNotificationData().getNotificationPopupTime();
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(System.currentTimeMillis());
-       // cal.add(Calendar.MILLISECOND, (int) time.getTime());
+        // cal.add(Calendar.MILLISECOND, (int) time.getTime());
         long currentTimeMillis = cal.getTimeInMillis();
         long notificationOnTimeMillis = time.getTime();
-        int hourPlusMinutes = time.getHours()*60 + time.getMinutes();
-        cal.add(Calendar.MILLISECOND,hourPlusMinutes * 60 * 1000);
-        Intent myIntent = new Intent(this , AlarmReciverPerTime.class);
-        alarmManagerPerTime = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+        int hourPlusMinutes = time.getHours() * 60 + time.getMinutes();
+        cal.add(Calendar.MILLISECOND, hourPlusMinutes * 60 * 1000);
+        Intent myIntent = new Intent(this, AlarmReciverPerTime.class);
+        alarmManagerPerTime = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         alramRevierPerTime = PendingIntent.getBroadcast(this, 0, myIntent, 0);
-        alarmManagerPerTime.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000*60*hourPlusMinutes, alramRevierPerTime);
+        alarmManagerPerTime.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 1000 * 60 * hourPlusMinutes, alramRevierPerTime);
 
     }
 
-    public void cancelNotificationPerDay(){
-        if(alarmManegerPerDay != null)
+    public void cancelNotificationPerDay() {
+        if (alarmManegerPerDay != null)
             alarmManegerPerDay.cancel(alarmRecvierForDay);
     }
-    public void cancelNotificationPerMinute(){
 
-        if(alarmManagerPerTime != null)
+    public void cancelNotificationPerMinute() {
+
+        if (alarmManagerPerTime != null)
             alarmManagerPerTime.cancel(alramRevierPerTime);
-}
-
+    }
 
 
 }
