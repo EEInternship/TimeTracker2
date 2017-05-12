@@ -1,5 +1,7 @@
 package Data;
 
+import java.util.Calendar;
+
 /**
  * Created by Klemen on 4/13/2017.
  */
@@ -10,7 +12,9 @@ public class ProfileDataLine {
     private String startingTime;
     private String finishTime;
     private String workTime;
-    private String projectColor = "#000000";
+    private String projectColor = "#1E90FF";
+    private String date;
+    private String id;
     public ProfileDataLine(){}
 
     public String getProjectName() {
@@ -25,8 +29,32 @@ public class ProfileDataLine {
         return workDescription;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setWorkDescription(String workDescription) {
         this.workDescription = workDescription;
+    }
+
+    public void calculateTime(){
+        String[] arrFinish = finishTime.split(":");
+        String[] arrStarting = finishTime.split(":");
+        int hours = Integer.parseInt(arrFinish[0]) - Integer.parseInt(arrStarting[0]) ;
+        int minutes = Integer.parseInt(arrFinish[1]) - Integer.parseInt(arrStarting[1]) ;
+        this.workTime = hours + ":" + minutes + ":00";
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 
     public String getStartingTime() {

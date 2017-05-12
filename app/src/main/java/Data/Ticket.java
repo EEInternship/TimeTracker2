@@ -44,6 +44,8 @@ public class Ticket {
         stateStart=state1;
     }
 
+
+
     public void setStartingTime(Time start){startingTime=start;}
 public void setFinishTime(Time finish){finishTime = finish;}
     public Time getStartingTime(){return startingTime;}

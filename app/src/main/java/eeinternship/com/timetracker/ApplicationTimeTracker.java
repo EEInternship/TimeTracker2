@@ -19,6 +19,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -110,41 +111,30 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-
     private void checkForNewProjects() {
-
-
-        if (userData.getProjectList() == null) {
-            userData.addProjectList(tempProjects);
-            //lock.notify();
-            return;
+        if(userData.getProjectList() == null){
+                userData.addProjectList(tempProjects);
+                return;
         }
+
+
         ArrayList<Project> newProjects = new ArrayList<>();
-        for (Project tempProject : tempProjects) {
-            boolean duplicate = false;
-            for (Project project : userData.getProjectList()) {
-                if (project.projectName == tempProject.projectName) {
-                    duplicate = true;
-                }
+        for(Project tempProject : tempProjects){
+            boolean check = false;
+            for(Project project:userData.getProjectList()){
+                if(project.projectName.equals(tempProject.projectName)){
+                        check = true;
+                        newProjects.add(project);
+                    }
             }
-            if (duplicate) {
+
+            if(!check)
                 newProjects.add(tempProject);
-            }
-
         }
-        ArrayList<Project> allProjects = userData.getProjectList();
-        for (Project project : newProjects) {
-            allProjects.add(project);
-        }
-        if (allProjects.size() == 0) {
-            userData.addProjectList(tempProjects);
-//                lock.notify();
-            return;
-        }
-        userData.addProjectList(new ArrayList<Project>());
-        userData.addProjectList(allProjects);
 
 
+            userData.addProjectList(new ArrayList<Project>());
+            userData.addProjectList(newProjects);
     }
 
 
@@ -213,7 +203,7 @@ public class ApplicationTimeTracker extends Application {
 
     }
 
-    public ArrayList<ProfileDataDropdown> getWorkDaysAndWorkingOn(Context context, String email) {
+    public void getWorkDaysAndWorkingOn(Context context, String email) {
         profileDataDropdownArrayList = new ArrayList<>();
         Log.i("Running:", "Fetching work days for user.");
         if (isNetworkAvailable()) {
@@ -241,6 +231,8 @@ public class ApplicationTimeTracker extends Application {
                                             profileDataLine.setFinishTime(testWorkingOn.getFinish_time());
                                             profileDataLine.setWorkDescription(testWorkingOn.getDescription());
                                             profileDataLine.setWorkTime(testWorkingOn.getWorking_hours());
+                                            profileDataLine.setId(testWorkingOn.getPk());
+                                            profileDataLine.setDate(workday.getWork_day().getDate());
                                             profileDataLineArrayList.add(profileDataLine);
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
@@ -249,11 +241,11 @@ public class ApplicationTimeTracker extends Application {
                                         profileDataDropdownArrayList.add(profileDataDropdown);
                                     }
                                 }
-                                Log.i("InfoAPPTIMETRACKERsize", String.valueOf(profileDataDropdownArrayList.size()));
+                                Log.i("InfoAPPTIMETRACKERsize",String.valueOf(profileDataDropdownArrayList.size()));
+                                userData.setProfileDataDropdownArrayList(profileDataDropdownArrayList);
                             } else {
                                 Log.e("Error", "Result is empty!");
                             }
-
                         }
                     });
         } else {
@@ -270,7 +262,6 @@ public class ApplicationTimeTracker extends Application {
             toast.show();
 
         }
-        return profileDataDropdownArrayList;
     }
 
     public void addWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
@@ -329,7 +320,7 @@ public class ApplicationTimeTracker extends Application {
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID/")
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("date", dateString)
                     .setMultipartParameter("starting_time", dateString + " " + startingTime)
@@ -403,32 +394,31 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkOn(final Context context, String email, Ticket ticket) {
-        Date date = ticket.getDate().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(ticket.getStartingTime());
-        String finishTime = timeFormat.format(ticket.getFinishTime());
+    public void updateWorkOn(final Context context, String email, final ProfileDataLine ticket, final ExpandableListAdapter expandableListAdapter) {
         Log.i("Running:", "Sending work on data.");
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/ID")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId()+"/")
                     .setMultipartParameter("email", email)
-                    .setMultipartParameter("project", ticket.getProject())
-                    .setMultipartParameter("date", dateString)
-                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
-                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
-                    .setMultipartParameter("description", ticket.getDescription())
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
+                    .setMultipartParameter("project", ticket.getProjectName())
+                    .setMultipartParameter("date",ticket.getDate())
+                    .setMultipartParameter("starting_time", ticket.getDate() + " " + returnTime(ticket.getStartingTime()))
+                    .setMultipartParameter("finish_time", ticket.getDate() + " " + returnTime(ticket.getFinishTime()))
+                    .setMultipartParameter("description", ticket.getWorkDescription())
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
                         @Override
-                        public void onCompleted(Exception e, String result) {
+                        public void onCompleted(Exception e, JsonObject result) {
                             if (result != null) {
-                                Log.i("Info: ", result);
+                                JsonObject jsonObject = result;
+                                Log.i("Info: ", jsonObject.get("working_hours").toString());
+                                String workTime = (jsonObject.get("working_hours").toString());
+                                workTime = workTime.replace("\"","");
+                                ticket.setWorkTime(workTime);
+                                expandableListAdapter.notifyDataSetChanged();
                             } else {
-                                Log.e("Error: ", result);
+                                Log.e("Error: ","Error");
                             }
                         }
                     });
@@ -446,6 +436,14 @@ public class ApplicationTimeTracker extends Application {
             toast.show();
         }
     }
+
+    private String returnTime(String time){
+        String[] arrayStartingTime;
+        arrayStartingTime = time.split(":");
+
+        return arrayStartingTime[0] + ":"+ arrayStartingTime[1];
+    }
+
 
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -502,8 +500,6 @@ public class ApplicationTimeTracker extends Application {
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 System.out.println("Error saveInGson! (FileNotFoundException)");
-            } catch (IOException e) {
-                System.out.println("Error saveInGson! (IOException)");
             }
         } else {
             System.out.println(this.getClass().getCanonicalName() + " NOT Writable");
