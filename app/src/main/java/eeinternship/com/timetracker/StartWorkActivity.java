@@ -14,9 +14,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -269,54 +272,85 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UploadSpreadsheetData data = userData.getUploadSpreadsheetData();
-                Calendar calender = Calendar.getInstance();
-                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-                int cMinute = calender.get(Calendar.MINUTE);
-                data.finishTime = new Time(cHourOfDay, cMinute, 00);
-                ArrayList<Integer> removePositionList = new ArrayList<Integer>();
-                boolean allDone = true;
-                int position = 0;
-                for (Ticket ticket : userData.getTicketList()) {
-                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null && !ticket.getDescription().equals("")) {
-                        if (ticket.getFinishTime() == null) {
-                            Calendar calendar = Calendar.getInstance();
-                            ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                if(ticketList.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Isak",Toast.LENGTH_LONG).show();
+                }else {
+                    UploadSpreadsheetData data = userData.getUploadSpreadsheetData();
+                    Calendar calender = Calendar.getInstance();
+                    int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                    int cMinute = calender.get(Calendar.MINUTE);
+                    data.finishTime = new Time(cHourOfDay, cMinute, 00);
+                    ArrayList<Integer> removePositionList = new ArrayList<Integer>();
+                    boolean allDone = true;
+                    int position = 0;
+                    for (Ticket ticket : userData.getTicketList()) {
+                        if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null && !ticket.getDescription().equals("")) {
+                            if (ticket.getFinishTime() == null) {
+                                Calendar calendar = Calendar.getInstance();
+                                ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                            }
+                            removePositionList.add(position);
+                            position--;
+                            applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                        } else {
+                            if (ticket.getDescription() == null || ticket.getDescription().equals("")){
+                                LayoutInflater inflater = getLayoutInflater();
+                                View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                                        (ViewGroup) findViewById(R.id.custom_toast_container));
+
+
+                                TextView text = (TextView) layout.findViewById(R.id.text);
+                                text.setText(ticket.getProject()+" is missing description. ");
+
+                                Toast toast = new Toast(getApplicationContext());
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 270);
+                                toast.setView(layout);
+                                toast.show();
+                            }else{
+                                LayoutInflater inflater = getLayoutInflater();
+                                View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                                        (ViewGroup) findViewById(R.id.custom_toast_container));
+
+
+                                TextView text = (TextView) layout.findViewById(R.id.text);
+                                text.setText(ticket.getProject()+" wasn't started. ");
+                                Toast toast = new Toast(getApplicationContext());
+                                toast.setDuration(Toast.LENGTH_LONG);
+                                toast.setView(layout);
+                                toast.show();
+                            }
+                                //Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Description is missing", Toast.LENGTH_SHORT).show();
+
+                            /*else
+                                Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Did not start", Toast.LENGTH_SHORT).show();*/
+                            allDone = false;
                         }
-                        removePositionList.add(position);
-                        position--;
-                        applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                        position++;
+
+                    }
+                    if (allDone) {
+                        userData.setTicketList(new ArrayList<Ticket>());
+                        userData.addUploadRepository(data);
+                        applicationTimeTracker.setUserData(userData);
+                        applicationTimeTracker.cancelNotificationPerMinute();
+                        applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
+                        userData.addUploadRepository(new UploadSpreadsheetData());
+                        applicationTimeTracker.setUserData(userData);
+                        finish();
                     } else {
-                        if (ticket.getDescription() == null || ticket.getDescription().equals(""))
-                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Description is null", Toast.LENGTH_SHORT).show();
-
-                        else
-                            Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not succesfuly send - Did not start", Toast.LENGTH_SHORT).show();
-                        allDone = false;
+                        for (int location : removePositionList) {
+                            ticketList.remove(location);
+                            mAdapter.notifyItemRemoved(location);
+                            mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
+                        }
+                        userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
+                        userData.setTicketList(ticketList);
+                        applicationTimeTracker.setUserData(userData);
+                        closeMenu();
                     }
-                    position++;
+                }
 
-                }
-                if (allDone) {
-                    userData.setTicketList(new ArrayList<Ticket>());
-                    userData.addUploadRepository(data);
-                    applicationTimeTracker.setUserData(userData);
-                    applicationTimeTracker.cancelNotificationPerMinute();
-                    applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
-                    userData.addUploadRepository(new UploadSpreadsheetData());
-                    applicationTimeTracker.setUserData(userData);
-                    finish();
-                } else {
-                    for (int location : removePositionList) {
-                        ticketList.remove(location);
-                        mAdapter.notifyItemRemoved(location);
-                        mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
-                    }
-                    userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
-                    userData.setTicketList(ticketList);
-                    applicationTimeTracker.setUserData(userData);
-                    closeMenu();
-                }
 
             }
         });
@@ -344,8 +378,6 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonOptions.setClickable(true);
         setFeautered();
     }
-
-
 
     private void closeMenu() {
         frameLayoutDim.setBackgroundColor(getResources().getColor(R.color.undimBackground));

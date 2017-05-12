@@ -12,12 +12,16 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ExpandableListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -76,7 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
                 addWorkDays(getApplicationContext(), userData.getUserAcount());
             }
 
-            
+
         });
     }
 
@@ -92,7 +96,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             case R.id.settings_btn:
                 Intent settingsAC = new Intent(this, SettingsActivity.class);
-                startActivityForResult(settingsAC,88);
+                startActivityForResult(settingsAC, 88);
                 break;
             case R.id.account_picker:
                 chooseAccount();
@@ -131,7 +135,7 @@ public class ProfileActivity extends AppCompatActivity {
                 applicationTimeTracker.setAllData();
             }
         }
-        if(requestCode == 88){
+        if (requestCode == 88) {
             applicationTimeTracker.setColors();
             userData = applicationTimeTracker.getUserData();
             listAdapter.notifyDataSetChanged();
@@ -159,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     } else {
                                         Log.i("Info", i + " " + workday.toString());
                                         ArrayList<ProfileDataLine> profileDataLineArrayList = new ArrayList<>();
-                                        for(TestWorkingOn testWorkingOn : workday.getWork_on()){
+                                        for (TestWorkingOn testWorkingOn : workday.getWork_on()) {
                                             ProfileDataLine profileDataLine = new ProfileDataLine();
                                             profileDataLine.setProjectName(testWorkingOn.getProject().getProject_name());
                                             profileDataLine.setStartingTime(testWorkingOn.getStarting_time());
@@ -172,15 +176,15 @@ public class ProfileActivity extends AppCompatActivity {
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
                                         profileDataDropdown.setDate(workday.getWork_day().getDate());
-                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(),workday.getWork_day().getOvertime());
+                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(), workday.getWork_day().getOvertime());
                                         resultOfCall.add(profileDataDropdown);
                                     }
                                 }
-                                Log.i("Profile:Array size",String.valueOf(resultOfCall.size()));
+                                Log.i("Profile:Array size", String.valueOf(resultOfCall.size()));
                                 userData.setProfileDataDropdownArrayList(resultOfCall);
                                 swipeRefreshLayout.setRefreshing(false);
                                 applicationTimeTracker.setColors();
-                                listAdapter=new ExpandableListAdapter(profileActivity,userData.getProfileDataDropdownArrayList());
+                                listAdapter = new ExpandableListAdapter(profileActivity, userData.getProfileDataDropdownArrayList());
                                 expListView.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
                             } else {
@@ -190,9 +194,22 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = getLayoutInflater();
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,
+                    (ViewGroup) findViewById(R.id.custom_toast_container));
+
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
         }
     }
+
 
 
 
@@ -217,7 +234,7 @@ public class ProfileActivity extends AppCompatActivity {
                                     } else {
                                         Log.i("Info", i + " " + workday.toString());
                                         ArrayList<ProfileDataLine> profileDataLineArrayList = new ArrayList<>();
-                                        for(TestWorkingOn testWorkingOn : workday.getWork_on()){
+                                        for (TestWorkingOn testWorkingOn : workday.getWork_on()) {
                                             ProfileDataLine profileDataLine = new ProfileDataLine();
                                             profileDataLine.setProjectName(testWorkingOn.getProject().getProject_name());
                                             profileDataLine.setStartingTime(testWorkingOn.getStarting_time());
@@ -230,16 +247,16 @@ public class ProfileActivity extends AppCompatActivity {
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
                                         profileDataDropdown.setDate(workday.getWork_day().getDate());
-                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(),workday.getWork_day().getOvertime());
+                                        profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(), workday.getWork_day().getOvertime());
                                         resultOfCall.add(profileDataDropdown);
                                     }
                                 }
-                                Log.i("Profile:Array size",String.valueOf(resultOfCall.size()));
+                                Log.i("Profile:Array size", String.valueOf(resultOfCall.size()));
                                 userData.setProfileDataDropdownArrayList(resultOfCall);
                                 applicationTimeTracker.setUserData(userData);
                                 applicationTimeTracker.setColors();
                                 userData = applicationTimeTracker.getUserData();
-                                listAdapter = new ExpandableListAdapter(profileActivity,userData.getProfileDataDropdownArrayList());
+                                listAdapter = new ExpandableListAdapter(profileActivity, userData.getProfileDataDropdownArrayList());
                                 swipeRefreshLayout.setRefreshing(false);
                                 expListView.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
@@ -250,7 +267,19 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            // Toast.makeText(context, "Network not available!", Toast.LENGTH_LONG).show();
+            LayoutInflater inflater = getLayoutInflater();
+            View layout = inflater.inflate(R.layout.custom_dialog_no_internet,
+                    (ViewGroup) findViewById(R.id.custom_toast_container));
+
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText("Network not available!");
+
+            Toast toast = new Toast(getApplicationContext());
+            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setView(layout);
+            toast.show();
         }
     }
 
