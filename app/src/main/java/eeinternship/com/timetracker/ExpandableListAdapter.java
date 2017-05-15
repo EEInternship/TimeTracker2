@@ -121,8 +121,9 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         LinearLayout group = (LinearLayout) convertView.findViewById(R.id.group_list);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.day_date_label);
-        lblListHeader.setTypeface(null, Typeface.BOLD);
+        TextView timeAtOffice = (TextView) convertView.findViewById(R.id.time_at_office);
         lblListHeader.setText(headerTitle.getDate());
+        timeAtOffice.setText(headerTitle.getTotalTime());
 
         return convertView;
     }
