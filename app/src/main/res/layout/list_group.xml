@@ -16,7 +16,7 @@
             android:id="@+id/day_date_label"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="20dp"
             android:padding="10dp"
             android:text="XXX dd.mm.yyyy"
             android:textColor="#000000"
