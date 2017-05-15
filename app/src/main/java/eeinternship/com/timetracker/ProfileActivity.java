@@ -65,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("PROFILE");
+        actionBar.setTitle("Profile");
 
         // action bar color
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
@@ -80,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                    Toast.makeText(getApplicationContext(),"KLEMEN :)", Toast.LENGTH_SHORT).show();
                     return true;
                 }
 

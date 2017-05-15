@@ -52,7 +52,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("NOTIFICATION");
+        actionBar.setTitle("Notification");
 
         notificationShowOnTimePicker = (TimePicker) findViewById(R.id.timer);
         notificationShowOnTimePicker.setIs24HourView(true);
