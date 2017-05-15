@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +38,8 @@ import Data.ProfileDataLine;
 import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestWorkingOn;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -73,6 +76,17 @@ public class ProfileActivity extends AppCompatActivity {
         profileActivity = this;
         getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount());
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
+        expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -82,6 +96,8 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         });
+
+
     }
 
     @Override
@@ -147,7 +163,7 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("Running:", "Fetching work days for user.");
         if (applicationTimeTracker.isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email)// + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -204,7 +220,7 @@ public class ProfileActivity extends AppCompatActivity {
             text.setText("Network not available!");
 
             Toast toast = new Toast(getApplicationContext());
-            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setDuration(LENGTH_LONG);
             toast.setView(layout);
             toast.show();
         }
@@ -218,7 +234,7 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("Running:", "Fetching work days for user.");
         if (applicationTimeTracker.isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email)// + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -277,11 +293,9 @@ public class ProfileActivity extends AppCompatActivity {
             text.setText("Network not available!");
 
             Toast toast = new Toast(getApplicationContext());
-            toast.setDuration(Toast.LENGTH_LONG);
+            toast.setDuration(LENGTH_LONG);
             toast.setView(layout);
             toast.show();
         }
     }
-
-
 }
