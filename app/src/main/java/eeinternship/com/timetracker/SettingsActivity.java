@@ -45,7 +45,7 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("PROJECTS");
+        actionBar.setTitle("Projects");
 
         // status bar color
         Window window = this.getWindow();

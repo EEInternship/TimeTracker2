@@ -77,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("PROFILE");
+        actionBar.setTitle("Profile");
 
         // action bar color
         actionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#323232")));
@@ -95,7 +95,6 @@ public class ProfileActivity extends AppCompatActivity {
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
                     openEditDialog(position);
                 }
-
                 return false;
             }
         });

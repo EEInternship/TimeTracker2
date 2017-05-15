@@ -2,7 +2,6 @@ package eeinternship.com.timetracker;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
@@ -153,6 +152,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         labelProject.setText(profileDataLine.getProjectName());
         editDescription.setText(profileDataLine.getWorkDescription());
+        editDescription.setSelection(editDescription.getText().length());
+
 
         final TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
         timePicker.setIs24HourView(true);
