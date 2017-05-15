@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.provider.ContactsContract;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SwitchCompat;
@@ -79,7 +78,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         taskTime.setText(profileDataLine.getWorkTime());
         projectColor.setBackgroundColor(Color.parseColor(profileDataLine.getProjectColor()));
 
-        LinearLayout infoTicket=(LinearLayout)convertView.findViewById(R.id.ticket_profile);
+        LinearLayout infoTicket = (LinearLayout) convertView.findViewById(R.id.ticket_profile);
         infoTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,10 +114,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                              View convertView, ViewGroup parent) {
         ProfileDataDropdown headerTitle = (ProfileDataDropdown) getGroup(groupPosition);
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+            LayoutInflater inflater = (LayoutInflater) this._context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = inflater.inflate(R.layout.list_group, null);
         }
+        LinearLayout group = (LinearLayout) convertView.findViewById(R.id.group_list);
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.day_date_label);
         lblListHeader.setTypeface(null, Typeface.BOLD);
@@ -229,11 +229,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     }
 
+
     private Time getTime(String time){
         String[] array = new String[2];
         array = time.split(":");
         Time timer = new Time(Integer.parseInt(array[0]),Integer.parseInt(array[1]),0);
         return timer;
     }
+  
 
 }
