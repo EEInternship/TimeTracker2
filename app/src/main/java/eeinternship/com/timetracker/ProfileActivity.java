@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,8 +23,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -31,6 +37,7 @@ import com.google.gson.JsonArray;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import java.sql.Time;
 import java.util.ArrayList;
 
 import Data.ProfileDataDropdown;
@@ -39,6 +46,7 @@ import Data.UserData;
 import RESTtest.TestData;
 import RESTtest.TestWorkingOn;
 
+import static android.graphics.Color.parseColor;
 import static android.widget.Toast.LENGTH_LONG;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -62,6 +70,10 @@ public class ProfileActivity extends AppCompatActivity {
         userData = applicationTimeTracker.getUserData();
 
         applicationTimeTracker.setColors();
+
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+        swipeRefreshLayout.setRefreshing(true);
+
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
@@ -75,20 +87,19 @@ public class ProfileActivity extends AppCompatActivity {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         profileActivity = this;
         getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount());
+
         expListView = (ExpandableListView) findViewById(R.id.expandle_listview);
         expListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 if (ExpandableListView.getPackedPositionType(id) == ExpandableListView.PACKED_POSITION_TYPE_GROUP) {
-                    Toast.makeText(getApplicationContext(),"KLEMEN :)", Toast.LENGTH_SHORT).show();
-                    return true;
+                    openEditDialog(position);
                 }
-
                 return false;
             }
         });
 
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -158,6 +169,105 @@ public class ProfileActivity extends AppCompatActivity {
             listAdapter.notifyDataSetChanged();
         }
     }
+    public void openEditDialog(int groupPosition){
+
+        final ProfileActivity profileActivity = this;
+
+        LayoutInflater infalInflater = (LayoutInflater) profileActivity
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final View alertLayout = infalInflater.inflate(R.layout.edit_dialog_group, null);
+        AlertDialog.Builder editDialog = new AlertDialog.Builder(profileActivity);
+        editDialog.setView(alertLayout);
+        final ProfileDataDropdown profileDataDropdown =userData.getProfileDataDropdownArrayList().get(groupPosition);
+
+
+        final TimePicker timePicker = (TimePicker) alertLayout.findViewById(R.id.time_choose);
+        timePicker.setIs24HourView(true);
+
+        final TextView date = (TextView) alertLayout.findViewById(R.id.project_name_edit);
+
+
+        date.setText(profileDataDropdown.getDate());
+
+
+        final Time startingTime = getTime(profileDataDropdown.getStartingTime());
+        final Time finishTime = getTime(profileDataDropdown.getFinishTime());
+
+
+        final Time startingChangedTime = getTime(profileDataDropdown.getStartingTime());
+        final Time finishChangedTime = getTime(profileDataDropdown.getFinishTime());
+
+
+        timePicker.setCurrentHour(startingChangedTime.getHours());
+        timePicker.setCurrentMinute(startingChangedTime.getMinutes());
+        final TextView labelStartingFinish = (TextView) alertLayout.findViewById(R.id.starting_finsihed_time);
+        final SwitchCompat pickTime = (SwitchCompat) alertLayout.findViewById(R.id.select_time);
+        Button saveBtn = (Button) alertLayout.findViewById(R.id.btn_save_edit);
+
+
+        pickTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (pickTime.isChecked()) {
+                    labelStartingFinish.setText("FINISHED TIME");
+                    labelStartingFinish.setTextColor(parseColor("#f1490b"));
+                    startingChangedTime.setHours(timePicker.getCurrentHour());
+                    startingChangedTime.setMinutes(timePicker.getCurrentMinute());
+                    timePicker.setCurrentHour(finishChangedTime.getHours());
+                    timePicker.setCurrentMinute(finishChangedTime.getMinutes());
+                } else {
+                    labelStartingFinish.setText("STARTING TIME");
+                    labelStartingFinish.setTextColor(parseColor("#04b795"));
+                    finishChangedTime.setHours(timePicker.getCurrentHour());
+                    finishChangedTime.setMinutes(timePicker.getCurrentMinute());
+                    timePicker.setCurrentHour(startingChangedTime.getHours());
+                    timePicker.setCurrentMinute(startingChangedTime.getMinutes());
+                }
+            }
+        });
+        final AlertDialog dialog = editDialog.create();
+        dialog.show();
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (pickTime.isChecked()) {
+                    finishChangedTime.setHours(timePicker.getCurrentHour());
+                    finishChangedTime.setMinutes(timePicker.getCurrentMinute());
+                } else {
+                    startingChangedTime.setHours(timePicker.getCurrentHour());
+                    startingChangedTime.setMinutes(timePicker.getCurrentMinute());
+                }
+
+
+                getTime(finishChangedTime.toString());
+                profileDataDropdown.setFinishTime(timeToString(finishChangedTime.toString()));
+                profileDataDropdown.setStartingTime(timeToString(startingChangedTime.toString()));
+                applicationTimeTracker.updateWorkDay(profileActivity,userData.getUserAcount(),profileDataDropdown,listAdapter);
+                listAdapter.notifyDataSetChanged();
+                dialog.cancel();
+            }
+        });
+
+
+    }
+    private String timeToString(String time){
+
+        String[] array;
+        array = time.split(":");
+        return array[0] + ":"+array[1];
+
+    }
+
+
+    private Time getTime(String time){
+        String[] array = new String[2];
+        array = time.split(":");
+        Time timer = new Time(Integer.parseInt(array[0]),Integer.parseInt(array[1]),0);
+        return timer;
+    }
+
 
     public void getWorkDaysAndWorkingOn(Context context, String email) {
         resultOfCall = new ArrayList<>();
@@ -193,6 +303,9 @@ public class ProfileActivity extends AppCompatActivity {
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
                                         profileDataDropdown.setDate(workday.getWork_day().getDate());
+                                        profileDataDropdown.setStartingTime(workday.getWork_day().getStarting_time());
+                                        profileDataDropdown.setFinishTime(workday.getWork_day().getFinish_time());
+                                        profileDataDropdown.setId(workday.getWork_day().getPk());
                                         profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(), workday.getWork_day().getOvertime());
                                         resultOfCall.add(profileDataDropdown);
                                     }
@@ -204,6 +317,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 listAdapter = new ExpandableListAdapter(profileActivity, userData.getProfileDataDropdownArrayList());
                                 expListView.setAdapter(listAdapter);
                                 listAdapter.notifyDataSetChanged();
+                                swipeRefreshLayout.setRefreshing(false);
                             } else {
                                 Log.e("Error", "Result is empty!");
                             }
@@ -264,6 +378,9 @@ public class ProfileActivity extends AppCompatActivity {
                                         }
                                         profileDataDropdown.setProfileDataLineArrayList(profileDataLineArrayList);
                                         profileDataDropdown.setDate(workday.getWork_day().getDate());
+                                        profileDataDropdown.setStartingTime(workday.getWork_day().getStarting_time());
+                                        profileDataDropdown.setFinishTime(workday.getWork_day().getFinish_time());
+                                        profileDataDropdown.setId(workday.getWork_day().getPk());
                                         profileDataDropdown.setTotalTime(workday.getWork_day().getWorking_hours(), workday.getWork_day().getOvertime());
                                         resultOfCall.add(profileDataDropdown);
                                     }
