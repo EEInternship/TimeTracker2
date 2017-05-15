@@ -147,7 +147,7 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("Running:", "Fetching work days for user.");
         if (applicationTimeTracker.isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email)// + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
@@ -218,7 +218,7 @@ public class ProfileActivity extends AppCompatActivity {
         Log.i("Running:", "Fetching work days for user.");
         if (applicationTimeTracker.isNetworkAvailable()) {
             Ion.with(context)
-                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email + "/?format=json")
+                    .load("GET", "https://nameless-oasis-70424.herokuapp.com/getworkdaysandworkon/" + email)// + "/?format=json")
                     .asJsonArray()
                     .setCallback(new FutureCallback<JsonArray>() {
                         @Override
