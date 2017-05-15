@@ -160,13 +160,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonFirstProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Boolean ticketState=true;
-                            for(Ticket ticket:ticketList){
-                                if(ticket.getStateStart()==false){
-                                    ticketState=false;
+                            Boolean ticketState = true;
+                            for (Ticket ticket : ticketList) {
+                                if (ticket.getStateStart() == false) {
+                                    ticketState = false;
                                 }
                             }
-                            ticketList.add(0,new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(),ticketState));
+                            ticketList.add(0, new Ticket("0:00", userData.getProjectList().get(0).projectName, Ticket.State.Start, Ticket.Selected.First, userData.getProjectList().get(0).getTicketColor(), ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -177,13 +177,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonSecondProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Boolean ticketState=true;
-                            for(Ticket ticket:ticketList){
-                                if(ticket.getStateStart()==false){
-                                    ticketState=false;
+                            Boolean ticketState = true;
+                            for (Ticket ticket : ticketList) {
+                                if (ticket.getStateStart() == false) {
+                                    ticketState = false;
                                 }
                             }
-                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(),ticketState));
+                            ticketList.add(0, new Ticket("00:00", userData.getProjectList().get(1).projectName, Ticket.State.Start, Ticket.Selected.Second, userData.getProjectList().get(1).getTicketColor(), ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -194,13 +194,13 @@ public class StartWorkActivity extends AppCompatActivity {
                     buttonThirdProject.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Boolean ticketState=true;
-                            for(Ticket ticket:ticketList){
-                                if(ticket.getStateStart()==false){
-                                    ticketState=false;
+                            Boolean ticketState = true;
+                            for (Ticket ticket : ticketList) {
+                                if (ticket.getStateStart() == false) {
+                                    ticketState = false;
                                 }
                             }
-                            ticketList.add(0,new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(),ticketState));
+                            ticketList.add(0, new Ticket("00:00", userData.getProjectList().get(2).projectName, Ticket.State.Start, Ticket.Selected.Third, userData.getProjectList().get(2).getTicketColor(), ticketState));
                             userData.setTicketList(ticketList);
                             applicationTimeTracker.setUserData(userData);
                             mAdapter.notifyDataSetChanged();
@@ -212,9 +212,9 @@ public class StartWorkActivity extends AppCompatActivity {
         });
 
         final String[] projectList;
-        if(userData.getProjectList().size() >3){
-            projectList = new String[userData.getProjectList().size()-3];
-        }else{
+        if (userData.getProjectList().size() > 3) {
+            projectList = new String[userData.getProjectList().size() - 3];
+        } else {
             projectList = new String[0];
         }
 
@@ -230,7 +230,7 @@ public class StartWorkActivity extends AppCompatActivity {
             projectListLength++;
         }
 
-       final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        final AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
         alertDialog.setItems(projectList,
                 new DialogInterface.OnClickListener() {
                     @Override
@@ -243,13 +243,13 @@ public class StartWorkActivity extends AppCompatActivity {
                                 if (project.getTicketColor() != null)
                                     color = project.getTicketColor();
                         }
-                        Boolean ticketState=true;
-                        for(Ticket ticket : ticketList){
-                            if(ticket.getStateStart()==false){
-                                ticketState=false;
+                        Boolean ticketState = true;
+                        for (Ticket ticket : ticketList) {
+                            if (ticket.getStateStart() == false) {
+                                ticketState = false;
                             }
                         }
-                        ticketList.add(0,new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color,ticketState));
+                        ticketList.add(0, new Ticket("00:00", selectedProject, Ticket.State.Start, Ticket.Selected.Other, color, ticketState));
                         userData.setTicketList(ticketList);
                         applicationTimeTracker.setUserData(userData);
                         mAdapter.notifyDataSetChanged();
@@ -272,89 +272,83 @@ public class StartWorkActivity extends AppCompatActivity {
         buttonFinishWork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(ticketList.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Isak",Toast.LENGTH_LONG).show();
-                }else {
-                    UploadSpreadsheetData data = userData.getUploadSpreadsheetData();
-                    Calendar calender = Calendar.getInstance();
-                    int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
-                    int cMinute = calender.get(Calendar.MINUTE);
-                    data.finishTime = new Time(cHourOfDay, cMinute, 00);
-                    ArrayList<Integer> removePositionList = new ArrayList<Integer>();
-                    boolean allDone = true;
-                    int position = 0;
-                    for (Ticket ticket : userData.getTicketList()) {
-                        if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null && !ticket.getDescription().equals("")) {
-                            if (ticket.getFinishTime() == null) {
-                                Calendar calendar = Calendar.getInstance();
-                                ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
-                            }
-                            removePositionList.add(position);
-                            position--;
-                            applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                UploadSpreadsheetData data = userData.getUploadSpreadsheetData();
+                Calendar calender = Calendar.getInstance();
+                int cHourOfDay = calender.get(Calendar.HOUR_OF_DAY);
+                int cMinute = calender.get(Calendar.MINUTE);
+                data.finishTime = new Time(cHourOfDay, cMinute, 00);
+                ArrayList<Integer> removePositionList = new ArrayList<Integer>();
+                boolean allDone = true;
+                int position = 0;
+                for (Ticket ticket : userData.getTicketList()) {
+                    if (ticket.getDate() != null && ticket.getStartingTime() != null && ticket.getDescription() != null && !ticket.getDescription().equals("")) {
+                        if (ticket.getFinishTime() == null) {
+                            Calendar calendar = Calendar.getInstance();
+                            ticket.setFinishTime(new Time(calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), calendar.get(Calendar.SECOND)));
+                        }
+                        removePositionList.add(position);
+                        position--;
+                        applicationTimeTracker.addWorkOn(getApplicationContext(), userData.getUserAcount(), ticket);
+                    } else {
+                        if (ticket.getDescription() == null || ticket.getDescription().equals("")) {
+                            LayoutInflater inflater = getLayoutInflater();
+                            View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                                    (ViewGroup) findViewById(R.id.custom_toast_container));
+
+
+                            TextView text = (TextView) layout.findViewById(R.id.text);
+                            text.setText(ticket.getProject() + " is missing description. ");
+
+                            Toast toast = new Toast(getApplicationContext());
+                            toast.setDuration(Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 270);
+                            toast.setView(layout);
+                            toast.show();
                         } else {
-                            if (ticket.getDescription() == null || ticket.getDescription().equals("")){
-                                LayoutInflater inflater = getLayoutInflater();
-                                View layout = inflater.inflate(R.layout.custom_dialog_alert,
-                                        (ViewGroup) findViewById(R.id.custom_toast_container));
+                            LayoutInflater inflater = getLayoutInflater();
+                            View layout = inflater.inflate(R.layout.custom_dialog_alert,
+                                    (ViewGroup) findViewById(R.id.custom_toast_container));
 
 
-                                TextView text = (TextView) layout.findViewById(R.id.text);
-                                text.setText(ticket.getProject()+" is missing description. ");
-
-                                Toast toast = new Toast(getApplicationContext());
-                                toast.setDuration(Toast.LENGTH_LONG);
-                                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 270);
-                                toast.setView(layout);
-                                toast.show();
-                            }else{
-                                LayoutInflater inflater = getLayoutInflater();
-                                View layout = inflater.inflate(R.layout.custom_dialog_alert,
-                                        (ViewGroup) findViewById(R.id.custom_toast_container));
-
-
-                                TextView text = (TextView) layout.findViewById(R.id.text);
-                                text.setText(ticket.getProject()+" wasn't started. ");
-                                Toast toast = new Toast(getApplicationContext());
-                                toast.setDuration(Toast.LENGTH_LONG);
-                                toast.setView(layout);
-                                toast.show();
-                            }
-                                //Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Description is missing", Toast.LENGTH_SHORT).show();
+                            TextView text = (TextView) layout.findViewById(R.id.text);
+                            text.setText(ticket.getProject() + " wasn't started. ");
+                            Toast toast = new Toast(getApplicationContext());
+                            toast.setDuration(Toast.LENGTH_LONG);
+                            toast.setView(layout);
+                            toast.show();
+                        }
+                        //Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Description is missing", Toast.LENGTH_SHORT).show();
 
                             /*else
                                 Toast.makeText(getApplicationContext(), "Ticket (" + ticket.getProject() + ") was not successfully send - Did not start", Toast.LENGTH_SHORT).show();*/
-                            allDone = false;
-                        }
-                        position++;
+                        allDone = false;
+                    }
+                    position++;
 
+                }
+                if (allDone) {
+                    userData.setTicketList(new ArrayList<Ticket>());
+                    userData.addUploadRepository(data);
+                    applicationTimeTracker.setUserData(userData);
+                    applicationTimeTracker.cancelNotificationPerMinute();
+                    applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
+                    userData.addUploadRepository(new UploadSpreadsheetData());
+                    applicationTimeTracker.setUserData(userData);
+                    finish();
+                } else {
+                    for (int location : removePositionList) {
+                        ticketList.remove(location);
+                        mAdapter.notifyItemRemoved(location);
+                        mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
                     }
-                    if (allDone) {
-                        userData.setTicketList(new ArrayList<Ticket>());
-                        userData.addUploadRepository(data);
-                        applicationTimeTracker.setUserData(userData);
-                        applicationTimeTracker.cancelNotificationPerMinute();
-                        applicationTimeTracker.addWorkDay(getApplicationContext(), userData.getUserAcount(), userData.getUploadSpreadsheetData());
-                        userData.addUploadRepository(new UploadSpreadsheetData());
-                        applicationTimeTracker.setUserData(userData);
-                        finish();
-                    } else {
-                        for (int location : removePositionList) {
-                            ticketList.remove(location);
-                            mAdapter.notifyItemRemoved(location);
-                            mAdapter.notifyItemRangeChanged(location, mAdapter.getItemCount());
-                        }
-                        userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
-                        userData.setTicketList(ticketList);
-                        applicationTimeTracker.setUserData(userData);
-                        closeMenu();
-                    }
+                    //userData.setProfileDataDropdownArrayList(applicationTimeTracker.getWorkDaysAndWorkingOn(getApplicationContext(), userData.getUserAcount()));
                     userData.setTicketList(ticketList);
                     applicationTimeTracker.setUserData(userData);
                     closeMenu();
                 }
-
-
+                userData.setTicketList(ticketList);
+                applicationTimeTracker.setUserData(userData);
+                closeMenu();
             }
         });
 
@@ -430,7 +424,7 @@ public class StartWorkActivity extends AppCompatActivity {
         isOpen = true;
         hideSoftKeyboard();
 
-        if(mAdapter.getItemCount()!=0){
+        if (mAdapter.getItemCount() != 0) {
             clearFocus();
         }
 
@@ -497,11 +491,11 @@ public class StartWorkActivity extends AppCompatActivity {
     }
 
     public void hideSoftKeyboard() {
-        InputMethodManager inputMethodManager = (InputMethodManager)this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 
-    public void clearFocus(){
+    public void clearFocus() {
         recyclerView.clearFocus();
     }
 }
