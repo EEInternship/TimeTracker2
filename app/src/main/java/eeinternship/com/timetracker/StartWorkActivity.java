@@ -71,7 +71,7 @@ public class StartWorkActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("TIME TRACKER");
+        actionBar.setTitle("Time tracker");
 
         frameLayoutDim = (FrameLayout) findViewById(R.id.frame_layout_dim);
 
