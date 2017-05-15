@@ -10,6 +10,7 @@ public class TestWorkDay {
     String finish_time;
     String working_hours;
     String overtime;
+    String pk;
 
     public TestWorkDay(String date, String starting_time, String finish_time, String working_hours, String overtime) {
         this.date = date;
@@ -17,6 +18,14 @@ public class TestWorkDay {
         this.finish_time = finish_time;
         this.working_hours = working_hours;
         this.overtime = overtime;
+    }
+
+    public String getPk() {
+        return pk;
+    }
+
+    public void setPk(String pk) {
+        this.pk = pk;
     }
 
     public String getDate() {

@@ -307,32 +307,34 @@ public class ApplicationTimeTracker extends Application {
         }
     }
 
-    public void updateWorkDay(final Context context, String email, UploadSpreadsheetData uploadSpreadsheetData) {
+    public void updateWorkDay(final Context context, String email, final ProfileDataDropdown profileDataDropdown, final ExpandableListAdapter expandableListAdapter) {
         Log.i("Running:", "Sending work day data.");
-        Date date = uploadSpreadsheetData.date.getTime();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm");
-        String dateString = dateFormat.format(date);
-        String startingTime = timeFormat.format(uploadSpreadsheetData.startingTime);
-        String finishTime = timeFormat.format(uploadSpreadsheetData.finishTime);
+
 
 
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/ID/")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workday/update/"+ profileDataDropdown.getId())
                     .setMultipartParameter("email", email)
-                    .setMultipartParameter("date", dateString)
-                    .setMultipartParameter("starting_time", dateString + " " + startingTime)
-                    .setMultipartParameter("finish_time", dateString + " " + finishTime)
-                    .asString()
-                    .setCallback(new FutureCallback<String>() {
+                    .setMultipartParameter("date",  profileDataDropdown.getDate())
+                    .setMultipartParameter("starting_time",  profileDataDropdown.getDate() + " " + profileDataDropdown.getStartingTime())
+                    .setMultipartParameter("finish_time",  profileDataDropdown.getDate() + " " + profileDataDropdown.getFinishTime())
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
                         @Override
-                        public void onCompleted(Exception e, String result) {
+                        public void onCompleted(Exception e, JsonObject result) {
                             if (result != null) {
-                                Log.i("Info: ", result);
+                                JsonObject jsonObject = result;
+                                Log.i("Info: ", jsonObject.get("working_hours").toString());
+                                String workTime = (jsonObject.get("working_hours").toString());
+                                workTime = workTime.replace("\"","");
+                                String overTime = jsonObject.get("overtime").toString();
+                                overTime = overTime.replace("\"","");
+                                profileDataDropdown.setTotalTime(workTime,overTime);
+                                expandableListAdapter.notifyDataSetChanged();
                             } else {
-                                Log.e("Error: ", result);
+                                Log.e("Error: ", "Error");
                             }
                         }
                     });
@@ -399,7 +401,7 @@ public class ApplicationTimeTracker extends Application {
         if (isNetworkAvailable()) {
             Ion.with(context)
                     //ID needs to be replaced with ID of entry
-                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId()+"/")
+                    .load("PUT", "https://nameless-oasis-70424.herokuapp.com/workon/update/"+ticket.getId())
                     .setMultipartParameter("email", email)
                     .setMultipartParameter("project", ticket.getProjectName())
                     .setMultipartParameter("date",ticket.getDate())
